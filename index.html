@@ -3317,6 +3317,15 @@ async function waitUploadResult(uploadId){
   return {status:"ERROR", message:"Timeout menunggu upload siap"};
 }
 
+async function waitSaveResult(requestId){
+  for(let i = 0; i < 40; i++){
+    await sleep(1000);
+    const res = await jsonp({action:"saveResult", requestId:requestId});
+    if(res && res.status !== "PENDING"){return res;}
+  }
+  return {status:"ERROR", message:"Timeout menunggu keputusan simpan. Semak deployment Google Apps Script dan Google Sheet."};
+}
+
 function sleep(ms){return new Promise(resolve => setTimeout(resolve, ms));}
 function fileToBase64(file){
   return new Promise((resolve,reject) => {
@@ -3605,44 +3614,44 @@ async function simpan(){
   if(!records) return;
 
   const isEdit = editingRowEl.value !== "";
-  const beforeCount = allData.length;
+  const requestId = "save_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
 
   isSaving = true;
   saveBtn.disabled = true;
   saveText.innerText = isEdit ? "Sedang kemaskini..." : "Sedang simpan...";
   setStatus("Sedang simpan data...");
 
-  let payload;
-  if(isEdit){
-    payload = {...records[0], action:"update", row:editingRowEl.value};
-  }else{
-    payload = {action:"simpan", recordsJson:JSON.stringify(records)};
-  }
-
-  submitHiddenForm(payload);
-
-  const waitMs = Math.min(8000, 3000 + (records.length * 500));
-  setTimeout(async () => {
-    try{
-      await refreshAll();
-      const afterCount = allData.length;
-      if(isEdit){alert("BERJAYA DIKEMASKINI");}
-      else if(afterCount > beforeCount){alert("BERJAYA DISIMPAN");}
-      else{alert("Arahan simpan sudah dihantar. Sila semak senarai inventori / Google Sheet.");}
-      clearForm();
-      tableBaseData = [...allData];
-      isFilterActive = false;
-      applyTableView();
-      goPage("tablePage");
-    }catch(err){
-      alert("Data dihantar, tetapi gagal refresh senarai: " + err.message);
-    }finally{
-      isSaving = false;
-      saveBtn.disabled = false;
-      saveText.innerText = isEdit ? "Kemaskini" : "Simpan Inventori";
-      setStatus("");
+  try{
+    let payload;
+    if(isEdit){
+      payload = {...records[0], action:"update", row:editingRowEl.value, requestId:requestId};
+    }else{
+      payload = {action:"simpan", recordsJson:JSON.stringify(records), requestId:requestId};
     }
-  }, waitMs);
+
+    submitHiddenForm(payload);
+
+    const result = await waitSaveResult(requestId);
+    if(!result || result.status !== "OK"){
+      throw new Error((result && result.message) ? result.message : "Simpanan gagal tanpa mesej daripada server.");
+    }
+
+    await refreshAll();
+    alert(result.message || (isEdit ? "BERJAYA DIKEMASKINI" : "BERJAYA DISIMPAN"));
+    clearForm();
+    tableBaseData = [...allData];
+    isFilterActive = false;
+    applyTableView();
+    goPage("tablePage");
+  }catch(err){
+    alert("Gagal simpan data: " + err.message);
+    console.error(err);
+  }finally{
+    isSaving = false;
+    saveBtn.disabled = false;
+    saveText.innerText = isEdit ? "Kemaskini" : "Simpan Inventori";
+    setStatus("");
+  }
 }
 
 function renderTable(data){
