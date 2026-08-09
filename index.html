@@ -2069,6 +2069,43 @@ body.enterprise-resizing *{cursor:col-resize!important;}
 }
 </style>
 
+
+<style id="enterpriseDashboardV4Styles">
+/* ===== ENTERPRISE DASHBOARD V4 - dashboard presentation only ===== */
+.enterprise-dashboard-page{padding-bottom:8px;}
+.enterprise-dashboard-page .page-title,.enterprise-dashboard-page .dashboard-section-title{display:none!important;}
+.enterprise-dashboard-hero{position:relative;min-height:122px;border:1px solid #dfe7f2;border-radius:16px;background:linear-gradient(105deg,#ffffff 0%,#fbfdff 58%,#eef3ff 100%);overflow:hidden;padding:24px 30px;margin-bottom:16px;box-shadow:0 10px 28px rgba(32,61,107,.055);display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.enterprise-dashboard-hero:before{content:"";position:absolute;right:-70px;top:-100px;width:420px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(95,105,255,.15),rgba(95,105,255,0) 68%);pointer-events:none;}
+.enterprise-dashboard-hero-copy{position:relative;z-index:2;max-width:650px;}
+.enterprise-dashboard-kicker{font-size:10px;font-weight:900;color:#3869bc;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.enterprise-dashboard-kicker span{width:24px;height:3px;border-radius:99px;background:#1767dc;}
+.enterprise-dashboard-hero h2{font-size:29px;line-height:1.05;margin:0;color:#13213d;font-weight:900;letter-spacing:-.025em;}
+.enterprise-dashboard-hero p{margin:9px 0 0;color:#6d7b91;font-size:12.5px;font-weight:600;}
+.enterprise-dashboard-hero-art{width:300px;height:92px;position:relative;flex:0 0 300px;display:flex;align-items:center;justify-content:center;}
+.enterprise-dashboard-art-window{width:152px;height:88px;border-radius:12px;background:linear-gradient(145deg,#ffffff,#eef3ff);border:2px solid #9db8fa;box-shadow:0 12px 28px rgba(48,77,160,.16);transform:rotate(3deg);overflow:hidden;position:relative;z-index:2;}
+.enterprise-dashboard-art-top{height:18px;background:#eaf0ff;display:flex;gap:4px;padding:7px 8px;}.enterprise-dashboard-art-top i{width:4px;height:4px;border-radius:50%;background:#7696e9;}
+.enterprise-dashboard-art-body{height:70px;position:relative;padding:12px;display:flex;align-items:center;justify-content:space-around;}.enterprise-dashboard-art-ring{width:36px;height:36px;border-radius:50%;border:8px solid #2c67db;border-right-color:#ff9c2b;border-bottom-color:#8b5cf6;}.enterprise-dashboard-art-bars{display:flex;align-items:flex-end;gap:5px;height:39px}.enterprise-dashboard-art-bars i{width:8px;border-radius:3px 3px 0 0;background:#6d8ee8}.enterprise-dashboard-art-bars i:nth-child(1){height:18px}.enterprise-dashboard-art-bars i:nth-child(2){height:32px}.enterprise-dashboard-art-bars i:nth-child(3){height:25px}
+.enterprise-dashboard-laptop{position:absolute;right:9px;bottom:5px;font-size:56px;color:#8ea9ef;opacity:.32;}.enterprise-dashboard-dot{position:absolute;border-radius:50%;background:#7d91ea;opacity:.25}.dot-a{width:8px;height:8px;left:15px;top:22px}.dot-b{width:5px;height:5px;left:42px;bottom:14px}.dot-c{width:11px;height:11px;right:48px;top:10px}
+.enterprise-dashboard-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px;}
+.enterprise-stat-card{position:relative;min-height:116px;border:1px solid #e0e7f1;border-radius:15px;background:#fff;overflow:hidden;padding:17px 17px 14px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:13px;align-items:start;cursor:pointer;box-shadow:0 7px 21px rgba(26,51,90,.055);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;}
+.enterprise-stat-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(26,51,90,.10);border-color:#cbd9eb;}
+.enterprise-stat-icon{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:23px;box-shadow:0 8px 17px rgba(24,67,154,.18);position:relative;z-index:2;}
+.stat-blue .enterprise-stat-icon{background:linear-gradient(145deg,#2878ef,#0f54cf)}.stat-green .enterprise-stat-icon{background:linear-gradient(145deg,#39c96e,#129343)}.stat-red .enterprise-stat-icon{background:linear-gradient(145deg,#ff5757,#e72828)}.stat-purple .enterprise-stat-icon{background:linear-gradient(145deg,#9565ff,#7037df)}.stat-cyan .enterprise-stat-icon{background:linear-gradient(145deg,#31bfcb,#1194a7)}.stat-teal .enterprise-stat-icon{background:linear-gradient(145deg,#32c3bb,#159a92)}.stat-orange .enterprise-stat-icon{background:linear-gradient(145deg,#ff9b31,#ef670c)}.stat-slate .enterprise-stat-icon{background:linear-gradient(145deg,#73829a,#425168)}
+.enterprise-stat-copy{position:relative;z-index:2;min-width:0}.enterprise-stat-copy strong{display:block;font-size:27px;line-height:1;color:#102a53;font-weight:900;letter-spacing:-.03em;margin:2px 0 6px}.enterprise-stat-copy span{display:block;color:#31415d;font-size:11px;font-weight:800}.enterprise-stat-copy button{border:0;background:transparent;padding:0;margin-top:16px;font-size:9px;font-weight:900;color:#0d5ee8;display:inline-flex;align-items:center;gap:6px}.stat-green .enterprise-stat-copy button{color:#16924a}.stat-red .enterprise-stat-copy button{color:#e43a3a}.stat-purple .enterprise-stat-copy button{color:#7e47eb}.stat-cyan .enterprise-stat-copy button,.stat-teal .enterprise-stat-copy button{color:#1496a8}.stat-orange .enterprise-stat-copy button{color:#ef6a0b}.stat-slate .enterprise-stat-copy button{color:#55657c}
+.enterprise-stat-spark{position:absolute;right:12px;bottom:10px;width:118px;height:42px;opacity:.92;pointer-events:none}.enterprise-stat-spark polyline{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.stat-blue .enterprise-stat-spark polyline{stroke:#216bef}.stat-green .enterprise-stat-spark polyline{stroke:#22a956}.stat-red .enterprise-stat-spark polyline{stroke:#ef3d3d}.stat-purple .enterprise-stat-spark polyline{stroke:#8250ee}.stat-cyan .enterprise-stat-spark polyline{stroke:#15a8bb}.stat-teal .enterprise-stat-spark polyline{stroke:#13a69c}.stat-orange .enterprise-stat-spark polyline{stroke:#f27616}.stat-slate .enterprise-stat-spark polyline{stroke:#64748b}
+.enterprise-dashboard-grid-row{display:grid;grid-template-columns:1.02fr 1.14fr 1.35fr;gap:14px;align-items:stretch;margin-bottom:14px}.enterprise-dashboard-bottom-row{display:grid;grid-template-columns:2.18fr 1.35fr;gap:14px;align-items:stretch}
+.enterprise-dashboard-panel{background:#fff;border:1px solid #dfe7f1;border-radius:14px;box-shadow:0 7px 20px rgba(26,51,90,.045);overflow:hidden;min-width:0}.enterprise-panel-head{min-height:48px;padding:0 15px;border-bottom:1px solid #e9eef5;display:flex;align-items:center;justify-content:space-between;gap:10px}.enterprise-panel-head>div{display:flex;align-items:center;gap:8px;color:#172642;font-size:11px}.enterprise-panel-head>div>i{color:#1767dc}.enterprise-panel-head button{border:0;background:transparent;color:#1767dc;font-size:9px;font-weight:900;padding:6px}.enterprise-panel-badge{font-size:8.5px;font-weight:800;color:#6f7e94;border:1px solid #e2e8f0;border-radius:7px;padding:5px 8px;background:#fafcff}
+.enterprise-movement-list{padding:7px 12px 10px}.enterprise-movement-item{position:relative;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;padding:8px 4px 8px 0;border-bottom:1px solid #eff3f7;cursor:pointer}.enterprise-movement-item:last-child{border-bottom:0}.enterprise-movement-item:before{content:"";position:absolute;left:13px;top:-7px;bottom:-7px;width:1px;background:#e0e7f0;z-index:0}.enterprise-movement-item:first-child:before{top:50%}.enterprise-movement-item:last-child:before{bottom:50%}.enterprise-movement-icon{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;position:relative;z-index:2;background:#1767dc;box-shadow:0 0 0 3px #fff}.enterprise-movement-icon.good{background:#20a85a}.enterprise-movement-icon.bad{background:#ef4444}.enterprise-movement-icon.warn{background:#f59e0b}.enterprise-movement-icon.purple{background:#8b5cf6}.enterprise-movement-main{min-width:0}.enterprise-movement-main b{display:block;color:#24324b;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.enterprise-movement-main span{display:block;color:#77859a;font-size:8px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.enterprise-movement-time{text-align:right;color:#6d7a8f;font-size:7.5px;line-height:1.35}
+.enterprise-trend-legend{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:10px 10px 1px;color:#68778e;font-size:8px;font-weight:800}.enterprise-trend-legend span{display:inline-flex;align-items:center;gap:4px}.enterprise-trend-legend i{width:7px;height:7px;border-radius:50%}.trend-green{background:#1ca95a}.trend-cyan{background:#159caf}.trend-red{background:#ef3e3e}.trend-purple{background:#8250ee}.enterprise-trend-chart-wrap{padding:6px 10px 12px;height:206px}.enterprise-trend-chart{width:100%;height:100%;display:block}.enterprise-trend-chart .grid{stroke:#e9eef4;stroke-width:1}.enterprise-trend-chart .axis-label{fill:#8794a8;font-size:8px;font-family:Arial,sans-serif}.enterprise-trend-chart .line{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.enterprise-trend-chart circle{stroke:#fff;stroke-width:1.5}
+.enterprise-preview-table-wrap{padding:8px 10px 11px;overflow:auto}.enterprise-preview-table{width:100%;border-collapse:collapse;font-size:8.5px;min-width:420px}.enterprise-preview-table th{background:#f4f7fb!important;color:#38465f!important;border:0!important;border-bottom:1px solid #e4eaf2!important;text-align:left;padding:8px 7px;font-size:8px}.enterprise-preview-table td{border:0!important;border-bottom:1px solid #eef2f6!important;text-align:left;padding:8px 7px;color:#48566d;max-width:115px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.enterprise-preview-table tr:last-child td{border-bottom:0!important}.enterprise-preview-table .asset-id{color:#1260d9;font-weight:900}.enterprise-mini-status{display:inline-flex;align-items:center;justify-content:center;min-width:44px;border-radius:999px;padding:4px 7px;font-size:7px;font-weight:900;background:#eef2f7;color:#5b6679}.enterprise-mini-status.baik{background:#dcfce7;color:#15803d}.enterprise-mini-status.rosak{background:#fee2e2;color:#dc2626}.enterprise-mini-status.pelupusan{background:#ffedd5;color:#c2410c}.enterprise-mini-status.dipinjam{background:#dbeafe;color:#1d4ed8}.enterprise-mini-status.baik-pulih{background:#ede9fe;color:#7c3aed}
+.enterprise-profile-banner{position:relative;min-height:156px;background:#fff;border:1px solid #dfe7f1;border-radius:14px;box-shadow:0 7px 20px rgba(26,51,90,.045);overflow:hidden;display:grid;grid-template-columns:235px minmax(0,1fr);align-items:center;padding:18px 20px}.enterprise-profile-banner:after{content:"";position:absolute;left:-50px;bottom:-105px;width:400px;height:220px;border-radius:50%;background:radial-gradient(circle,#eaf2ff,rgba(234,242,255,0) 70%);pointer-events:none}.enterprise-profile-visual{height:120px;display:flex;align-items:center;justify-content:center;position:relative;z-index:2}.enterprise-profile-visual img{width:155px;height:105px;object-fit:contain;position:relative;z-index:2;filter:drop-shadow(0 13px 12px rgba(40,61,103,.17))}.enterprise-profile-glow{position:absolute;width:170px;height:76px;border-radius:50%;background:#dce8ff;filter:blur(12px);opacity:.72;bottom:4px}.enterprise-profile-copy{position:relative;z-index:2}.enterprise-profile-kicker{display:block;color:#5b6d86;font-size:9px;font-weight:900;margin-bottom:5px}.enterprise-profile-copy h3{margin:0;color:#172642;font-size:16px;font-weight:900}.enterprise-profile-copy p{max-width:610px;color:#6d7a8e;font-size:9px;line-height:1.55;margin:7px 0 12px}.enterprise-profile-copy button{border:0;border-radius:8px;background:linear-gradient(135deg,#1767dc,#0e54c5);color:#fff;padding:9px 15px;font-size:9px;font-weight:900;box-shadow:0 8px 16px rgba(23,103,220,.20)}
+.enterprise-activity-list{padding:6px 13px 8px}.enterprise-activity-item{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:32px;border-bottom:1px solid #eef2f6}.enterprise-activity-item:last-child{border-bottom:0}.enterprise-activity-icon{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:8px;background:#e7f0ff;color:#1767dc}.enterprise-activity-icon.good{background:#dcfce7;color:#15803d}.enterprise-activity-icon.warn{background:#fef3c7;color:#b45309}.enterprise-activity-icon.bad{background:#fee2e2;color:#dc2626}.enterprise-activity-main{min-width:0;color:#4d5d74;font-size:8.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.enterprise-activity-time{color:#8190a4;font-size:7.4px;text-align:right;white-space:nowrap}.enterprise-dashboard-empty{height:100%;display:grid;place-items:center;text-align:center;color:#8b98aa;font-size:9px;padding:20px}
+.enterprise-dashboard-footer{display:flex;justify-content:space-between;align-items:center;padding:12px 4px 0;color:#8996a8;font-size:8px;font-weight:700}.enterprise-dashboard-footer span:last-child{display:flex;align-items:center;gap:6px}.enterprise-system-dot{font-size:7px;color:#16a34a}
+@media(max-width:1320px){.enterprise-dashboard-grid-row{grid-template-columns:1fr 1fr}.enterprise-preview-panel{grid-column:1/-1}.enterprise-dashboard-bottom-row{grid-template-columns:1.5fr 1fr}}
+@media(max-width:1100px){.enterprise-dashboard-stats{grid-template-columns:repeat(2,1fr)}.enterprise-dashboard-grid-row,.enterprise-dashboard-bottom-row{grid-template-columns:1fr}.enterprise-preview-panel{grid-column:auto}.enterprise-profile-banner{grid-template-columns:180px 1fr}}
+@media(max-width:760px){.enterprise-dashboard-hero{min-height:112px;padding:19px 17px}.enterprise-dashboard-hero h2{font-size:24px}.enterprise-dashboard-hero-art{display:none}.enterprise-dashboard-stats{grid-template-columns:1fr}.enterprise-stat-card{min-height:102px}.enterprise-dashboard-grid-row,.enterprise-dashboard-bottom-row{display:block}.enterprise-dashboard-panel,.enterprise-profile-banner{margin-bottom:12px}.enterprise-profile-banner{grid-template-columns:1fr;text-align:center;padding:16px}.enterprise-profile-visual{height:98px}.enterprise-dashboard-footer{flex-direction:column;gap:6px}.enterprise-trend-chart-wrap{height:190px}}
+</style>
+
 </head>
 
 <body>
@@ -2118,57 +2155,117 @@ body.enterprise-resizing *{cursor:col-resize!important;}
   <main class="main">
     <div id="successToast" class="success-toast">Data berjaya dimuatkan</div>
 
-    <div id="dashboardPage" class="page active">
-      <h2 class="page-title">Laman Utama</h2>
-
-      <div class="dashboard-section-title">Ringkasan Dashboard</div>
-      <div class="dashboard-grid dashboard-status-grid">
-        <div class="info-card bg-blue"><div class="info-card-content"><div class="info-number" id="total">0</div><div class="info-label">Jumlah Aset</div></div><i class="fa-solid fa-boxes-stacked info-icon"></i><div class="info-card-footer" onclick="filterDashboard('all','')">Lihat</div></div>
-        <div class="info-card bg-green"><div class="info-card-content"><div class="info-number" id="baik">0</div><div class="info-label">Baik</div></div><i class="fa-solid fa-circle-check info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Baik')">Lihat</div></div>
-        <div class="info-card bg-red"><div class="info-card-content"><div class="info-number" id="rosak">0</div><div class="info-label">Rosak</div></div><i class="fa-solid fa-screwdriver-wrench info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Rosak')">Lihat</div></div>
-        <div class="info-card bg-purple"><div class="info-card-content"><div class="info-number" id="dalamBaikPulih">0</div><div class="info-label">Dalam Baik Pulih</div></div><i class="fa-solid fa-screwdriver info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Dalam Baik Pulih')">Lihat</div></div>
-        <div class="info-card bg-cyan"><div class="info-card-content"><div class="info-number" id="dipinjam">0</div><div class="info-label">Dipinjam</div></div><i class="fa-solid fa-hand-holding info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Dipinjam')">Lihat</div></div>
-        <div class="info-card bg-teal"><div class="info-card-content"><div class="info-number" id="dipulangkan">0</div><div class="info-label">Dipulangkan</div></div><i class="fa-solid fa-rotate-left info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Dipulangkan')">Lihat</div></div>
-        <div class="info-card bg-orange"><div class="info-card-content"><div class="info-number" id="pelupusan">0</div><div class="info-label">Pelupusan</div></div><i class="fa-solid fa-trash info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Pelupusan')">Lihat</div></div>
-        <div class="info-card bg-dark"><div class="info-card-content"><div class="info-number" id="hilang">0</div><div class="info-label">Hilang</div></div><i class="fa-solid fa-triangle-exclamation info-icon"></i><div class="info-card-footer" onclick="filterDashboard('status','Hilang')">Lihat</div></div>
-      </div>
-
-      <div class="dashboard-section-title">Pergerakan Terkini Aset</div>
-      <div class="section-box">
-        <div class="dashboard-movement-box">
-          <div class="dashboard-movement-header">
-            <div class="dashboard-movement-title"><i class="fa-solid fa-clock-rotate-left"></i> Dashboard Pergerakan Aset</div>
-            <button type="button" class="btn-history" onclick="showPage('historyPage', document.getElementById('btnHistory')); loadHistory();">Lihat Semua Sejarah</button>
-          </div>
-          <div class="dashboard-movement-hero">
-            <div class="dashboard-laptop-box">
-              <img src="Laptop.png" alt="Laptop" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/Laptop.png'">
-            </div>
-            <div>
-              <div class="dashboard-movement-hero-title">Pergerakan Aset & Profil Aset Lengkap</div>
-              <div class="dashboard-movement-hero-text">Klik butang <b>Profil Aset</b> pada aset untuk semak lokasi, status, gambar dan sejarah pergerakan. Guna tick untuk tindakan pukal di bawah senarai inventori.</div>
+    <div id="dashboardPage" class="page active enterprise-dashboard-page">
+      <section class="enterprise-dashboard-hero">
+        <div class="enterprise-dashboard-hero-copy">
+          <div class="enterprise-dashboard-kicker"><span></span> UNIT IT PKPJ</div>
+          <h2>Laman Utama</h2>
+          <p>Ringkasan kedudukan aset Unit IT PKPJ secara menyeluruh.</p>
+        </div>
+        <div class="enterprise-dashboard-hero-art" aria-hidden="true">
+          <div class="enterprise-dashboard-art-window">
+            <div class="enterprise-dashboard-art-top"><i></i><i></i><i></i></div>
+            <div class="enterprise-dashboard-art-body">
+              <span class="enterprise-dashboard-art-ring"></span>
+              <span class="enterprise-dashboard-art-bars"><i></i><i></i><i></i></span>
             </div>
           </div>
-          <div class="table-wrap">
-            <table class="dashboard-history-table">
-              <thead>
-                <tr>
-                  <th>Tarikh / Masa</th>
-                  <th>Nama Staff</th>
-                  <th>Aset</th>
-                  <th>Perubahan</th>
-                  <th>Lokasi</th>
-                  <th>Status</th>
-                  <th>Tindakan</th>
-                </tr>
-              </thead>
-              <tbody id="dashboardHistoryTable">
-                <tr><td colspan="7">Tiada sejarah pergerakan aset.</td></tr>
-              </tbody>
+          <i class="fa-solid fa-laptop enterprise-dashboard-laptop"></i>
+          <span class="enterprise-dashboard-dot dot-a"></span>
+          <span class="enterprise-dashboard-dot dot-b"></span>
+          <span class="enterprise-dashboard-dot dot-c"></span>
+        </div>
+      </section>
+
+      <section class="enterprise-dashboard-stats" aria-label="Ringkasan status inventori">
+        <article class="enterprise-stat-card stat-blue" onclick="filterDashboard('all','')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="enterprise-stat-copy"><strong id="total">0</strong><span>Jumlah Aset</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-total" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-green" onclick="filterDashboard('status','Baik')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="enterprise-stat-copy"><strong id="baik">0</strong><span>Baik</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-baik" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-red" onclick="filterDashboard('status','Rosak')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+          <div class="enterprise-stat-copy"><strong id="rosak">0</strong><span>Rosak</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-rosak" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-purple" onclick="filterDashboard('status','Dalam Baik Pulih')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-screwdriver"></i></div>
+          <div class="enterprise-stat-copy"><strong id="dalamBaikPulih">0</strong><span>Dalam Baik Pulih</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-baikpulih" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-cyan" onclick="filterDashboard('status','Dipinjam')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-hand-holding"></i></div>
+          <div class="enterprise-stat-copy"><strong id="dipinjam">0</strong><span>Dipinjam</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-dipinjam" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-teal" onclick="filterDashboard('status','Dipulangkan')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-rotate-left"></i></div>
+          <div class="enterprise-stat-copy"><strong id="dipulangkan">0</strong><span>Dipulangkan</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-dipulangkan" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-orange" onclick="filterDashboard('status','Pelupusan')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-trash-can"></i></div>
+          <div class="enterprise-stat-copy"><strong id="pelupusan">0</strong><span>Pelupusan</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-pelupusan" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+        <article class="enterprise-stat-card stat-slate" onclick="filterDashboard('status','Hilang')">
+          <div class="enterprise-stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="enterprise-stat-copy"><strong id="hilang">0</strong><span>Hilang</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
+          <svg class="enterprise-stat-spark" id="spark-hilang" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </article>
+      </section>
+
+      <section class="enterprise-dashboard-grid-row">
+        <article class="enterprise-dashboard-panel enterprise-movement-panel">
+          <div class="enterprise-panel-head"><div><i class="fa-solid fa-timeline"></i><b>Pergerakan Terkini Aset</b></div><button type="button" onclick="showPage('historyPage', document.getElementById('btnHistory')); loadHistory();">Lihat Semua <i class="fa-solid fa-arrow-right"></i></button></div>
+          <div id="enterpriseMovementList" class="enterprise-movement-list"><div class="enterprise-dashboard-empty">Memuatkan pergerakan aset...</div></div>
+        </article>
+
+        <article class="enterprise-dashboard-panel enterprise-trend-panel">
+          <div class="enterprise-panel-head"><div><i class="fa-solid fa-chart-line"></i><b>Graf Trend Inventori</b></div><span class="enterprise-panel-badge">7 hari aktiviti</span></div>
+          <div class="enterprise-trend-legend">
+            <span><i class="trend-green"></i>Baik</span><span><i class="trend-cyan"></i>Dipinjam</span><span><i class="trend-red"></i>Rosak</span><span><i class="trend-purple"></i>Baik Pulih</span>
+          </div>
+          <div id="enterpriseTrendChartWrap" class="enterprise-trend-chart-wrap"><div class="enterprise-dashboard-empty">Trend akan dipaparkan berdasarkan sejarah rekod.</div></div>
+        </article>
+
+        <article class="enterprise-dashboard-panel enterprise-preview-panel">
+          <div class="enterprise-panel-head"><div><i class="fa-solid fa-table-list"></i><b>Pratonton Data Aset</b></div><button type="button" onclick="showPage('tablePage', document.getElementById('btnTable')); setMasterInventoryMode('detail');">Lihat Semua <i class="fa-solid fa-arrow-right"></i></button></div>
+          <div class="enterprise-preview-table-wrap">
+            <table class="enterprise-preview-table">
+              <thead><tr><th>Aset</th><th>Model</th><th>Lokasi</th><th>Status</th></tr></thead>
+              <tbody id="enterpriseAssetPreview"><tr><td colspan="4">Memuatkan aset...</td></tr></tbody>
             </table>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
+
+      <section class="enterprise-dashboard-bottom-row">
+        <article class="enterprise-profile-banner">
+          <div class="enterprise-profile-visual">
+            <img src="Laptop.png" alt="Laptop" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/Laptop.png'">
+            <span class="enterprise-profile-glow"></span>
+          </div>
+          <div class="enterprise-profile-copy">
+            <span class="enterprise-profile-kicker">Ringkasan Aset Lengkap</span>
+            <h3>Laporan & Profil Aset Lengkap</h3>
+            <p>Akses profil aset secara terperinci termasuk lokasi, status, spesifikasi, gambar dan sejarah pergerakan.</p>
+            <button type="button" onclick="showPage('profileMainPage', document.getElementById('btnProfileMain')); populateMainAssetPickers();">Lihat Profil Aset Lengkap <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </article>
+
+        <article class="enterprise-dashboard-panel enterprise-activity-panel">
+          <div class="enterprise-panel-head"><div><i class="fa-solid fa-bell"></i><b>Aktiviti / Notifikasi Terkini</b></div><button type="button" onclick="showPage('historyPage', document.getElementById('btnHistory')); loadHistory();">Lihat Semua <i class="fa-solid fa-arrow-right"></i></button></div>
+          <div id="enterpriseActivityList" class="enterprise-activity-list"><div class="enterprise-dashboard-empty">Memuatkan aktiviti...</div></div>
+        </article>
+      </section>
+
+      <div class="enterprise-dashboard-footer"><span>© 2026 Unit IT PKPJ · Sistem Inventori</span><span><i class="fa-solid fa-circle enterprise-system-dot"></i> Sistem Aktif</span></div>
     </div>
 
     <div id="formPage" class="page form-modal-page">
@@ -6975,6 +7072,116 @@ if(oldRefreshAllSelesai){
     window.setTimeout(function(){syncQuickFilter();updateDataState();},500);
     window.setTimeout(updateDataState,1800);
   });
+})();
+</script>
+
+
+<script id="enterpriseDashboardV4Script">
+(function(){
+  function esc(v){
+    if(typeof escapeHtml === "function") return escapeHtml(v == null ? "" : String(v));
+    return String(v == null ? "" : v).replace(/[&<>\"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'})[c];});
+  }
+  function parseDateFlexible(value){
+    if(!value) return null;
+    if(Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value)) return value;
+    var s = String(value).trim();
+    var d = new Date(s);
+    if(!isNaN(d)) return d;
+    var m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})(?:[ T,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+    if(m) return new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0));
+    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})(?:[ T,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+    if(m) return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0));
+    return null;
+  }
+  function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function dayLabel(d){return String(d.getDate()).padStart(2,'0')+' '+['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'][d.getMonth()];}
+  function shortTime(value){
+    var d=parseDateFlexible(value); if(!d) return String(value||'').slice(0,18);
+    return dayLabel(d)+'<br>'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  }
+  function statusClass(status){
+    var s=String(status||'').toLowerCase();
+    if(s==='baik') return 'baik'; if(s==='rosak') return 'rosak'; if(s==='pelupusan') return 'pelupusan'; if(s==='dipinjam') return 'dipinjam'; if(s.indexOf('baik pulih')>=0) return 'baik-pulih'; return '';
+  }
+  function movementIconClass(h){
+    var s=String((h&&h.statusBaru)||'').toLowerCase(); var p=String((h&&h.perubahan)||'').toLowerCase();
+    if(s==='baik'||p.indexOf('dipulangkan')>=0) return ['good','fa-check'];
+    if(s==='rosak') return ['bad','fa-screwdriver-wrench'];
+    if(s==='pelupusan'||p.indexOf('lupus')>=0) return ['warn','fa-trash-can'];
+    if(s.indexOf('baik pulih')>=0) return ['purple','fa-screwdriver'];
+    if(s==='dipinjam'||p.indexOf('pinjam')>=0) return ['','fa-hand-holding'];
+    return ['','fa-arrow-right-arrow-left'];
+  }
+  function movementTitle(h,asset){
+    var p=String((h&&h.perubahan)||'').trim();
+    if(p) return p;
+    var s=String((h&&h.statusBaru)||'').trim();
+    return s ? 'Status: '+s : 'Kemaskini aset';
+  }
+  function renderMovement(){
+    var box=document.getElementById('enterpriseMovementList'); if(!box) return;
+    var rows=(Array.isArray(historyData)?historyData:[]).slice(0,5);
+    if(!rows.length){box.innerHTML='<div class="enterprise-dashboard-empty">Belum ada sejarah pergerakan untuk dipaparkan.</div>';return;}
+    box.innerHTML=rows.map(function(h){
+      var asset=(typeof findAssetByRow==='function'?findAssetByRow(h.rowInventori):null)||{};
+      var icon=movementIconClass(h); var assetText=[asset.jenisPerkakasan||h.jenisPerkakasan||'Aset',asset.jenama||'',asset.model||''].filter(Boolean).join(' · ');
+      return '<div class="enterprise-movement-item" onclick="showAssetHistoryDrawer('+Number(h.rowInventori||0)+')">'+
+        '<span class="enterprise-movement-icon '+icon[0]+'"><i class="fa-solid '+icon[1]+'"></i></span>'+
+        '<span class="enterprise-movement-main"><b>'+esc(movementTitle(h,asset))+'</b><span>'+esc(assetText)+'</span></span>'+
+        '<span class="enterprise-movement-time">'+shortTime(h.timestamp)+'</span></div>';
+    }).join('');
+  }
+  function renderPreview(){
+    var tbody=document.getElementById('enterpriseAssetPreview'); if(!tbody) return;
+    var rows=(Array.isArray(allData)?allData.slice():[]).sort(function(a,b){
+      var av=typeof getNewestInventoryValue==='function'?getNewestInventoryValue(a):Number(a.row||0); var bv=typeof getNewestInventoryValue==='function'?getNewestInventoryValue(b):Number(b.row||0); return bv-av;
+    }).slice(0,5);
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="4">Belum ada rekod aset.</td></tr>';return;}
+    tbody.innerHTML=rows.map(function(v){
+      var asset=[v.jenisPerkakasan||'Aset',v.jenama||''].filter(Boolean).join(' · ');
+      return '<tr onclick="showPage(\'tablePage\',document.getElementById(\'btnTable\'));setMasterInventoryMode(\'detail\');window.setTimeout(function(){if(typeof masterSelectAsset===\'function\')masterSelectAsset('+Number(v.row||0)+');},60)" style="cursor:pointer">'+
+        '<td><span class="asset-id">'+esc(asset)+'</span></td><td>'+esc(v.model||'-')+'</td><td>'+esc(v.lokasi||'-')+'</td><td><span class="enterprise-mini-status '+statusClass(v.status)+'">'+esc(v.status||'-')+'</span></td></tr>';
+    }).join('');
+  }
+  function activityIcon(h){var s=String((h&&h.statusBaru)||'').toLowerCase();if(s==='baik')return['good','fa-circle-check'];if(s==='rosak')return['bad','fa-triangle-exclamation'];if(s==='pelupusan')return['warn','fa-trash-can'];return['','fa-circle-info'];}
+  function renderActivity(){
+    var box=document.getElementById('enterpriseActivityList'); if(!box) return;
+    var rows=(Array.isArray(historyData)?historyData:[]).slice(0,4);
+    if(!rows.length){box.innerHTML='<div class="enterprise-dashboard-empty">Belum ada aktiviti terkini.</div>';return;}
+    box.innerHTML=rows.map(function(h){var a=activityIcon(h);var asset=(typeof findAssetByRow==='function'?findAssetByRow(h.rowInventori):null)||{};var text=movementTitle(h,asset);return '<div class="enterprise-activity-item"><span class="enterprise-activity-icon '+a[0]+'"><i class="fa-solid '+a[1]+'"></i></span><span class="enterprise-activity-main">'+esc(text)+'</span><span class="enterprise-activity-time">'+esc(String(h.timestamp||'').slice(0,18))+'</span></div>';}).join('');
+  }
+  function buildHistorySeries(){
+    var rows=(Array.isArray(historyData)?historyData:[]).map(function(h){return {h:h,d:parseDateFlexible(h.timestamp)};}).filter(function(x){return x.d;});
+    var keys=[]; rows.forEach(function(x){var k=dateKey(x.d);if(keys.indexOf(k)<0)keys.push(k);}); keys.sort(); keys=keys.slice(-7);
+    if(!keys.length) return null;
+    var dates=keys.map(function(k){var p=k.split('-');return new Date(Number(p[0]),Number(p[1])-1,Number(p[2]));});
+    var defs=[['baik','#1ca95a'],['dipinjam','#159caf'],['rosak','#ef3e3e'],['dalam baik pulih','#8250ee']];
+    var series=defs.map(function(def){var vals=keys.map(function(){return 0;});rows.forEach(function(x){var idx=keys.indexOf(dateKey(x.d));if(idx<0)return;var s=String(x.h.statusBaru||'').toLowerCase().trim();if(s===def[0])vals[idx]++;});return {name:def[0],color:def[1],values:vals};});
+    return {dates:dates,series:series};
+  }
+  function renderTrend(){
+    var wrap=document.getElementById('enterpriseTrendChartWrap'); if(!wrap) return;
+    var model=buildHistorySeries(); if(!model){wrap.innerHTML='<div class="enterprise-dashboard-empty">Trend belum cukup data sejarah. Selepas lebih banyak pergerakan direkodkan, graf akan terbina secara automatik.</div>';return;}
+    var W=460,H=185,L=30,R=10,T=12,B=28; var max=1; model.series.forEach(function(s){s.values.forEach(function(v){if(v>max)max=v;});});
+    var x=function(i){return L+(model.dates.length===1?0:(W-L-R)*i/(model.dates.length-1));}; var y=function(v){return T+(H-T-B)*(1-v/max);};
+    var svg='<svg class="enterprise-trend-chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">';
+    for(var g=0;g<=4;g++){var gy=T+(H-T-B)*g/4;svg+='<line class="grid" x1="'+L+'" y1="'+gy+'" x2="'+(W-R)+'" y2="'+gy+'"></line><text class="axis-label" x="2" y="'+(gy+3)+'">'+Math.round(max*(1-g/4))+'</text>';}
+    model.dates.forEach(function(d,i){svg+='<text class="axis-label" text-anchor="middle" x="'+x(i)+'" y="'+(H-6)+'">'+esc(dayLabel(d))+'</text>';});
+    model.series.forEach(function(s){var pts=s.values.map(function(v,i){return x(i)+','+y(v);}).join(' ');svg+='<polyline class="line" stroke="'+s.color+'" points="'+pts+'"></polyline>';s.values.forEach(function(v,i){svg+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="3" fill="'+s.color+'"></circle>';});});
+    svg+='</svg>'; wrap.innerHTML=svg;
+  }
+  function sparkValuesFor(status){
+    var model=buildHistorySeries(); if(!model) return [0,0,0,0,0,0,0];
+    if(status==='total'){var vals=model.dates.map(function(_,i){var n=0;model.series.forEach(function(s){n+=s.values[i]||0;});return n;});return vals;}
+    var target=String(status||'').toLowerCase();var s=model.series.find(function(x){return x.name===target;});return s?s.values:[0,0,0,0,0,0,0];
+  }
+  function renderSpark(id,status){var svg=document.getElementById(id);if(!svg)return;var vals=sparkValuesFor(status);var max=Math.max.apply(null,vals.concat([1]));var pts=vals.map(function(v,i){var x=4+(112*i/Math.max(1,vals.length-1));var y=36-(28*v/max);return x.toFixed(1)+','+y.toFixed(1);}).join(' ');svg.innerHTML='<polyline points="'+pts+'"></polyline>';}
+  function renderSparks(){renderSpark('spark-total','total');renderSpark('spark-baik','baik');renderSpark('spark-rosak','rosak');renderSpark('spark-baikpulih','dalam baik pulih');renderSpark('spark-dipinjam','dipinjam');renderSpark('spark-dipulangkan','dipulangkan');renderSpark('spark-pelupusan','pelupusan');renderSpark('spark-hilang','hilang');}
+  window.renderEnterpriseDashboardV4=function(){try{renderMovement();renderPreview();renderActivity();renderTrend();renderSparks();}catch(e){console.error('Dashboard V4:',e);}};
+  var oldStats=stats; stats=function(){oldStats();window.renderEnterpriseDashboardV4();};
+  var oldMovement=renderDashboardMovement; renderDashboardMovement=function(){oldMovement();window.renderEnterpriseDashboardV4();};
+  document.addEventListener('DOMContentLoaded',function(){window.setTimeout(window.renderEnterpriseDashboardV4,450);});
 })();
 </script>
 
