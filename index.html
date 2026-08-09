@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistem Inventori Unit IT PKPJ</title>
+<!-- UI Master-Detail 2026: fungsi asal dikekalkan -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -1718,38 +1719,118 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
 }
 
 </style>
+
+
+<style id="masterDetailInventoryTheme">
+:root{
+  --md-blue:#0d4fca;
+  --md-blue-dark:#073b9b;
+  --md-navy:#0d2447;
+  --md-bg:#f5f7fb;
+  --md-card:#ffffff;
+  --md-line:#e3e9f2;
+  --md-muted:#6b7890;
+  --md-text:#14213b;
+  --md-shadow:0 10px 30px rgba(17,42,82,.07);
+}
+html,body{background:var(--md-bg)!important;}
+.master-app-topbar{
+  height:64px!important;
+  padding:0 22px!important;
+  display:grid!important;
+  grid-template-columns:42px minmax(300px,.8fr) minmax(320px,560px) auto!important;
+  align-items:center!important;
+  gap:18px!important;
+  background:linear-gradient(90deg,#073b9b 0%,#0b55c9 58%,#073b9b 100%)!important;
+  box-shadow:0 4px 16px rgba(9,58,145,.18)!important;
+}
+.master-menu-toggle{width:38px;height:38px;padding:0;border-radius:10px;background:transparent;color:#fff;font-size:18px;display:grid;place-items:center;}
+.master-menu-toggle:hover{background:rgba(255,255,255,.12);}
+.master-brand-title h1{margin:0!important;font-size:18px!important;color:#fff!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.master-global-search{height:40px;background:#fff;border-radius:10px;display:flex;align-items:center;gap:9px;padding:0 10px 0 14px;box-shadow:0 5px 16px rgba(3,35,94,.12);}
+.master-global-search i{color:#8290a6;}.master-global-search input{height:38px!important;min-height:0!important;border:0!important;outline:0!important;padding:0!important;background:transparent!important;font-size:12px!important;}.master-global-search kbd{font:800 9px Arial;color:#7a8799;background:#f3f5f8;border:1px solid #e4e8ef;border-radius:5px;padding:4px 7px;white-space:nowrap;}
+.master-topbar-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;color:#fff;}.master-topbar-icon{position:relative;width:36px;height:36px;padding:0;background:transparent;color:#fff;border-radius:10px;font-size:16px;}.master-topbar-icon:hover{background:rgba(255,255,255,.12);}.master-topbar-icon span{position:absolute;right:7px;top:6px;width:8px;height:8px;border-radius:50%;background:#ef4444;border:2px solid #0a4ab4;}
+.master-admin-chip{display:flex;align-items:center;gap:8px;margin-left:5px;padding-left:11px;border-left:1px solid rgba(255,255,255,.22);}.master-admin-chip>b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--md-blue);}.master-admin-chip span{display:flex;flex-direction:column;line-height:1.15;white-space:nowrap;}.master-admin-chip strong{font-size:11px;}.master-admin-chip small{font-size:9px;color:#cfddf8;margin-top:3px;}.master-admin-chip>i{font-size:9px;}
+.master-app-sidebar{top:64px!important;width:258px!important;height:calc(100vh - 64px)!important;background:#fff!important;border-right:1px solid var(--md-line)!important;box-shadow:2px 0 12px rgba(21,45,84,.035)!important;color:var(--md-text)!important;overflow:auto!important;padding-bottom:42px!important;}
+.master-sidebar-datetime{color:#1752b5!important;background:#fff!important;border-bottom:1px solid var(--md-line)!important;padding:18px 10px 15px!important;font-size:11px!important;}
+.master-side-search{position:relative;padding:12px 12px 8px!important;}.master-side-search i{position:absolute;left:25px;top:50%;transform:translateY(-36%);z-index:2;color:#8592a6;font-size:11px;}.master-side-search input{height:38px!important;min-height:38px!important;background:#fff!important;color:var(--md-text)!important;border:1px solid #dce3ed!important;border-radius:8px!important;padding:8px 10px 8px 34px!important;font-size:11px!important;}.master-side-search input::placeholder{color:#8a96a8!important;}
+.master-side-menu{padding:5px 8px 20px!important;}.master-side-menu>button,.master-side-menu .side-submenu button{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;border:0!important;border-bottom:0!important;background:#fff!important;color:#37445a!important;border-radius:8px!important;padding:11px 12px!important;margin:2px 0!important;font-size:11.5px!important;font-weight:700!important;}.master-side-menu>button>i:first-child{width:18px;text-align:center;color:#5a78ad;font-size:14px;}.master-side-menu>button span{flex:1;text-align:left;}.master-side-menu>button:hover,.master-side-menu .side-submenu button:hover{background:#f3f7ff!important;color:#1055c9!important;}.master-side-menu>button.active,.master-side-menu .side-submenu button.active{background:#eaf2ff!important;color:#0b54ca!important;box-shadow:inset 3px 0 0 #1467ea!important;}.master-side-menu>button.active>i:first-child{color:#0b54ca!important;}.master-side-menu .side-parent{background:#fff!important;}.master-menu-chevron{flex:0 0 auto!important;font-size:9px!important;color:#78879b!important;}.master-side-menu .side-submenu{display:none!important;background:#fff!important;border:0!important;padding:0 0 3px!important;}.master-side-menu .side-submenu.show{display:flex!important;flex-direction:column!important;}.master-side-menu .side-submenu button{padding:9px 12px 9px 34px!important;font-size:10.5px!important;color:#536176!important;}.master-sub-dot{flex:0 0 auto!important;color:#2b67c7!important;font-size:13px;}.master-sidebar-version{position:fixed;left:0;bottom:0;width:258px;height:38px;display:grid;place-items:center;background:#fff;border-top:1px solid var(--md-line);font-size:9px;color:#8a96a8;z-index:12;}
+.main{margin-left:258px!important;padding:86px 24px 28px!important;background:var(--md-bg)!important;min-height:100vh!important;}.page{max-width:1700px;margin:0 auto;}
+body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!important;}body.master-sidebar-collapsed .main{margin-left:0!important;}body.master-sidebar-collapsed .master-sidebar-version{transform:translateX(-258px)!important;}.master-app-sidebar,.main,.master-sidebar-version{transition:transform .22s ease,margin-left .22s ease;}
+.master-detail-page{height:calc(100vh - 104px);min-height:650px;overflow:hidden;}.master-page-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:15px;}.master-page-heading h2{margin:0;color:var(--md-text);font-size:25px;line-height:1.15;}.master-page-heading p{margin:5px 0 0;color:var(--md-muted);font-size:11.5px;}.master-page-actions{display:flex;align-items:center;gap:9px;}.master-view-toggle{display:flex;background:#fff;border:1px solid #dce4ee;border-radius:8px;overflow:hidden;box-shadow:0 4px 13px rgba(15,35,69,.04);}.master-view-toggle button{width:38px;height:36px;padding:0;border-radius:0;background:#fff;color:#6a7890;border-right:1px solid #e1e7ef;}.master-view-toggle button:last-child{border-right:0;}.master-view-toggle button.active{background:#eaf2ff;color:#0c58d3;}.master-export-button{height:38px;border-radius:8px;background:#fff;color:#0b54ca;border:1px solid #a9c7f5;padding:0 13px;display:inline-flex;align-items:center;gap:7px;font-size:10.5px;box-shadow:0 4px 13px rgba(15,35,69,.04);}
+.master-inventory-workspace{display:grid;grid-template-columns:385px minmax(0,1fr);gap:16px;height:calc(100% - 61px);min-height:0;}.master-asset-list-panel,.master-asset-detail-panel{background:#fff;border:1px solid #dfe6ef;border-radius:13px;box-shadow:var(--md-shadow);min-height:0;overflow:hidden;}.master-asset-list-panel{display:flex;flex-direction:column;}.master-list-tools{padding:14px;border-bottom:1px solid #e7ecf3;background:#fff;}.master-list-search{height:39px;display:flex;align-items:center;border:1px solid #dce4ef;border-radius:8px;background:#fff;padding-left:12px;}.master-list-search>i{color:#8592a5;font-size:11px;}.master-list-search input{height:37px!important;min-height:0!important;border:0!important;outline:0!important;padding:0 9px!important;background:transparent!important;font-size:10.5px!important;}.master-list-search button{width:36px;height:35px;padding:0;border-left:1px solid #e6ebf2;border-radius:0;background:#fff;color:#617089;}.master-list-filters{display:none;grid-template-columns:1fr 1fr auto;gap:7px;padding-top:9px;}.master-list-filters.show{display:grid;}.master-list-filters select{height:34px!important;min-height:34px!important;padding:5px 7px!important;font-size:9.5px!important;border-radius:7px!important;}.master-list-filters button{height:34px;padding:0 9px;background:#edf3ff;color:#145acb;border-radius:7px;font-size:9.5px;white-space:nowrap;}.master-list-count{margin-top:10px;color:#738097;font-size:10px;}.master-list-count strong{color:#243d67;font-size:11px;}.master-inventory-groups{flex:1;overflow:auto;padding:4px 0 12px;scrollbar-width:thin;}.master-list-loading,.master-list-empty{padding:34px 20px;text-align:center;color:#7d899b;font-size:11px;}.master-list-loading i{margin-right:6px;color:#1a63db;}
+.master-group{border-bottom:1px solid #e8edf3;}.master-group-header{width:100%;display:flex;align-items:center;gap:10px;padding:12px 15px;background:#fff;color:#1f2e48;border-radius:0;text-align:left;}.master-group-header:hover{background:#f8faff;}.master-group-header>i:first-child{width:21px;text-align:center;color:#627594;font-size:13px;}.master-group-header strong{flex:1;font-size:12px;}.master-group-count{min-width:31px;padding:3px 8px;border-radius:999px;background:#eaf2ff;color:#155bc8;font-size:9px;font-weight:900;text-align:center;}.master-group-chevron{font-size:9px;color:#7e8b9e;transition:.18s ease;}.master-group.expanded .master-group-chevron{transform:rotate(180deg);}.master-group-items{display:none;background:#fbfcfe;}.master-group.expanded .master-group-items{display:block;}.master-asset-list-item{width:100%;display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px 14px 10px 18px;border-radius:0;background:transparent;color:#273650;text-align:left;border-top:1px solid #eef2f7;}.master-asset-list-item:hover{background:#f1f6ff;}.master-asset-list-item.selected{background:#eaf2ff;box-shadow:inset 3px 0 0 #1466e8;}.master-status-dot{width:7px;height:7px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 3px rgba(148,163,184,.12);}.master-status-dot.baik{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12);}.master-status-dot.rosak{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.12);}.master-status-dot.dipinjam{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.12);}.master-status-dot.dipulangkan{background:#0d9488;box-shadow:0 0 0 3px rgba(13,148,136,.12);}.master-status-dot.pelupusan{background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.12);}.master-status-dot.baikpulih{background:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.12);}.master-list-copy{min-width:0;}.master-list-copy strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10.5px;line-height:1.25;}.master-list-copy small{display:block;margin-top:3px;color:#728096;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.master-list-status{padding:4px 7px;border-radius:999px;font-size:8px;font-weight:900;white-space:nowrap;background:#eef2f7;color:#526177;}.master-list-status.baik{background:#dcfce7;color:#15803d;}.master-list-status.rosak{background:#fee2e2;color:#dc2626;}.master-list-status.dipinjam{background:#fef3c7;color:#b45309;}.master-list-status.dipulangkan{background:#ccfbf1;color:#0f766e;}.master-list-status.pelupusan{background:#ffedd5;color:#c2410c;}.master-list-status.baikpulih{background:#ede9fe;color:#6d28d9;}
+.master-asset-detail-panel{overflow:auto;padding:17px;scrollbar-width:thin;}.master-empty-detail{height:100%;min-height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;color:#8190a5;}.master-empty-detail>i{font-size:42px;color:#b6c3d5;margin-bottom:13px;}.master-empty-detail h3{margin:0;color:#42536d;font-size:16px;}.master-empty-detail p{margin:6px 0 0;font-size:10.5px;}.master-detail-header{display:flex;align-items:center;gap:13px;padding-bottom:15px;border-bottom:1px solid #e7ecf3;}.master-detail-thumb{position:relative;width:66px;height:66px;border-radius:50%;border:1px solid #dce4ef;background:#f7f9fc;display:grid;place-items:center;overflow:hidden;flex:0 0 auto;}.master-detail-thumb img{width:58px;height:48px;object-fit:contain;}.master-detail-thumb-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#2968cc;font-size:23px;background:#f5f8fd;}.master-detail-title{flex:1;min-width:0;}.master-detail-title-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}.master-detail-title h3{margin:0;color:#111d34;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:670px;}.master-detail-meta{margin-top:6px;color:#64748b;font-size:9.5px;display:flex;gap:7px;flex-wrap:wrap;}.master-detail-actions{display:flex;gap:8px;align-items:center;}.master-edit-button,.master-action-button,.master-profile-button{height:36px;border-radius:8px;padding:0 12px;display:inline-flex;align-items:center;gap:7px;font-size:10px;}.master-edit-button{background:#1261db;color:#fff;}.master-action-button{background:#fff;color:#40516b;border:1px solid #dbe3ee;}.master-profile-button{background:#eef4ff;color:#155bc9;border:1px solid #d8e5fa;}
+.master-status-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;border-radius:999px;background:#eef2f7;color:#526177;font-size:8.5px;font-weight:900;white-space:nowrap;}.master-status-badge.baik{background:#dcfce7;color:#15803d;}.master-status-badge.rosak{background:#fee2e2;color:#dc2626;}.master-status-badge.dipinjam{background:#fef3c7;color:#b45309;}.master-status-badge.dipulangkan{background:#ccfbf1;color:#0f766e;}.master-status-badge.pelupusan{background:#ffedd5;color:#c2410c;}.master-status-badge.baikpulih{background:#ede9fe;color:#6d28d9;}.master-status-badge.hilang{background:#e2e8f0;color:#334155;}
+.master-detail-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:12px;margin-top:15px;}.master-detail-column{display:flex;flex-direction:column;gap:12px;}.master-detail-card{border:1px solid #dfe6ef;border-radius:10px;background:#fff;padding:13px;}.master-detail-card h4{display:flex;align-items:center;gap:7px;margin:0 0 11px;color:#203558;font-size:10.5px;}.master-detail-card h4 i{color:#1a62da;}.master-field-list{display:grid;gap:8px;}.master-field-row{display:grid;grid-template-columns:minmax(90px,.75fr) minmax(0,1.25fr);gap:10px;align-items:start;font-size:9.3px;}.master-field-row span{color:#718096;}.master-field-row b{color:#273750;font-weight:800;word-break:break-word;}.master-note-card p{margin:0;color:#3d4c63;font-size:10px;line-height:1.5;white-space:pre-wrap;}.master-image-card{cursor:pointer;}.master-image-preview{height:118px;border-radius:8px;background:#f6f8fb;border:1px solid #e2e8f0;display:grid;place-items:center;overflow:hidden;}.master-image-preview img{max-width:100%;max-height:112px;object-fit:contain;}.master-image-empty{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:#8996a8;font-size:9px;}.master-image-empty i{font-size:25px;color:#b2bece;}.master-image-count{margin-top:7px;text-align:center;color:#3264ae;font-size:9px;font-weight:800;}
+.master-history-card{margin-top:13px;border:1px solid #dfe6ef;border-radius:10px;background:#fff;padding:13px;}.master-history-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}.master-history-head h4{display:flex;align-items:center;gap:7px;margin:0;color:#203558;font-size:10.5px;}.master-history-head h4 i{color:#1a62da;}.master-history-head button{height:31px;border-radius:7px;padding:0 10px;background:#fff;color:#145bcb;border:1px solid #dbe5f5;font-size:9px;}.master-timeline{display:grid;grid-template-columns:repeat(5,minmax(115px,1fr));gap:0;overflow-x:auto;padding:8px 0 1px;}.master-timeline-item{position:relative;min-width:115px;padding:16px 13px 0 0;border-top:2px solid #dbe3ee;}.master-timeline-item:before{content:"";position:absolute;top:-6px;left:0;width:10px;height:10px;border-radius:50%;background:#1a63dd;border:2px solid #fff;box-shadow:0 0 0 1px #bcd0ef;}.master-timeline-item.green:before{background:#16a34a;}.master-timeline-item.orange:before{background:#f59e0b;}.master-timeline-item.red:before{background:#ef4444;}.master-timeline-item.purple:before{background:#8b5cf6;}.master-timeline-item time{display:block;color:#6f7c91;font-size:8px;margin-bottom:4px;}.master-timeline-item b{display:block;color:#253853;font-size:9px;line-height:1.3;}.master-timeline-item small{display:block;color:#7d899b;font-size:8px;line-height:1.35;margin-top:3px;}.master-history-empty{padding:18px;text-align:center;color:#8491a4;font-size:10px;}
+.legacy-inventory-view[hidden]{display:none!important;}.legacy-inventory-view{height:calc(100% - 2px);overflow:auto;}.legacy-inventory-view>.page-title{display:none!important;}.legacy-inventory-view .section-box{margin-top:0!important;}.master-detail-page.table-mode{overflow:auto!important;height:auto!important;min-height:calc(100vh - 104px)!important;}
+@media(max-width:1280px){.master-app-topbar{grid-template-columns:42px minmax(260px,.7fr) minmax(260px,420px) auto!important;}.master-inventory-workspace{grid-template-columns:340px minmax(0,1fr);}.master-detail-grid{grid-template-columns:1fr 1fr;}.master-detail-column:last-child{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;}.master-timeline{grid-template-columns:repeat(5,150px);}}
+@media(max-width:980px){.master-global-search{display:none;}.master-admin-chip span,.master-admin-chip>i{display:none;}.master-inventory-workspace{grid-template-columns:1fr;height:auto;}.master-detail-page{height:auto;overflow:visible;}.master-asset-list-panel{max-height:520px;}.master-asset-detail-panel{min-height:600px;}.master-detail-grid{grid-template-columns:1fr 1fr;}.master-app-topbar{grid-template-columns:42px 1fr auto!important;}.master-page-heading{flex-direction:column;}.master-page-actions{width:100%;justify-content:flex-end;}}
+@media(max-width:760px){.master-app-topbar{height:58px!important;padding:0 10px!important;grid-template-columns:38px minmax(0,1fr) auto!important;gap:8px!important;}.master-brand-title h1{font-size:14px!important;}.master-topbar-icon{display:none;}.master-app-sidebar{position:relative!important;top:auto!important;width:100%!important;height:auto!important;margin-top:58px!important;border-right:0!important;}.master-sidebar-version{display:none!important;}.master-side-menu{display:flex!important;flex-direction:column!important;}.main{margin-left:0!important;padding:16px 9px 24px!important;}.master-detail-grid{grid-template-columns:1fr;}.master-detail-column:last-child{grid-column:auto;display:flex;}.master-detail-header{align-items:flex-start;flex-wrap:wrap;}.master-detail-actions{width:100%;justify-content:flex-end;}.master-inventory-workspace{gap:10px;}.master-asset-list-panel{max-height:470px;}.master-page-actions{justify-content:flex-start;}.master-admin-chip{border-left:0;padding-left:0;}.master-timeline{grid-template-columns:repeat(5,145px);}}
+</style>
+
+
+<style id="masterDetailFinalPolish">
+.master-detail-thumb img,.master-image-preview img{background:#fff}
+.master-asset-list-panel,.master-asset-detail-panel{contain:layout paint}
+.master-inventory-groups{overscroll-behavior:contain}
+.master-asset-detail-panel{overscroll-behavior:contain}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+
 </head>
 
 <body>
 <div class="app">
-  <header class="topbar">
-    <div class="header-title">
-      <img src="PKPJ.png" alt="Logo PKPJ" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/PKPJ.png'">
+  <header class="topbar master-app-topbar">
+    <button type="button" class="master-menu-toggle" onclick="toggleMasterSidebar()" title="Buka / tutup menu" aria-label="Buka atau tutup menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="master-brand-title">
       <h1>Sistem Inventori Unit IT PKPJ</h1>
+    </div>
+    <div class="master-global-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="masterGlobalSearch" type="search" placeholder="Cari aset, no siri, lokasi atau pemegang..." onkeydown="if(event.key==='Enter'){masterRunGlobalSearch();}">
+      <kbd>CTRL /</kbd>
+    </div>
+    <div class="master-topbar-actions">
+      <button type="button" class="master-topbar-icon" title="Notifikasi" aria-label="Notifikasi"><i class="fa-regular fa-bell"></i><span></span></button>
+      <button type="button" class="master-topbar-icon" title="Bantuan" aria-label="Bantuan"><i class="fa-regular fa-circle-question"></i></button>
+      <div class="master-admin-chip">
+        <b>A</b>
+        <span><strong>Admin</strong><small>Pentadbir Sistem</small></span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
     </div>
   </header>
 
-  <aside class="sidebar">
-    <div class="datetime" id="dateTimeBox">Loading...</div>
-    <div class="side-search"><input type="text" id="sideSearch" placeholder="Search..." onkeyup="sideSearchTable()"></div>
-    <div class="side-menu">
-      <button id="btnDashboard" class="active" onclick="showPage('dashboardPage', this)">🏠 Laman Utama</button>
-      <button id="btnForm" onclick="openInventoryFormModal()">➕ Tambah Inventori</button>
-      <button id="btnInventoryParent" class="side-parent" onclick="toggleInventorySubmenu()">📋 Senarai Inventori ▾</button>
-      <div id="inventorySubmenu" class="side-submenu">
-        <button id="btnTable" onclick="showPage('tablePage', this); toggleInventorySubmenu(true);">• Senarai Inventori</button>
-        <button id="btnProfileMain" onclick="showPage('profileMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();">• Profil Aset Lengkap</button>
-        <button id="btnSummaryMain" onclick="showPage('summaryMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();">• Ringkasan Aset Lengkap</button>
+  <aside class="sidebar master-app-sidebar">
+    <div class="datetime master-sidebar-datetime" id="dateTimeBox">Loading...</div>
+    <div class="side-search master-side-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="sideSearch" placeholder="Cari menu..." onkeyup="sideSearchTable()">
+    </div>
+    <div class="side-menu master-side-menu">
+      <button id="btnDashboard" class="active" onclick="showPage('dashboardPage', this)"><i class="fa-solid fa-house"></i><span>Laman Utama</span></button>
+      <button id="btnForm" onclick="openInventoryFormModal()"><i class="fa-solid fa-plus"></i><span>Tambah Inventori</span></button>
+      <button id="btnInventoryParent" class="side-parent" onclick="toggleInventorySubmenu()"><i class="fa-regular fa-rectangle-list"></i><span>Senarai Inventori</span><i class="fa-solid fa-chevron-down master-menu-chevron"></i></button>
+      <div id="inventorySubmenu" class="side-submenu show">
+        <button id="btnTable" onclick="showPage('tablePage', this); toggleInventorySubmenu(true);"><span class="master-sub-dot">•</span><span>Senarai Inventori</span></button>
+        <button id="btnProfileMain" onclick="showPage('profileMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Profil Aset Lengkap</span></button>
+        <button id="btnSummaryMain" onclick="showPage('summaryMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Ringkasan Aset Lengkap</span></button>
       </div>
-      <button id="btnHistory" onclick="showPage('historyPage', this); loadHistory();">🕘 Sejarah Pergerakan Aset</button>
-      <button id="btnCompletedAssets" onclick="showCompletedAssetsPage(this)">✅ Aset Selesai</button>
-      <button onclick="refreshAll()">🔄 Refresh Data / Kosongkan Borang</button>
-      <button id="btnStaffParent" class="side-parent" onclick="toggleStaffSubmenu()">👥 Nama Staff / Upload Excel ▾</button>
+      <button id="btnHistory" onclick="showPage('historyPage', this); loadHistory();"><i class="fa-regular fa-clock"></i><span>Sejarah Pergerakan Aset</span></button>
+      <button id="btnCompletedAssets" onclick="showCompletedAssetsPage(this)"><i class="fa-regular fa-square-check"></i><span>Aset Selesai</span></button>
+      <button onclick="refreshAll()"><i class="fa-solid fa-rotate"></i><span>Refresh Data / Kosongkan Borang</span></button>
+      <button id="btnStaffParent" class="side-parent" onclick="toggleStaffSubmenu()"><i class="fa-solid fa-users"></i><span>Nama Staff / Upload Excel</span><i class="fa-solid fa-chevron-down master-menu-chevron"></i></button>
       <div id="staffSubmenu" class="side-submenu">
-        <button id="btnStaffDirectory" onclick="showPage('staffDirectoryPage', this); toggleStaffSubmenu(true); renderStaffDirectory();">• Senarai Nama Staff</button>
-        <button id="btnBirthdayStaff" onclick="showPage('birthdayStaffPage', this); toggleStaffSubmenu(true); renderBirthdayStaff();">• Birthday Staff</button>
+        <button id="btnStaffDirectory" onclick="showPage('staffDirectoryPage', this); toggleStaffSubmenu(true); renderStaffDirectory();"><span class="master-sub-dot">•</span><span>Senarai Nama Staff</span></button>
+        <button id="btnBirthdayStaff" onclick="showPage('birthdayStaffPage', this); toggleStaffSubmenu(true); renderBirthdayStaff();"><span class="master-sub-dot">•</span><span>Birthday Staff</span></button>
       </div>
     </div>
+    <div class="master-sidebar-version">v1.0.0</div>
   </aside>
 
   <main class="main">
@@ -1887,7 +1968,63 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
       </div>
     </div>
 
-    <div id="tablePage" class="page">
+    <div id="tablePage" class="page master-detail-page">
+      <div class="master-page-heading">
+        <div>
+          <h2>Senarai Inventori</h2>
+          <p>Pilih aset daripada senarai di sebelah kiri untuk melihat maklumat penuh.</p>
+        </div>
+        <div class="master-page-actions">
+          <div class="master-view-toggle" aria-label="Pilihan paparan inventori">
+            <button type="button" id="masterDetailViewBtn" class="active" onclick="setMasterInventoryMode('detail')" title="Paparan profil"><i class="fa-solid fa-grip"></i></button>
+            <button type="button" id="masterTableViewBtn" onclick="setMasterInventoryMode('table')" title="Paparan jadual asal"><i class="fa-solid fa-list"></i></button>
+          </div>
+          <button type="button" class="master-export-button" onclick="exportExcel()"><i class="fa-solid fa-download"></i> Export CSV</button>
+        </div>
+      </div>
+
+      <section id="masterInventoryWorkspace" class="master-inventory-workspace">
+        <aside class="master-asset-list-panel">
+          <div class="master-list-tools">
+            <div class="master-list-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input id="masterInventorySearch" type="search" placeholder="Cari dalam senarai..." oninput="renderMasterInventory()">
+              <button type="button" onclick="toggleMasterListFilters()" title="Penapis"><i class="fa-solid fa-filter"></i></button>
+            </div>
+            <div id="masterListFilters" class="master-list-filters">
+              <select id="masterStatusFilter" onchange="renderMasterInventory()">
+                <option value="">Semua Status</option>
+                <option value="Baik">Baik</option>
+                <option value="Rosak">Rosak</option>
+                <option value="Dalam Baik Pulih">Dalam Baik Pulih</option>
+                <option value="Dipinjam">Dipinjam</option>
+                <option value="Dipulangkan">Dipulangkan</option>
+                <option value="Pelupusan">Pelupusan</option>
+                <option value="Hilang">Hilang</option>
+                <option value="Tidak Berkaitan">Tidak Berkaitan</option>
+              </select>
+              <select id="masterLocationFilter" onchange="renderMasterInventory()">
+                <option value="">Semua Lokasi</option>
+              </select>
+              <button type="button" onclick="resetMasterListFilters()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+            </div>
+            <div class="master-list-count">Jumlah aset: <strong id="masterInventoryCount">0</strong></div>
+          </div>
+          <div id="masterInventoryGroups" class="master-inventory-groups">
+            <div class="master-list-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuatkan data inventori...</div>
+          </div>
+        </aside>
+
+        <article id="masterAssetDetail" class="master-asset-detail-panel">
+          <div class="master-empty-detail">
+            <i class="fa-regular fa-folder-open"></i>
+            <h3>Pilih aset untuk semakan</h3>
+            <p>Maklumat lengkap aset akan dipaparkan di ruangan ini.</p>
+          </div>
+        </article>
+      </section>
+
+      <div id="legacyInventoryView" class="legacy-inventory-view" hidden>
       <h2 class="page-title">Senarai Inventori</h2>
       <div class="section-box">
         <div class="section-title">Senarai Maklumat Inventori - Auto Group Ikut Nama Staff</div>
@@ -1987,6 +2124,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
           </div>
           <div class="bulk-help-note">Nota: Butang Selesai akan tukar status aset kepada Selesai. Aset tersebut tidak dipadam; ia disorok daripada Senarai Inventori aktif dan dipaparkan dalam menu Aset Selesai.</div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -5943,5 +6081,419 @@ if(oldRefreshAllSelesai){
 }
 
 </script>
+
+<script id="masterDetailInventoryScript">
+(function(){
+  "use strict";
+
+  let masterSelectedRow = null;
+  let masterInventoryMode = "detail";
+  let masterExpandedGroups = new Set(["Laptop"]);
+  let masterLastGroups = [];
+
+  function masterValue(value, fallback){
+    const text = String(value == null ? "" : value).trim();
+    return text || (fallback == null ? "-" : fallback);
+  }
+
+  function masterMeaningful(value){
+    const text = String(value == null ? "" : value).trim();
+    if(!text) return "";
+    const lower = text.toLowerCase();
+    if(lower === "tiada" || lower === "tidak berkaitan" || lower === "-") return "";
+    return text;
+  }
+
+  function masterStatusKey(status){
+    const value = String(status || "").toLowerCase().trim();
+    if(value === "baik") return "baik";
+    if(value === "rosak") return "rosak";
+    if(value === "dipinjam") return "dipinjam";
+    if(value === "dipulangkan") return "dipulangkan";
+    if(value === "pelupusan") return "pelupusan";
+    if(value === "dalam baik pulih") return "baikpulih";
+    if(value === "hilang") return "hilang";
+    return "default";
+  }
+
+  function masterGroupName(item){
+    const raw = [item && item.jenisPerkakasan, item && item.jenisPerkakasanLain, item && item.catatan, item && item.jenama, item && item.model]
+      .map(v => String(v || "").toLowerCase()).join(" ");
+    if(/laptop|notebook|komputer riba/.test(raw)) return "Laptop";
+    if(/monitor|paparan|screen|skrin/.test(raw)) return "Monitor";
+    if(/printer|pencetak|laserjet|deskjet|ricoh|canon|epson lq/.test(raw)) return "Printer";
+    if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|pole|tiang|johor wifi|unifi|ruckus|mikrotik/.test(raw)) return "Rangkaian / WiFi";
+    if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server/.test(raw)) return "CPU / Desktop";
+    if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw)) return "Aksesori";
+    const jenis = String(item && item.jenisPerkakasan || "").trim();
+    if(!jenis || jenis.toLowerCase() === "tiada") return "Belum Dikelaskan";
+    return "Lain-lain";
+  }
+
+  function masterGroupIcon(group){
+    if(group === "Laptop") return "fa-laptop";
+    if(group === "Monitor") return "fa-desktop";
+    if(group === "Printer") return "fa-print";
+    if(group === "Rangkaian / WiFi") return "fa-wifi";
+    if(group === "CPU / Desktop") return "fa-computer";
+    if(group === "Aksesori") return "fa-keyboard";
+    if(group === "Belum Dikelaskan") return "fa-circle-question";
+    return "fa-box";
+  }
+
+  function masterGroupOrder(group){
+    const order = ["Laptop","CPU / Desktop","Monitor","Printer","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];
+    const index = order.indexOf(group);
+    return index < 0 ? 999 : index;
+  }
+
+  function masterAssetTitle(item){
+    const jenis = masterMeaningful(item && item.jenisPerkakasan) || masterGroupName(item);
+    const jenama = masterMeaningful(item && item.jenama);
+    const model = masterMeaningful(item && item.model);
+    const parts = [jenis, jenama, model].filter(Boolean);
+    return parts.join(" · ") || ("Aset ITPKPJ-" + String(item && item.row || "").padStart(4,"0"));
+  }
+
+  function masterAssetSubtext(item){
+    return masterMeaningful(item && item.noSiri) || masterMeaningful(item && item.tagAset) || masterMeaningful(item && item.noInventori) || ("Row " + masterValue(item && item.row,"-"));
+  }
+
+  function masterIsActive(item){
+    if(typeof isCompletedAsset === "function") return !isCompletedAsset(item);
+    return String(item && item.status || "").toLowerCase().trim() !== "selesai";
+  }
+
+  function masterAllActiveData(){
+    return Array.isArray(allData) ? allData.filter(masterIsActive) : [];
+  }
+
+  function masterFilteredData(){
+    let data = (isFilterActive && Array.isArray(tableBaseData))
+      ? tableBaseData.filter(masterIsActive)
+      : masterAllActiveData();
+    const search = String(document.getElementById("masterInventorySearch")?.value || "").toLowerCase().trim();
+    const status = String(document.getElementById("masterStatusFilter")?.value || "").toLowerCase().trim();
+    const location = String(document.getElementById("masterLocationFilter")?.value || "").toLowerCase().trim();
+    if(search){
+      data = data.filter(item => [
+        item.row,item.tahun,item.namaStaff,item.namaPemegang,item.nama,item.jenisPerkakasan,item.jenisPerkakasanLain,
+        item.kategori,item.kategoriLain,item.jenama,item.model,item.noSiri,item.tagAset,item.noInventori,
+        item.lokasi,item.status,item.tarikh,item.pembekal,item.catatan
+      ].join(" ").toLowerCase().includes(search));
+    }
+    if(status){data = data.filter(item => String(item.status || "").toLowerCase().trim() === status);}
+    if(location){data = data.filter(item => String(item.lokasi || "").toLowerCase().trim() === location);}
+    data.sort((a,b) => {
+      if(typeof getNewestInventoryValue === "function") return getNewestInventoryValue(b) - getNewestInventoryValue(a);
+      return Number(b.row || 0) - Number(a.row || 0);
+    });
+    return data;
+  }
+
+  function masterPopulateLocationFilter(){
+    const select = document.getElementById("masterLocationFilter");
+    if(!select) return;
+    const current = select.value;
+    const locations = [...new Set(masterAllActiveData().map(item => String(item.lokasi || "").trim()).filter(Boolean))]
+      .sort((a,b) => a.localeCompare(b,"ms"));
+    const signature = locations.join("||");
+    if(select.dataset.signature === signature) return;
+    select.dataset.signature = signature;
+    select.innerHTML = '<option value="">Semua Lokasi</option>' + locations.map(location => `<option value="${escapeAttr(location)}">${escapeHtml(location)}</option>`).join("");
+    if(locations.includes(current)) select.value = current;
+  }
+
+  function masterBuildGroups(data){
+    const map = new Map();
+    data.forEach(item => {
+      const group = masterGroupName(item);
+      if(!map.has(group)) map.set(group, []);
+      map.get(group).push(item);
+    });
+    return [...map.entries()].sort((a,b) => {
+      const diff = masterGroupOrder(a[0]) - masterGroupOrder(b[0]);
+      return diff || a[0].localeCompare(b[0],"ms");
+    }).map(([name,items]) => ({name,items}));
+  }
+
+  function masterRenderList(data){
+    const container = document.getElementById("masterInventoryGroups");
+    if(!container) return;
+    const search = String(document.getElementById("masterInventorySearch")?.value || "").trim();
+    masterLastGroups = masterBuildGroups(data);
+    if(!masterLastGroups.length){
+      container.innerHTML = '<div class="master-list-empty"><i class="fa-regular fa-folder-open"></i><br><br>Tiada aset sepadan dengan carian.</div>';
+      return;
+    }
+    const selected = data.find(item => String(item.row) === String(masterSelectedRow));
+    if(selected) masterExpandedGroups.add(masterGroupName(selected));
+    if(search) masterLastGroups.forEach(group => masterExpandedGroups.add(group.name));
+
+    container.innerHTML = masterLastGroups.map((group,index) => {
+      const expanded = masterExpandedGroups.has(group.name);
+      const items = group.items.map(item => {
+        const statusKey = masterStatusKey(item.status);
+        const selectedClass = String(item.row) === String(masterSelectedRow) ? " selected" : "";
+        return `<button type="button" class="master-asset-list-item${selectedClass}" onclick="masterSelectAsset(${Number(item.row)})">
+          <span class="master-status-dot ${statusKey}"></span>
+          <span class="master-list-copy"><strong>${escapeHtml(masterAssetTitle(item))}</strong><small>${escapeHtml(masterAssetSubtext(item))}</small></span>
+          <span class="master-list-status ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span>
+        </button>`;
+      }).join("");
+      return `<section class="master-group${expanded ? " expanded" : ""}">
+        <button type="button" class="master-group-header" onclick="masterToggleGroup(${index})">
+          <i class="fa-solid ${masterGroupIcon(group.name)}"></i><strong>${escapeHtml(group.name)}</strong>
+          <span class="master-group-count">${group.items.length}</span><i class="fa-solid fa-chevron-down master-group-chevron"></i>
+        </button>
+        <div class="master-group-items">${items}</div>
+      </section>`;
+    }).join("");
+  }
+
+  function masterField(label,value){
+    return `<div class="master-field-row"><span>${escapeHtml(label)}</span><b>${escapeHtml(masterValue(value))}</b></div>`;
+  }
+
+  function masterTimelineColor(log){
+    const text = [log && log.perubahan,log && log.statusBaru,log && log.catatan].join(" ").toLowerCase();
+    if(/rosak|padam|hilang/.test(text)) return "red";
+    if(/baik pulih|pembaikan/.test(text)) return "orange";
+    if(/pulang|selesai|baik/.test(text)) return "green";
+    if(/pinjam/.test(text)) return "purple";
+    return "";
+  }
+
+  function masterRenderTimeline(item){
+    const logs = (Array.isArray(historyData) ? historyData : [])
+      .filter(log => String(log.rowInventori || "") === String(item.row || ""))
+      .slice(0,5).reverse();
+    if(!logs.length){
+      return '<div class="master-history-empty">Belum ada rekod sejarah pergerakan khusus untuk aset ini.</div>';
+    }
+    return `<div class="master-timeline">${logs.map(log => {
+      const detail = [log.lokasiBaru,log.statusBaru,log.catatan].map(v => String(v || "").trim()).filter(Boolean).join(" · ");
+      return `<div class="master-timeline-item ${masterTimelineColor(log)}">
+        <time>${escapeHtml(masterValue(log.timestamp,"-"))}</time>
+        <b>${escapeHtml(masterValue(log.perubahan,"Kemaskini Aset"))}</b>
+        <small>${escapeHtml(detail || "Direkodkan dalam sejarah aset")}</small>
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  function masterRenderImage(item){
+    const urls = typeof parseGambarUrls === "function" ? parseGambarUrls(item.gambar || "") : [];
+    if(!urls.length){
+      return `<div class="master-image-preview master-image-empty"><i class="fa-regular fa-image"></i><span>Tiada gambar aset</span></div>`;
+    }
+    const preview = typeof getImagePreviewUrl === "function" ? getImagePreviewUrl(urls[0]) : urls[0];
+    return `<div class="master-image-preview">
+      <img src="${escapeAttr(preview)}" alt="Gambar Aset" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="master-image-empty" style="display:none"><i class="fa-regular fa-image"></i><span>Gambar tidak dapat dipaparkan</span></div>
+    </div><div class="master-image-count">${urls.length} gambar · Klik untuk lihat</div>`;
+  }
+
+  function masterRenderDetail(item){
+    const detail = document.getElementById("masterAssetDetail");
+    if(!detail) return;
+    if(!item){
+      detail.innerHTML = '<div class="master-empty-detail"><i class="fa-regular fa-folder-open"></i><h3>Pilih aset untuk semakan</h3><p>Maklumat lengkap aset akan dipaparkan di ruangan ini.</p></div>';
+      return;
+    }
+    const statusKey = masterStatusKey(item.status);
+    const urls = typeof parseGambarUrls === "function" ? parseGambarUrls(item.gambar || "") : [];
+    const preview = urls.length && typeof getImagePreviewUrl === "function" ? getImagePreviewUrl(urls[0]) : "";
+    const thumb = preview
+      ? `<img src="${escapeAttr(preview)}" alt="Aset" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='grid';"><span class="master-detail-thumb-placeholder" style="display:none"><i class="fa-solid ${masterGroupIcon(masterGroupName(item))}"></i></span>`
+      : `<span class="master-detail-thumb-placeholder"><i class="fa-solid ${masterGroupIcon(masterGroupName(item))}"></i></span>`;
+
+    detail.innerHTML = `<div class="master-detail-header">
+      <div class="master-detail-thumb">${thumb}</div>
+      <div class="master-detail-title">
+        <div class="master-detail-title-row"><h3>${escapeHtml(masterAssetTitle(item))}</h3><span class="master-status-badge ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span></div>
+        <div class="master-detail-meta"><span>No Siri: <b>${escapeHtml(masterValue(item.noSiri))}</b></span><span>•</span><span>Tag Aset: <b>${escapeHtml(masterValue(item.tagAset || item.noInventori))}</b></span><span>•</span><span>ID Paparan: <b>ITPKPJ-${String(item.row || "").padStart(4,"0")}</b></span></div>
+      </div>
+      <div class="master-detail-actions">
+        <button type="button" class="master-profile-button" onclick="openAssetProfile(${Number(item.row)})"><i class="fa-regular fa-eye"></i> Profil</button>
+        <button type="button" class="master-edit-button" onclick="editData(${Number(item.row)})"><i class="fa-solid fa-pen"></i> Edit Aset</button>
+        <button type="button" class="master-action-button" onclick="toggleAssetMenu(event,${Number(item.row)})"><i class="fa-solid fa-ellipsis-vertical"></i> Tindakan <i class="fa-solid fa-chevron-down"></i></button>
+      </div>
+    </div>
+
+    <div class="master-detail-grid">
+      <div class="master-detail-column">
+        <section class="master-detail-card"><h4><i class="fa-regular fa-circle-info"></i> Maklumat Aset</h4><div class="master-field-list">
+          ${masterField("Jenis",item.jenisPerkakasan || item.jenisPerkakasanLain)}
+          ${masterField("Jenama",item.jenama)}
+          ${masterField("Model",item.model)}
+          ${masterField("Kategori",item.kategori || item.kategoriLain)}
+          ${masterField("Tahun",item.tahun)}
+          ${masterField("Pembekal",item.pembekal)}
+          ${masterField("No Siri",item.noSiri)}
+          ${masterField("No Inventori",item.noInventori)}
+          ${masterField("Tag Aset",item.tagAset)}
+          ${masterField("Kuantiti",item.kuantiti)}
+        </div></section>
+        <section class="master-detail-card master-image-card" onclick="${urls.length ? `openAssetImages(${Number(item.row)})` : ""}"><h4><i class="fa-regular fa-image"></i> Gambar Aset</h4>${masterRenderImage(item)}</section>
+      </div>
+
+      <div class="master-detail-column">
+        <section class="master-detail-card"><h4><i class="fa-solid fa-location-dot"></i> Lokasi</h4><div class="master-field-list">
+          ${masterField("Lokasi Semasa",item.lokasi)}
+          ${masterField("Tarikh Rekod",item.tarikh)}
+          ${masterField("Tahun Rekod",item.tahun)}
+        </div></section>
+        <section class="master-detail-card"><h4><i class="fa-regular fa-user"></i> Pemegang</h4><div class="master-field-list">
+          ${masterField("Nama",item.namaStaff || item.namaPemegang || item.nama)}
+          ${masterField("Kategori Aset",item.kategori || item.kategoriLain)}
+          ${masterField("Jenis",item.jenisPerkakasan || item.jenisPerkakasanLain)}
+        </div></section>
+      </div>
+
+      <div class="master-detail-column">
+        <section class="master-detail-card"><h4><i class="fa-solid fa-shield-halved"></i> Status</h4><div class="master-field-list">
+          ${masterField("Status Semasa",item.status)}
+          ${masterField("Lokasi",item.lokasi)}
+          ${masterField("Tarikh Daftar",item.tarikh)}
+          ${masterField("Timestamp",item.timestamp)}
+        </div></section>
+        <section class="master-detail-card master-note-card"><h4><i class="fa-regular fa-note-sticky"></i> Catatan</h4><p>${escapeHtml(masterValue(item.catatan,"Tiada catatan."))}</p></section>
+      </div>
+    </div>
+
+    <section class="master-history-card">
+      <div class="master-history-head"><h4><i class="fa-regular fa-image"></i> Sejarah Pergerakan Aset</h4><button type="button" onclick="openAssetHistory(${Number(item.row)})">Lihat Semua</button></div>
+      ${masterRenderTimeline(item)}
+    </section>`;
+  }
+
+  window.renderMasterInventory = function(){
+    const workspace = document.getElementById("masterInventoryWorkspace");
+    if(!workspace || masterInventoryMode !== "detail") return;
+    masterPopulateLocationFilter();
+    const data = masterFilteredData();
+    const count = document.getElementById("masterInventoryCount");
+    if(count) count.textContent = String(data.length);
+    if(!data.some(item => String(item.row) === String(masterSelectedRow))){
+      masterSelectedRow = data.length ? data[0].row : null;
+    }
+    masterRenderList(data);
+    const selected = data.find(item => String(item.row) === String(masterSelectedRow)) || null;
+    masterRenderDetail(selected);
+  };
+
+  window.masterSelectAsset = function(row){
+    masterSelectedRow = Number(row);
+    const selected = masterAllActiveData().find(item => Number(item.row) === Number(row));
+    if(selected) masterExpandedGroups.add(masterGroupName(selected));
+    renderMasterInventory();
+    const detail = document.getElementById("masterAssetDetail");
+    if(detail && window.innerWidth < 980) detail.scrollIntoView({behavior:"smooth",block:"start"});
+  };
+
+  window.masterToggleGroup = function(index){
+    const group = masterLastGroups[index];
+    if(!group) return;
+    if(masterExpandedGroups.has(group.name)) masterExpandedGroups.delete(group.name);
+    else masterExpandedGroups.add(group.name);
+    masterRenderList(masterFilteredData());
+  };
+
+  window.toggleMasterListFilters = function(){
+    document.getElementById("masterListFilters")?.classList.toggle("show");
+  };
+
+  window.resetMasterListFilters = function(){
+    const status = document.getElementById("masterStatusFilter");
+    const location = document.getElementById("masterLocationFilter");
+    const search = document.getElementById("masterInventorySearch");
+    if(status) status.value = "";
+    if(location) location.value = "";
+    if(search) search.value = "";
+    isFilterActive = false;
+    if(Array.isArray(allData)) tableBaseData = [...allData];
+    renderMasterInventory();
+  };
+
+  window.setMasterInventoryMode = function(mode){
+    masterInventoryMode = mode === "table" ? "table" : "detail";
+    const page = document.getElementById("tablePage");
+    const workspace = document.getElementById("masterInventoryWorkspace");
+    const legacy = document.getElementById("legacyInventoryView");
+    const detailBtn = document.getElementById("masterDetailViewBtn");
+    const tableBtn = document.getElementById("masterTableViewBtn");
+    if(masterInventoryMode === "table"){
+      if(workspace) workspace.hidden = true;
+      if(legacy) legacy.hidden = false;
+      page?.classList.add("table-mode");
+      detailBtn?.classList.remove("active");
+      tableBtn?.classList.add("active");
+      if(typeof applyTableView === "function") applyTableView();
+    }else{
+      if(workspace) workspace.hidden = false;
+      if(legacy) legacy.hidden = true;
+      page?.classList.remove("table-mode");
+      tableBtn?.classList.remove("active");
+      detailBtn?.classList.add("active");
+      renderMasterInventory();
+    }
+  };
+
+  window.masterRunGlobalSearch = function(){
+    const globalInput = document.getElementById("masterGlobalSearch");
+    const listInput = document.getElementById("masterInventorySearch");
+    const query = globalInput ? globalInput.value : "";
+    if(listInput) listInput.value = query;
+    const legacyInput = document.getElementById("searchInput");
+    if(legacyInput) legacyInput.value = query;
+    isFilterActive = false;
+    if(Array.isArray(allData)) tableBaseData = [...allData];
+    if(typeof showPage === "function") showPage("tablePage",document.getElementById("btnTable"));
+    else if(typeof goPage === "function") goPage("tablePage");
+    if(typeof toggleInventorySubmenu === "function") toggleInventorySubmenu(true);
+    setMasterInventoryMode("detail");
+    renderMasterInventory();
+  };
+
+  window.toggleMasterSidebar = function(){
+    document.body.classList.toggle("master-sidebar-collapsed");
+  };
+
+  // The original functions are not replaced or wrapped. The presentation layer
+  // refreshes itself by observing the original table/history DOM and by listening
+  // to navigation events.
+  let masterRenderPending = false;
+  function scheduleMasterRender(){
+    if(masterRenderPending) return;
+    masterRenderPending = true;
+    requestAnimationFrame(function(){
+      masterRenderPending = false;
+      window.renderMasterInventory();
+    });
+  }
+
+  function observeMasterSource(id){
+    const node = document.getElementById(id);
+    if(!node || typeof MutationObserver === "undefined") return;
+    new MutationObserver(scheduleMasterRender).observe(node,{childList:true,subtree:true,characterData:true});
+  }
+
+  document.addEventListener("DOMContentLoaded",function(){
+    document.getElementById("btnTable")?.addEventListener("click",function(){window.setTimeout(scheduleMasterRender,0);});
+    document.getElementById("sideSearch")?.addEventListener("input",function(){
+      const master = document.getElementById("masterInventorySearch");
+      if(master) master.value = this.value || "";
+      scheduleMasterRender();
+    });
+    observeMasterSource("table");
+    observeMasterSource("historyTable");
+    window.setTimeout(scheduleMasterRender,120);
+    window.setTimeout(scheduleMasterRender,900);
+    window.setTimeout(scheduleMasterRender,2200);
+  });
+  window.addEventListener("load",function(){window.setTimeout(scheduleMasterRender,500);});
+})();
+</script>
+
 </body>
 </html>
