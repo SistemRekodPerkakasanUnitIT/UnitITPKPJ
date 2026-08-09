@@ -1583,7 +1583,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
 <div class="app">
   <header class="topbar">
     <div class="header-title">
-      <img src="PKPJ.png" alt="Logo PKPJ" onerror="this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/PKPJ.png'">
+      <img src="PKPJ.png" alt="Logo PKPJ" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='">
       <h1>Sistem Inventori Unit IT PKPJ</h1>
     </div>
   </header>
@@ -1638,7 +1638,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
           </div>
           <div class="dashboard-movement-hero">
             <div class="dashboard-laptop-box">
-              <img src="Laptop.png" alt="Laptop" onerror="this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/Laptop.png'">
+              <img src="Laptop.png" alt="Laptop" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='">
             </div>
             <div>
               <div class="dashboard-movement-hero-title">Pergerakan Aset & Profil Aset Lengkap</div>
@@ -2167,9 +2167,28 @@ initYears();
 updateDateTime();
 setInterval(updateDateTime, 1000);
 
-window.onload = function(){
-  refreshAll();
-};
+// Mulakan sistem sebaik sahaja struktur HTML siap.
+// Jangan tunggu semua gambar/CDN selesai kerana aset yang hilang boleh menahan event window.load.
+let inventoryAppStarted = false;
+function startInventoryApp(){
+  if(inventoryAppStarted) return;
+  inventoryAppStarted = true;
+
+  Promise.resolve(refreshAll()).catch(function(err){
+    console.error("Ralat mula sistem:", err);
+    setStatus("");
+    alert("Gagal memulakan sistem: " + (err && err.message ? err.message : err));
+  });
+}
+
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", startInventoryApp, {once:true});
+}else{
+  startInventoryApp();
+}
+
+// Fallback sahaja. startInventoryApp() dilindungi supaya tidak berjalan dua kali.
+window.addEventListener("load", startInventoryApp, {once:true});
 
 function initYears(){
   const currentYear = new Date().getFullYear();
@@ -2300,8 +2319,8 @@ function jsonp(params){
     const timer = setTimeout(() => {cleanup();reject(new Error("Timeout baca data daripada Apps Script"));}, 25000);
     function cleanup(){clearTimeout(timer);delete window[callbackName];if(script.parentNode){script.parentNode.removeChild(script)}}
     window[callbackName] = function(data){cleanup();resolve(data);};
-    script.onerror = function(){cleanup();reject(new Error("Gagal hubungi Apps Script API"));};
-    script.src = API_URL + "?" + query;
+    script.onerror = function(){cleanup();reject(new Error("Gagal hubungi Apps Script API. Semak deployment Web App dan sambungan internet."));};
+    script.src = API_URL + "?" + query + "&_ts=" + Date.now();
     document.body.appendChild(script);
   });
 }
