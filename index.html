@@ -1576,6 +1576,36 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
 .asset-image-status.asset-image-clickable:hover{filter:brightness(.96);box-shadow:0 0 0 2px rgba(37,99,235,.12);}
 #completedAssetsPage .inventory-table th:last-child,
 #completedAssetsPage .inventory-table td:last-child{min-width:120px !important;width:120px !important;max-width:120px !important;}
+
+
+/* ===== KEMASKINI FLOW + FREEZE HEADER 2026 ===== */
+/* Freeze baris header (Jenis, Jenama, Model, dll.) pada semua jadual semasa scroll. */
+.table-wrap{
+  position:relative;
+  overflow:auto !important;
+  max-height:68vh;
+}
+.table-wrap table thead th{
+  position:sticky !important;
+  top:0 !important;
+  z-index:25 !important;
+  box-shadow:0 2px 0 rgba(15,23,42,.15);
+}
+.dashboard-movement-box .table-wrap{max-height:420px;}
+#completedAssetsPage .table-wrap,
+#historyPage .table-wrap,
+#staffDirectoryPage .table-wrap,
+#birthdayStaffPage .table-wrap,
+#tablePage .table-wrap{max-height:68vh;}
+.completed-action-buttons{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+.completed-action-buttons button{font-size:11px;padding:6px 8px;white-space:normal;}
+.btn-return-inventory{background:#f59e0b;color:#111827;}
+@media(max-width:760px){
+  .table-wrap{max-height:65vh;}
+  .completed-action-buttons{flex-direction:column;}
+  .completed-action-buttons button{width:100%;}
+}
+
 </style>
 </head>
 
@@ -1583,7 +1613,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
 <div class="app">
   <header class="topbar">
     <div class="header-title">
-      <img src="PKPJ.png" alt="Logo PKPJ" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='">
+      <img src="PKPJ.png" alt="Logo PKPJ" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/PKPJ.png'">
       <h1>Sistem Inventori Unit IT PKPJ</h1>
     </div>
   </header>
@@ -1638,7 +1668,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
           </div>
           <div class="dashboard-movement-hero">
             <div class="dashboard-laptop-box">
-              <img src="Laptop.png" alt="Laptop" onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='">
+              <img src="Laptop.png" alt="Laptop" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/Laptop.png'">
             </div>
             <div>
               <div class="dashboard-movement-hero-title">Pergerakan Aset & Profil Aset Lengkap</div>
@@ -2010,7 +2040,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
     <div id="completedAssetsPage" class="page">
       <h2 class="page-title">Aset Selesai</h2>
       <div class="section-box">
-        <div class="section-title">Senarai Aset Selesai / Dipulangkan Kepada ICT / Lupus</div>
+        <div class="section-title">Senarai Aset Selesai (Status Selesai Sahaja)</div>
         <div class="table-toolbar">
           <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="completedAssetSearch" placeholder="Cari aset selesai..." onkeyup="renderCompletedAssets()"></div>
           <div class="table-count">Jumlah Aset Selesai: <span id="completedAssetCount">0</span></div>
@@ -2167,27 +2197,21 @@ initYears();
 updateDateTime();
 setInterval(updateDateTime, 1000);
 
-// Mulakan sistem sebaik sahaja struktur HTML siap.
-// Jangan tunggu semua gambar/CDN selesai kerana aset yang hilang boleh menahan event window.load.
-let inventoryAppStarted = false;
+/* Startup stabil: load data sebaik DOM siap, tanpa tunggu semua gambar/resource. */
+let appInitialLoadStarted = false;
 function startInventoryApp(){
-  if(inventoryAppStarted) return;
-  inventoryAppStarted = true;
-
-  Promise.resolve(refreshAll()).catch(function(err){
-    console.error("Ralat mula sistem:", err);
+  if(appInitialLoadStarted) return;
+  appInitialLoadStarted = true;
+  refreshAll().catch(function(err){
+    console.error("Gagal initial load:", err);
     setStatus("");
-    alert("Gagal memulakan sistem: " + (err && err.message ? err.message : err));
   });
 }
-
 if(document.readyState === "loading"){
   document.addEventListener("DOMContentLoaded", startInventoryApp, {once:true});
 }else{
   startInventoryApp();
 }
-
-// Fallback sahaja. startInventoryApp() dilindungi supaya tidak berjalan dua kali.
 window.addEventListener("load", startInventoryApp, {once:true});
 
 function initYears(){
@@ -2205,7 +2229,8 @@ function todayString(){
 function updateDateTime(){
   const now = new Date();
   const hari = now.toLocaleDateString("ms-MY", {weekday:"long"});
-  const tarikh = now.toLocaleDateString("ms-MY", {day:"2-digit", month:"short", year:"numeric"});
+  const bulanPenuh = ["Januari","Februari","Mac","April","Mei","Jun","Julai","Ogos","September","Oktober","November","Disember"];
+  const tarikh = `${String(now.getDate()).padStart(2,"0")} ${bulanPenuh[now.getMonth()]} ${now.getFullYear()}`;
   const masa = now.toLocaleTimeString("ms-MY", {hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false});
   document.getElementById("dateTimeBox").innerHTML = `${hari}, ${tarikh}<br>${masa}`;
 }
@@ -2319,8 +2344,8 @@ function jsonp(params){
     const timer = setTimeout(() => {cleanup();reject(new Error("Timeout baca data daripada Apps Script"));}, 25000);
     function cleanup(){clearTimeout(timer);delete window[callbackName];if(script.parentNode){script.parentNode.removeChild(script)}}
     window[callbackName] = function(data){cleanup();resolve(data);};
-    script.onerror = function(){cleanup();reject(new Error("Gagal hubungi Apps Script API. Semak deployment Web App dan sambungan internet."));};
-    script.src = API_URL + "?" + query + "&_ts=" + Date.now();
+    script.onerror = function(){cleanup();reject(new Error("Gagal hubungi Apps Script API"));};
+    script.src = API_URL + "?" + query;
     document.body.appendChild(script);
   });
 }
@@ -3653,6 +3678,9 @@ async function simpan(){
       isFilterActive = false;
       applyTableView();
       goPage("tablePage");
+      toggleInventorySubmenu(true);
+      const btnTableAfterSave = document.getElementById("btnTable");
+      if(btnTableAfterSave){btnTableAfterSave.classList.add("active");}
     }catch(err){
       alert("Data dihantar, tetapi gagal refresh senarai: " + err.message);
     }finally{
@@ -5596,9 +5624,10 @@ setTimeout(function(){
 
 /* ===== KEMASKINI USER: ASET SELESAI + CAMERA KE PROFIL + RESET STAFF ===== */
 function isCompletedAsset(item){
+  /* Hanya aset yang memang ditandakan status Selesai dipindahkan ke tab Aset Selesai.
+     Perkataan seperti "lupus" / "dipulangkan" dalam catatan tidak lagi memindahkan rekod secara automatik. */
   const status = String(item && item.status || "").toLowerCase().trim();
-  const catatan = String(item && item.catatan || "").toLowerCase();
-  return status === "selesai" || catatan.includes("aset selesai") || catatan.includes("dipulangkan kepada ict") || catatan.includes("lupus");
+  return status === "selesai";
 }
 
 function showCompletedAssetsPage(btn){
@@ -5632,8 +5661,25 @@ function renderCompletedAssets(){
     <td><span class="badge ${getBadgeClass(v.status)}">${escapeHtml(v.status || "-")}</span></td>
     <td class="catatan-col">${escapeHtml(v.catatan || "-")}</td>
     <td>${escapeHtml(v.lokasi || "-")}</td>
-    <td><button type="button" class="btn-profile" onclick="openAssetProfile(${Number(v.row)})">Profil</button></td>
+    <td>
+      <div class="completed-action-buttons">
+        <button type="button" class="btn-profile" onclick="openAssetProfile(${Number(v.row)})">Profil</button>
+        <button type="button" class="btn-return-inventory" onclick="editCompletedAsset(${Number(v.row)})">Kembali / Betulkan</button>
+      </div>
+    </td>
   </tr>`).join("");
+}
+
+function editCompletedAsset(row){
+  const item = findAssetByRow(row);
+  if(!item){alert("Data aset tidak dijumpai.");return;}
+  editData(row);
+  setTimeout(function(){
+    const id = deviceId(PRESET_JENIS.map(x => x.toLowerCase()).includes(String(item.jenisPerkakasan || "").toLowerCase()) ? item.jenisPerkakasan : "Lain-lain");
+    const statusEl = document.getElementById("status_" + id);
+    if(statusEl){statusEl.focus();}
+    setStatus("Betulkan maklumat/status aset ini. Tukar status daripada Selesai kepada status yang betul, kemudian tekan Kemaskini untuk kembali ke Senarai Inventori.");
+  }, 150);
 }
 
 async function bulkMarkSelesai(){
