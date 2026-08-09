@@ -1779,6 +1779,58 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 
+
+<style id="requestedUiFixes20260809">
+.master-app-topbar{
+  grid-template-columns:42px minmax(0,1fr)!important;
+  gap:12px!important;
+}
+.master-brand-title{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-width:0!important;
+}
+.master-brand-logo{
+  width:40px!important;
+  height:40px!important;
+  object-fit:contain!important;
+  flex:0 0 auto!important;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.14));
+}
+.master-brand-title h1{font-size:19px!important;}
+.master-bulk-button{
+  height:38px;
+  border-radius:8px;
+  background:#0d4fca;
+  color:#fff;
+  border:1px solid #0d4fca;
+  padding:0 13px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:10.5px;
+  box-shadow:0 4px 13px rgba(13,79,202,.16);
+}
+.master-bulk-button:hover,.master-bulk-button.active{background:#073b9b;color:#fff;}
+.completed-icon-button{
+  width:34px!important;
+  height:32px!important;
+  min-width:34px!important;
+  padding:0!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+}
+.completed-icon-button i{font-size:13px!important;}
+@media(max-width:760px){
+  .master-brand-logo{width:33px!important;height:33px!important;}
+  .master-brand-title h1{font-size:14px!important;}
+  .master-page-actions{flex-wrap:wrap!important;}
+  .master-bulk-button,.master-export-button{flex:1 1 auto;justify-content:center;}
+}
+</style>
+
 </head>
 
 <body>
@@ -1788,21 +1840,8 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
       <i class="fa-solid fa-bars"></i>
     </button>
     <div class="master-brand-title">
+      <img class="master-brand-logo" src="pkpj.png" alt="Logo PKPJ" onerror="if(this.dataset.logoTry!=='1'){this.dataset.logoTry='1';this.src='PKPJ.png';}else if(this.dataset.logoTry!=='2'){this.dataset.logoTry='2';this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/pkpj.png';}else{this.onerror=null;this.style.display='none';}">
       <h1>Sistem Inventori Unit IT PKPJ</h1>
-    </div>
-    <div class="master-global-search">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input id="masterGlobalSearch" type="search" placeholder="Cari aset, no siri, lokasi atau pemegang..." onkeydown="if(event.key==='Enter'){masterRunGlobalSearch();}">
-      <kbd>CTRL /</kbd>
-    </div>
-    <div class="master-topbar-actions">
-      <button type="button" class="master-topbar-icon" title="Notifikasi" aria-label="Notifikasi"><i class="fa-regular fa-bell"></i><span></span></button>
-      <button type="button" class="master-topbar-icon" title="Bantuan" aria-label="Bantuan"><i class="fa-regular fa-circle-question"></i></button>
-      <div class="master-admin-chip">
-        <b>A</b>
-        <span><strong>Admin</strong><small>Pentadbir Sistem</small></span>
-        <i class="fa-solid fa-chevron-down"></i>
-      </div>
     </div>
   </header>
 
@@ -1817,13 +1856,13 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
       <button id="btnForm" onclick="openInventoryFormModal()"><i class="fa-solid fa-plus"></i><span>Tambah Inventori</span></button>
       <button id="btnInventoryParent" class="side-parent" onclick="toggleInventorySubmenu()"><i class="fa-regular fa-rectangle-list"></i><span>Senarai Inventori</span><i class="fa-solid fa-chevron-down master-menu-chevron"></i></button>
       <div id="inventorySubmenu" class="side-submenu show">
-        <button id="btnTable" onclick="showPage('tablePage', this); toggleInventorySubmenu(true);"><span class="master-sub-dot">•</span><span>Senarai Inventori</span></button>
+        <button id="btnTable" onclick="showPage('tablePage', this); toggleInventorySubmenu(true); setMasterInventoryMode('detail');"><span class="master-sub-dot">•</span><span>Senarai Inventori</span></button>
+        <button id="btnBulkActions" onclick="openBulkActionPage(this)"><span class="master-sub-dot">•</span><span>Tindakan Pukal</span></button>
         <button id="btnProfileMain" onclick="showPage('profileMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Profil Aset Lengkap</span></button>
         <button id="btnSummaryMain" onclick="showPage('summaryMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Ringkasan Aset Lengkap</span></button>
       </div>
       <button id="btnHistory" onclick="showPage('historyPage', this); loadHistory();"><i class="fa-regular fa-clock"></i><span>Sejarah Pergerakan Aset</span></button>
       <button id="btnCompletedAssets" onclick="showCompletedAssetsPage(this)"><i class="fa-regular fa-square-check"></i><span>Aset Selesai</span></button>
-      <button onclick="refreshAll()"><i class="fa-solid fa-rotate"></i><span>Refresh Data / Kosongkan Borang</span></button>
       <button id="btnStaffParent" class="side-parent" onclick="toggleStaffSubmenu()"><i class="fa-solid fa-users"></i><span>Nama Staff / Upload Excel</span><i class="fa-solid fa-chevron-down master-menu-chevron"></i></button>
       <div id="staffSubmenu" class="side-submenu">
         <button id="btnStaffDirectory" onclick="showPage('staffDirectoryPage', this); toggleStaffSubmenu(true); renderStaffDirectory();"><span class="master-sub-dot">•</span><span>Senarai Nama Staff</span></button>
@@ -1971,14 +2010,15 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
     <div id="tablePage" class="page master-detail-page">
       <div class="master-page-heading">
         <div>
-          <h2>Senarai Inventori</h2>
-          <p>Pilih aset daripada senarai di sebelah kiri untuk melihat maklumat penuh.</p>
+          <h2 id="masterInventoryPageTitle">Senarai Inventori</h2>
+          <p id="masterInventoryPageSubtitle">Pilih aset daripada senarai di sebelah kiri untuk melihat maklumat penuh.</p>
         </div>
         <div class="master-page-actions">
           <div class="master-view-toggle" aria-label="Pilihan paparan inventori">
             <button type="button" id="masterDetailViewBtn" class="active" onclick="setMasterInventoryMode('detail')" title="Paparan profil"><i class="fa-solid fa-grip"></i></button>
             <button type="button" id="masterTableViewBtn" onclick="setMasterInventoryMode('table')" title="Paparan jadual asal"><i class="fa-solid fa-list"></i></button>
           </div>
+          <button type="button" id="masterBulkActionBtn" class="master-bulk-button" onclick="openBulkActionPage(document.getElementById('btnBulkActions'))"><i class="fa-solid fa-list-check"></i> Tindakan Pukal</button>
           <button type="button" class="master-export-button" onclick="exportExcel()"><i class="fa-solid fa-download"></i> Export CSV</button>
         </div>
       </div>
@@ -6015,7 +6055,7 @@ function renderCompletedAssets(){
     <td>
       <div class="completed-action-buttons">
         <button type="button" class="btn-profile" onclick="openAssetProfile(${Number(v.row)})">Profil</button>
-        <button type="button" class="btn-return-inventory" onclick="editCompletedAsset(${Number(v.row)})">Kembali / Betulkan</button>
+        <button type="button" class="btn-return-inventory completed-icon-button" title="Kembali / Betulkan" aria-label="Kembali atau betulkan aset" onclick="editCompletedAsset(${Number(v.row)})"><i class="fa-solid fa-rotate-left"></i></button>
       </div>
     </td>
   </tr>`).join("");
@@ -6088,7 +6128,7 @@ if(oldRefreshAllSelesai){
 
   let masterSelectedRow = null;
   let masterInventoryMode = "detail";
-  let masterExpandedGroups = new Set(["Laptop"]);
+  let masterExpandedGroups = new Set();
   let masterLastGroups = [];
 
   function masterValue(value, fallback){
@@ -6226,9 +6266,7 @@ if(oldRefreshAllSelesai){
       container.innerHTML = '<div class="master-list-empty"><i class="fa-regular fa-folder-open"></i><br><br>Tiada aset sepadan dengan carian.</div>';
       return;
     }
-    const selected = data.find(item => String(item.row) === String(masterSelectedRow));
-    if(selected) masterExpandedGroups.add(masterGroupName(selected));
-    if(search) masterLastGroups.forEach(group => masterExpandedGroups.add(group.name));
+    // Semua kumpulan kekal tertutup secara lalai. Pengguna buka kumpulan secara manual.
 
     container.innerHTML = masterLastGroups.map((group,index) => {
       const expanded = masterExpandedGroups.has(group.name);
@@ -6316,7 +6354,7 @@ if(oldRefreshAllSelesai){
       <div class="master-detail-actions">
         <button type="button" class="master-profile-button" onclick="openAssetProfile(${Number(item.row)})"><i class="fa-regular fa-eye"></i> Profil</button>
         <button type="button" class="master-edit-button" onclick="editData(${Number(item.row)})"><i class="fa-solid fa-pen"></i> Edit Aset</button>
-        <button type="button" class="master-action-button" onclick="toggleAssetMenu(event,${Number(item.row)})"><i class="fa-solid fa-ellipsis-vertical"></i> Tindakan <i class="fa-solid fa-chevron-down"></i></button>
+        <button type="button" class="master-action-button" onclick="event.stopPropagation();toggleAssetMenu(event,${Number(item.row)})"><i class="fa-solid fa-ellipsis-vertical"></i> Tindakan <i class="fa-solid fa-chevron-down"></i></button>
       </div>
     </div>
 
@@ -6374,8 +6412,8 @@ if(oldRefreshAllSelesai){
     const data = masterFilteredData();
     const count = document.getElementById("masterInventoryCount");
     if(count) count.textContent = String(data.length);
-    if(!data.some(item => String(item.row) === String(masterSelectedRow))){
-      masterSelectedRow = data.length ? data[0].row : null;
+    if(masterSelectedRow !== null && !data.some(item => String(item.row) === String(masterSelectedRow))){
+      masterSelectedRow = null;
     }
     masterRenderList(data);
     const selected = data.find(item => String(item.row) === String(masterSelectedRow)) || null;
@@ -6422,12 +6460,19 @@ if(oldRefreshAllSelesai){
     const legacy = document.getElementById("legacyInventoryView");
     const detailBtn = document.getElementById("masterDetailViewBtn");
     const tableBtn = document.getElementById("masterTableViewBtn");
+    const title = document.getElementById("masterInventoryPageTitle");
+    const subtitle = document.getElementById("masterInventoryPageSubtitle");
+    const bulkBtn = document.getElementById("masterBulkActionBtn");
     if(masterInventoryMode === "table"){
       if(workspace) workspace.hidden = true;
       if(legacy) legacy.hidden = false;
       page?.classList.add("table-mode");
       detailBtn?.classList.remove("active");
       tableBtn?.classList.add("active");
+      bulkBtn?.classList.add("active");
+      if(title) title.textContent = "Tindakan Pukal";
+      if(subtitle) subtitle.textContent = "Tick satu atau beberapa aset, kemudian pilih pindah lokasi, status pukal atau selesai.";
+      if(typeof setTableViewMode === "function") setTableViewMode("list");
       if(typeof applyTableView === "function") applyTableView();
     }else{
       if(workspace) workspace.hidden = false;
@@ -6435,8 +6480,21 @@ if(oldRefreshAllSelesai){
       page?.classList.remove("table-mode");
       tableBtn?.classList.remove("active");
       detailBtn?.classList.add("active");
+      bulkBtn?.classList.remove("active");
+      if(title) title.textContent = "Senarai Inventori";
+      if(subtitle) subtitle.textContent = "Buka kumpulan jenis secara manual, kemudian pilih aset untuk melihat maklumat penuh.";
       renderMasterInventory();
     }
+  };
+
+  window.openBulkActionPage = function(btn){
+    if(typeof showPage === "function") showPage("tablePage", btn || document.getElementById("btnBulkActions"));
+    if(typeof toggleInventorySubmenu === "function") toggleInventorySubmenu(true);
+    setMasterInventoryMode("table");
+    window.setTimeout(function(){
+      const legacy = document.getElementById("legacyInventoryView");
+      if(legacy) legacy.scrollTop = 0;
+    },0);
   };
 
   window.masterRunGlobalSearch = function(){
