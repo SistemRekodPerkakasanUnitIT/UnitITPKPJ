@@ -2025,6 +2025,12 @@ body.enterprise-resizing *{cursor:col-resize!important;}
 .master-inventory-workspace.enterprise-focus-detail>.enterprise-workspace-splitter{display:none!important;}
 .master-inventory-workspace.enterprise-focus-detail>.master-asset-detail-panel{border-left:1px solid #dfe6ef!important;border-radius:14px!important;}
 
+/* Bulk mode ringkas: paparkan Senarai Inventori dan bahagian di bawah sahaja */
+.master-detail-page.table-mode > .master-page-heading{display:none!important;}
+.master-detail-page.table-mode > #masterInventoryWorkspace{display:none!important;}
+.master-detail-page.table-mode > #legacyInventoryView{display:block!important;height:auto!important;overflow:visible!important;}
+.master-detail-page.table-mode{padding-top:0!important;}
+
 /* More enterprise-style sticky tables in the legacy/bulk screens */
 #legacyInventoryView .table-wrap,#historyPage .table-wrap,#completedAssetsPage .table-wrap,#staffDirectoryPage .table-wrap,#birthdayStaffPage .table-wrap{border:1px solid #e1e8f1;border-radius:10px;background:#fff;}
 #legacyInventoryView table thead th,#historyPage table thead th,#completedAssetsPage table thead th,#staffDirectoryPage table thead th,#birthdayStaffPage table thead th{background:#153f91!important;color:#fff!important;}
@@ -2095,7 +2101,6 @@ body.enterprise-resizing *{cursor:col-resize!important;}
       <button id="btnInventoryParent" class="side-parent" onclick="toggleInventorySubmenu()"><i class="fa-regular fa-rectangle-list"></i><span>Senarai Inventori</span><i class="fa-solid fa-chevron-down master-menu-chevron"></i></button>
       <div id="inventorySubmenu" class="side-submenu show">
         <button id="btnTable" onclick="showPage('tablePage', this); toggleInventorySubmenu(true); setMasterInventoryMode('detail');"><span class="master-sub-dot">•</span><span>Senarai Inventori</span></button>
-        <button id="btnBulkActions" onclick="openBulkActionPage(this)"><span class="master-sub-dot">•</span><span>Tindakan Pukal</span></button>
         <button id="btnProfileMain" onclick="showPage('profileMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Profil Aset Lengkap</span></button>
         <button id="btnSummaryMain" onclick="showPage('summaryMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Ringkasan Aset Lengkap</span></button>
       </div>
@@ -2257,7 +2262,7 @@ body.enterprise-resizing *{cursor:col-resize!important;}
             <button type="button" id="masterDetailViewBtn" class="active" onclick="setMasterInventoryMode('detail')" title="Paparan profil"><i class="fa-solid fa-grip"></i></button>
             <button type="button" id="masterTableViewBtn" onclick="setMasterInventoryMode('table')" title="Paparan jadual asal"><i class="fa-solid fa-list"></i></button>
           </div>
-          <button type="button" id="masterBulkActionBtn" class="master-bulk-button" onclick="openBulkActionPage(document.getElementById('btnBulkActions'))"><i class="fa-solid fa-list-check"></i> Tindakan Pukal</button>
+          <button type="button" id="masterBulkActionBtn" class="master-bulk-button" onclick="openBulkActionPage(document.getElementById('btnTable'))"><i class="fa-solid fa-list-check"></i> Tindakan Pukal</button>
           <button type="button" id="enterpriseFocusBtn" class="enterprise-focus-button" onclick="enterpriseToggleFocusMode()" title="Fokus pada maklumat aset"><i class="fa-solid fa-expand"></i> Fokus</button>
           <button type="button" class="master-export-button" onclick="exportExcel()"><i class="fa-solid fa-download"></i> Export CSV</button>
         </div>
@@ -6720,8 +6725,8 @@ if(oldRefreshAllSelesai){
       detailBtn?.classList.remove("active");
       tableBtn?.classList.add("active");
       bulkBtn?.classList.add("active");
-      if(title) title.textContent = "Tindakan Pukal";
-      if(subtitle) subtitle.textContent = "Tick satu atau beberapa aset, kemudian pilih pindah lokasi, status pukal atau selesai.";
+      if(title) title.textContent = "Senarai Inventori";
+      if(subtitle) subtitle.textContent = "Pilih aset menggunakan tick untuk tindakan pukal.";
       if(typeof setTableViewMode === "function") setTableViewMode("list");
       if(typeof applyTableView === "function") applyTableView();
     }else{
@@ -6738,7 +6743,8 @@ if(oldRefreshAllSelesai){
   };
 
   window.openBulkActionPage = function(btn){
-    if(typeof showPage === "function") showPage("tablePage", btn || document.getElementById("btnBulkActions"));
+    const inventoryBtn = btn || document.getElementById("btnTable");
+    if(typeof showPage === "function") showPage("tablePage", inventoryBtn);
     if(typeof toggleInventorySubmenu === "function") toggleInventorySubmenu(true);
     setMasterInventoryMode("table");
     window.setTimeout(function(){
