@@ -1606,6 +1606,117 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
   .completed-action-buttons button{width:100%;}
 }
 
+
+/* ===== UI WOW LIGHT REFRESH + GROUP BY JENIS ===== */
+.topbar{
+  background:linear-gradient(90deg,#072b68 0%,#0b4597 55%,#0b2f75 100%) !important;
+}
+.sidebar{
+  background:linear-gradient(180deg,#082a61 0%,#06224f 55%,#041838 100%) !important;
+  color:#ffffff !important;
+}
+.side-menu button{
+  background:transparent !important;
+  color:#eaf2ff !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+.side-menu button:hover,
+.side-menu button.active{
+  background:linear-gradient(135deg,#1677ff 0%,#0d49b7 100%) !important;
+  color:#ffffff !important;
+}
+.side-submenu{
+  background:rgba(255,255,255,.04) !important;
+}
+.side-submenu button{
+  background:transparent !important;
+  color:#dbeafe !important;
+}
+.main{
+  background:linear-gradient(180deg,#f8fbff 0%,#f3f7fb 100%);
+  min-height:100vh;
+}
+.section-box,
+.profile-modal,
+.image-modal{
+  border:1px solid rgba(37,99,235,.12) !important;
+  box-shadow:0 12px 28px rgba(15,23,42,.08) !important;
+}
+.info-card{
+  border-radius:14px !important;
+  box-shadow:0 12px 26px rgba(15,23,42,.14) !important;
+}
+.inventory-toolbar-clean{
+  position:sticky;
+  top:58px;
+  z-index:8;
+  background:rgba(255,255,255,.94) !important;
+  backdrop-filter:blur(10px);
+}
+.table-wrap{
+  max-height:calc(100vh - 265px);
+  overflow:auto !important;
+  border-top:1px solid #e5e7eb;
+}
+.inventory-table thead th,
+.history-table thead th,
+.dashboard-history-table thead th,
+.staff-directory-table thead th{
+  position:sticky;
+  top:0;
+  z-index:7;
+  box-shadow:0 2px 0 rgba(15,23,42,.08);
+}
+.group-row td{
+  position:sticky;
+  top:34px;
+  z-index:6;
+  background:linear-gradient(90deg,#eaf3ff 0%,#f8fbff 100%) !important;
+  border-top:2px solid #bfdbfe !important;
+  border-bottom:2px solid #bfdbfe !important;
+}
+.group-row-jenis td{
+  background:linear-gradient(90deg,#e0f2fe 0%,#f0f9ff 55%,#ffffff 100%) !important;
+  color:#075985 !important;
+}
+.group-row-staff td{
+  background:linear-gradient(90deg,#eef2ff 0%,#ffffff 100%) !important;
+  color:#1d4ed8 !important;
+}
+.group-type-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 8px;
+  padding:3px 8px;
+  border-radius:999px;
+  background:#1d4ed8;
+  color:white;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.group-row-jenis .group-type-badge{background:#0284c7;}
+.status-pill{background:#f1f5f9 !important;color:#334155 !important;border-color:#dbeafe !important;}
+.view-toggle-wrap.compact-view-toggle{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(72px,1fr));
+  gap:6px;
+}
+.btn-view-toggle{
+  border:1px solid #cbd5e1 !important;
+  background:#f8fafc !important;
+}
+.btn-view-toggle.active{
+  background:linear-gradient(135deg,#2563eb,#0f766e) !important;
+  color:white !important;
+  border-color:transparent !important;
+}
+.btn-return-inventory{
+  background:#2563eb !important;
+  color:#ffffff !important;
+}
+
 </style>
 </head>
 
@@ -1815,13 +1926,14 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
             </select>
             <div class="view-toggle-wrap compact-view-toggle">
               <button type="button" id="btnListView" class="btn-view-toggle" onclick="setTableViewMode('list')"><i class="fa-solid fa-table-list"></i> List</button>
-              <button type="button" id="btnGroupView" class="btn-view-toggle active" onclick="setTableViewMode('group')"><i class="fa-solid fa-layer-group"></i> Group</button>
+              <button type="button" id="btnJenisView" class="btn-view-toggle active" onclick="setTableViewMode('jenis')"><i class="fa-solid fa-layer-group"></i> Jenis</button>
+              <button type="button" id="btnStaffView" class="btn-view-toggle" onclick="setTableViewMode('staff')"><i class="fa-solid fa-users"></i> Staff</button>
             </div>
           </div>
           <div class="inventory-summary-row">
             <div class="inventory-counts">
               <span>Jumlah Rekod: <b id="recordCount">0</b></span>
-              <span>Jumlah Staff: <b id="groupCount">0</b></span>
+              <span><span id="groupCountLabel">Jumlah Jenis</span>: <b id="groupCount">0</b></span>
             </div>
             <div class="inventory-actions-right">
               <button class="btn-reset-filter" onclick="resetFilter()"><i class="fa-solid fa-list"></i> Papar Semua Rekod</button>
@@ -2177,7 +2289,7 @@ let currentTableRows = [];
 let tableCurrentPage = 1;
 let tablePageSize = 50;
 let lastFilteredTableRows = [];
-let tableViewMode = "group";
+let tableViewMode = "jenis";
 
 const tahunEl = document.getElementById("tahun");
 const namaStaffSelectEl = document.getElementById("namaStaffSelect");
@@ -3696,26 +3808,51 @@ function renderTable(data){
   tableEl.innerHTML = "";
   currentTableRows = Array.isArray(data) ? data : [];
 
+  const groupCountEl = document.getElementById("groupCount");
+  const groupCountLabelEl = document.getElementById("groupCountLabel");
+
   if(!data || data.length === 0){
     tableEl.innerHTML = `<tr><td colspan="10">Tiada rekod dijumpai</td></tr>`;
-    document.getElementById("groupCount").innerText = 0;
+    if(groupCountEl){groupCountEl.innerText = 0;}
+    if(groupCountLabelEl){groupCountLabelEl.innerText = tableViewMode === "staff" ? "Jumlah Staff" : "Jumlah Jenis";}
     updateBulkBar();
     return;
   }
 
-  const groups = groupByNamaStaff(data);
-  document.getElementById("groupCount").innerText = groups.length;
-
   let html = "";
 
   if(tableViewMode === "list"){
+    if(groupCountEl){groupCountEl.innerText = "-";}
+    if(groupCountLabelEl){groupCountLabelEl.innerText = "Mod Paparan";}
     data.forEach(v => { html += renderAssetTableRow(v, ""); });
   }else{
-    groups.forEach((group,index) => {
-      const groupId = makeGroupId(group.namaStaff, index);
-      const rowList = group.items.map(item => Number(item.row)).filter(Boolean).join(",");
+    const isStaffMode = tableViewMode === "staff";
+    const groups = isStaffMode ? groupByNamaStaff(data) : groupByJenis(data);
+    if(groupCountEl){groupCountEl.innerText = groups.length;}
+    if(groupCountLabelEl){groupCountLabelEl.innerText = isStaffMode ? "Jumlah Staff" : "Jumlah Jenis";}
 
-      html += `<tr class="group-row" onclick="toggleGroup('${groupId}')"><td colspan="10"><span id="icon-${groupId}">▼</span> <i class="fa-solid fa-user"></i> ${escapeHtml(group.namaStaff)} <span class="group-meta">${group.items.length} aset</span><button type="button" class="group-select-btn" onclick="event.stopPropagation();selectGroupRows('${rowList}')">Tick Staff Ini</button><span class="jenis-summary-wrap">${renderJenisSummaryPills(group.items)}</span></td></tr>`;
+    groups.forEach((group,index) => {
+      const groupName = isStaffMode ? group.namaStaff : group.jenis;
+      const groupId = makeGroupId(groupName, index);
+      const rowList = group.items.map(item => Number(item.row)).filter(Boolean).join(",");
+      const iconClass = isStaffMode ? "fa-user" : getJenisGroupIcon(groupName);
+      const selectText = isStaffMode ? "Tick Staff Ini" : "Tick Jenis Ini";
+      const metaText = isStaffMode
+        ? `${group.items.length} aset`
+        : `${group.items.length} aset • ${getUniqueStaffCount(group.items)} staff`;
+      const summaryHtml = isStaffMode ? renderJenisSummaryPills(group.items) : renderStatusSummaryPills(group.items);
+
+      html += `<tr class="group-row group-row-${isStaffMode ? "staff" : "jenis"}" onclick="toggleGroup('${groupId}')">
+        <td colspan="10">
+          <span id="icon-${groupId}">▼</span>
+          <i class="fa-solid ${iconClass}"></i>
+          <span class="group-type-badge">${isStaffMode ? "Staff" : "Jenis"}</span>
+          ${escapeHtml(groupName)}
+          <span class="group-meta">${escapeHtml(metaText)}</span>
+          <button type="button" class="group-select-btn" onclick="event.stopPropagation();selectGroupRows('${rowList}')">${selectText}</button>
+          <span class="jenis-summary-wrap">${summaryHtml}</span>
+        </td>
+      </tr>`;
       group.items.forEach(v => { html += renderAssetTableRow(v, groupId); });
     });
   }
@@ -3723,7 +3860,6 @@ function renderTable(data){
   tableEl.innerHTML = html;
   updateBulkBar();
 }
-
 function renderAssetTableRow(v, groupId){
   const badgeClass = getBadgeClass(v.status);
   const checked = selectedAssetRows.has(Number(v.row)) ? "checked" : "";
@@ -3743,14 +3879,25 @@ function renderAssetTableRow(v, groupId){
 }
 
 function setTableViewMode(mode){
-  tableViewMode = mode === "list" ? "list" : "group";
+  if(mode === "list"){
+    tableViewMode = "list";
+  }else if(mode === "staff"){
+    tableViewMode = "staff";
+  }else{
+    tableViewMode = "jenis";
+  }
+  tableCurrentPage = 1;
+
   const listBtn = document.getElementById("btnListView");
-  const groupBtn = document.getElementById("btnGroupView");
+  const jenisBtn = document.getElementById("btnJenisView");
+  const staffBtn = document.getElementById("btnStaffView");
+
   if(listBtn){listBtn.classList.toggle("active", tableViewMode === "list");}
-  if(groupBtn){groupBtn.classList.toggle("active", tableViewMode === "group");}
+  if(jenisBtn){jenisBtn.classList.toggle("active", tableViewMode === "jenis");}
+  if(staffBtn){staffBtn.classList.toggle("active", tableViewMode === "staff");}
+
   applyTableView();
 }
-
 
 function hasAssetImages(gambarValue){
   return parseGambarUrls(gambarValue).length > 0;
@@ -4038,6 +4185,72 @@ function renderJenisSummaryPills(items){
     map[jenis] = (map[jenis] || 0) + 1;
   });
   return Object.keys(map).sort().map(jenis => `<span class="jenis-pill">${escapeHtml(jenis)}: ${map[jenis]}</span>`).join("");
+}
+
+
+function normalizeJenisGroupName(item){
+  const jenis = String(item && item.jenisPerkakasan || "").trim();
+  const jenisLain = String(item && item.jenisPerkakasanLain || "").trim();
+  if(jenis && jenis.toLowerCase() !== "tiada"){return jenis;}
+  if(jenisLain){return jenisLain;}
+  return "TIADA";
+}
+
+function getJenisSortValue(jenis){
+  const order = ["Laptop","CPU","Monitor","Keyboard","Mouse","Printer","Johor Wifi Pole","Lain-lain","TIADA"];
+  const lower = String(jenis || "").toLowerCase().trim();
+  const index = order.findIndex(x => x.toLowerCase() === lower);
+  return index >= 0 ? index : 100;
+}
+
+function groupByJenis(data){
+  const map = new Map();
+  data.forEach(item => {
+    const jenis = normalizeJenisGroupName(item);
+    if(!map.has(jenis)){map.set(jenis, []);}
+    map.get(jenis).push(item);
+  });
+  return Array.from(map.entries())
+    .sort((a,b) => {
+      const av = getJenisSortValue(a[0]);
+      const bv = getJenisSortValue(b[0]);
+      if(av !== bv){return av - bv;}
+      return String(a[0]).localeCompare(String(b[0]), "ms");
+    })
+    .map(([jenis, items]) => ({jenis, items}));
+}
+
+function getUniqueStaffCount(items){
+  const map = {};
+  (items || []).forEach(item => {
+    const nama = String(item.namaStaff || item.namaPemegang || item.nama || "").trim();
+    if(nama){map[nama.toLowerCase()] = true;}
+  });
+  return Object.keys(map).length;
+}
+
+function getJenisGroupIcon(jenis){
+  const lower = String(jenis || "").toLowerCase();
+  if(lower.includes("laptop")) return "fa-laptop";
+  if(lower === "cpu" || lower.includes("cpu")) return "fa-computer";
+  if(lower.includes("monitor")) return "fa-desktop";
+  if(lower.includes("keyboard")) return "fa-keyboard";
+  if(lower.includes("mouse")) return "fa-computer-mouse";
+  if(lower.includes("printer") || lower.includes("pencetak")) return "fa-print";
+  if(lower.includes("wifi") || lower.includes("rangkaian")) return "fa-wifi";
+  if(lower === "tiada") return "fa-circle-question";
+  return "fa-box";
+}
+
+function renderStatusSummaryPills(items){
+  const map = {};
+  (items || []).forEach(item => {
+    const status = String(item.status || "Tanpa Status").trim() || "Tanpa Status";
+    map[status] = (map[status] || 0) + 1;
+  });
+  return Object.keys(map).sort((a,b) => a.localeCompare(b, "ms")).map(status => {
+    return `<span class="jenis-pill status-pill">${escapeHtml(status)}: ${map[status]}</span>`;
+  }).join("");
 }
 
 function groupByNamaStaff(data){
