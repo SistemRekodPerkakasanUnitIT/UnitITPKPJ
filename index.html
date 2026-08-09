@@ -1831,6 +1831,238 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
 }
 </style>
 
+
+<style id="enterpriseUpgrade20260809">
+/* ===== ENTERPRISE UI V3 - presentation layer only ===== */
+:root{
+  --enterprise-list-width:385px;
+  --enterprise-blue:#0b5bd3;
+  --enterprise-blue-2:#0a49ad;
+  --enterprise-ink:#14213b;
+  --enterprise-muted:#6e7d94;
+  --enterprise-line:#dce5f0;
+  --enterprise-soft:#f7faff;
+}
+
+/* Refined PKPJ identity */
+.master-app-topbar{
+  min-height:68px!important;
+  height:68px!important;
+  padding:0 24px!important;
+  background:linear-gradient(110deg,#072f78 0%,#0a55c4 56%,#073b8f 100%)!important;
+  border-bottom:1px solid rgba(255,255,255,.14)!important;
+  box-shadow:0 8px 24px rgba(6,47,119,.20)!important;
+}
+.master-brand-title.enterprise-brand-title{gap:12px!important;}
+.master-brand-emblem{
+  position:relative;
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:rgba(255,255,255,.97);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 7px 18px rgba(0,28,79,.18),inset 0 0 0 1px rgba(13,79,202,.04);
+  overflow:hidden;
+}
+.master-brand-emblem .master-brand-logo{
+  position:relative;
+  z-index:2;
+  width:41px!important;
+  height:41px!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 1px 2px rgba(13,45,91,.10))!important;
+}
+.master-brand-logo-placeholder{
+  position:absolute;
+  inset:0;
+  display:none;
+  place-items:center;
+  color:#0d4fca;
+  font-size:21px;
+}
+.master-brand-emblem.logo-missing .master-brand-logo-placeholder{display:grid;}
+.enterprise-brand-copy{display:flex;flex-direction:column;min-width:0;line-height:1.05;}
+.enterprise-brand-copy h1{font-size:18px!important;letter-spacing:.01em;}
+.enterprise-brand-copy small{margin-top:5px;color:#cfe0ff;font-size:9px;font-weight:700;letter-spacing:.025em;white-space:nowrap;}
+.master-app-sidebar{top:68px!important;height:calc(100vh - 68px)!important;}
+.main{padding-top:90px!important;}
+
+/* Master-detail workspace: resizable, calmer, more ERP-like */
+.master-inventory-workspace{
+  grid-template-columns:var(--enterprise-list-width) 9px minmax(0,1fr)!important;
+  gap:0!important;
+  background:transparent!important;
+}
+.master-asset-list-panel{
+  border-radius:14px 0 0 14px!important;
+  border-right:0!important;
+  box-shadow:0 12px 32px rgba(22,49,93,.075)!important;
+}
+.master-asset-detail-panel{
+  border-radius:0 14px 14px 0!important;
+  box-shadow:0 12px 32px rgba(22,49,93,.075)!important;
+  border-left:0!important;
+  scroll-behavior:smooth;
+}
+.enterprise-workspace-splitter{
+  position:relative;
+  cursor:col-resize;
+  background:#f8faff;
+  border-top:1px solid #dfe6ef;
+  border-bottom:1px solid #dfe6ef;
+  touch-action:none;
+  user-select:none;
+  z-index:15;
+}
+.enterprise-workspace-splitter:before{
+  content:"";
+  position:absolute;
+  top:0;bottom:0;left:50%;
+  width:1px;
+  transform:translateX(-50%);
+  background:#dce5f0;
+}
+.enterprise-workspace-splitter span{
+  position:absolute;
+  top:50%;left:50%;
+  width:5px;height:42px;
+  transform:translate(-50%,-50%);
+  border-radius:99px;
+  background:#b8c8de;
+  box-shadow:0 0 0 4px #f8faff;
+  transition:.18s ease;
+}
+.enterprise-workspace-splitter:hover span,
+body.enterprise-resizing .enterprise-workspace-splitter span{background:#0b5bd3;height:58px;}
+body.enterprise-resizing{cursor:col-resize!important;user-select:none!important;}
+body.enterprise-resizing *{cursor:col-resize!important;}
+
+/* Quick semakan */
+.enterprise-quick-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:9px;
+}
+.enterprise-quick-filters button{
+  min-height:25px;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid #e0e7f0;
+  background:#fff;
+  color:#59687f;
+  font-size:8.5px;
+  font-weight:800;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  box-shadow:none;
+}
+.enterprise-quick-filters button:hover{border-color:#b9cff1;background:#f5f9ff;color:#174f9e;}
+.enterprise-quick-filters button.active{background:#eaf2ff;border-color:#a9c7f5;color:#0c56c7;box-shadow:inset 0 0 0 1px rgba(12,86,199,.04);}
+.enterprise-quick-filters .qdot{width:6px;height:6px;border-radius:50%;background:#94a3b8;}
+.enterprise-quick-filters .qdot.baik{background:#16a34a}.enterprise-quick-filters .qdot.rosak{background:#ef4444}.enterprise-quick-filters .qdot.pelupusan{background:#f97316}.enterprise-quick-filters .qdot.dipinjam{background:#f59e0b}.enterprise-quick-filters .qdot.baikpulih{background:#8b5cf6}
+
+/* Group rows remain collapsed until the user opens them manually */
+.master-group-header{
+  min-height:48px!important;
+  padding:12px 14px!important;
+  transition:background .15s ease,box-shadow .15s ease!important;
+}
+.master-group-header:hover{background:#f5f9ff!important;}
+.master-group.expanded>.master-group-header{background:#f0f6ff!important;box-shadow:inset 3px 0 0 #1767dc!important;}
+.master-group.expanded>.master-group-header>i:first-child{color:#1767dc!important;}
+.master-asset-list-item{min-height:51px!important;}
+.master-asset-list-item.selected{background:linear-gradient(90deg,#e8f1ff,#f5f9ff)!important;box-shadow:inset 3px 0 0 #0b5bd3!important;}
+
+/* Sticky asset identity while scrolling long details */
+.master-detail-header{
+  position:sticky!important;
+  top:-17px!important;
+  z-index:32!important;
+  margin:-17px -17px 15px!important;
+  padding:17px 17px 14px!important;
+  background:rgba(255,255,255,.96)!important;
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid #e1e8f1!important;
+  box-shadow:0 7px 18px rgba(28,54,96,.055);
+}
+.master-detail-card,.master-history-card{
+  border-color:#dce5f0!important;
+  box-shadow:0 4px 14px rgba(20,48,92,.035);
+  transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+.master-detail-card:hover{border-color:#c8d8ed!important;box-shadow:0 8px 20px rgba(20,48,92,.06);}
+.master-detail-card h4,.master-history-head h4{font-size:11px!important;letter-spacing:.01em;}
+.master-field-row{padding-bottom:6px;border-bottom:1px dashed #edf1f6;}
+.master-field-row:last-child{padding-bottom:0;border-bottom:0;}
+
+/* Page heading live state */
+.enterprise-data-state{display:flex;align-items:center;gap:6px;margin-top:8px;color:#738198;font-size:9px;font-weight:700;}
+.enterprise-data-state span{width:7px;height:7px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 3px rgba(148,163,184,.12);}
+.enterprise-data-state.ready span{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.11);}
+.enterprise-data-state.empty span{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.11);}
+.enterprise-data-state b{color:#5f6f86;}
+.enterprise-focus-button{
+  height:38px;
+  border-radius:8px;
+  background:#fff;
+  color:#40516b;
+  border:1px solid #dbe3ee;
+  padding:0 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:10px;
+  box-shadow:0 4px 13px rgba(15,35,69,.04);
+}
+.enterprise-focus-button:hover,.enterprise-focus-button.active{background:#eef4ff;color:#0b56c7;border-color:#bfd4f3;}
+.master-inventory-workspace.enterprise-focus-detail{grid-template-columns:minmax(0,1fr)!important;}
+.master-inventory-workspace.enterprise-focus-detail>.master-asset-list-panel,
+.master-inventory-workspace.enterprise-focus-detail>.enterprise-workspace-splitter{display:none!important;}
+.master-inventory-workspace.enterprise-focus-detail>.master-asset-detail-panel{border-left:1px solid #dfe6ef!important;border-radius:14px!important;}
+
+/* More enterprise-style sticky tables in the legacy/bulk screens */
+#legacyInventoryView .table-wrap,#historyPage .table-wrap,#completedAssetsPage .table-wrap,#staffDirectoryPage .table-wrap,#birthdayStaffPage .table-wrap{border:1px solid #e1e8f1;border-radius:10px;background:#fff;}
+#legacyInventoryView table thead th,#historyPage table thead th,#completedAssetsPage table thead th,#staffDirectoryPage table thead th,#birthdayStaffPage table thead th{background:#153f91!important;color:#fff!important;}
+#legacyInventoryView .inventory-table tbody tr:hover td{background:#f6f9ff;}
+
+/* Refined scrollbar */
+.master-inventory-groups,.master-asset-detail-panel,.master-app-sidebar,.legacy-inventory-view{scrollbar-color:#b9c8da transparent;scrollbar-width:thin;}
+.master-inventory-groups::-webkit-scrollbar,.master-asset-detail-panel::-webkit-scrollbar,.master-app-sidebar::-webkit-scrollbar{width:8px;height:8px;}
+.master-inventory-groups::-webkit-scrollbar-thumb,.master-asset-detail-panel::-webkit-scrollbar-thumb,.master-app-sidebar::-webkit-scrollbar-thumb{background:#c1cedd;border-radius:99px;border:2px solid transparent;background-clip:padding-box;}
+
+/* Dashboard polish without changing its cards/actions */
+.dashboard-section-title{border-left:4px solid #0b5bd3!important;background:#fff!important;border:1px solid #e0e8f2!important;border-left-width:4px!important;border-radius:10px!important;box-shadow:0 5px 18px rgba(20,48,92,.045)!important;}
+.info-card{box-shadow:0 10px 24px rgba(20,48,92,.11)!important;transition:transform .16s ease,box-shadow .16s ease!important;}
+.info-card:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(20,48,92,.14)!important;}
+
+@media(max-width:1280px){
+  .master-inventory-workspace{--enterprise-list-width:340px;}
+}
+@media(max-width:980px){
+  .enterprise-workspace-splitter{display:none!important;}
+  .master-inventory-workspace{grid-template-columns:1fr!important;gap:10px!important;}
+  .master-asset-list-panel,.master-asset-detail-panel{border:1px solid #dfe6ef!important;border-radius:13px!important;}
+  .master-inventory-workspace.enterprise-focus-detail>.master-asset-list-panel{display:none!important;}
+}
+@media(max-width:760px){
+  .master-app-topbar{height:62px!important;min-height:62px!important;padding:0 10px!important;}
+  .master-app-sidebar{top:auto!important;height:auto!important;}
+  .master-brand-emblem{width:40px;height:40px;flex-basis:40px;border-radius:11px;}
+  .master-brand-emblem .master-brand-logo{width:34px!important;height:34px!important;}
+  .enterprise-brand-copy small{display:none;}
+  .enterprise-brand-copy h1{font-size:13.5px!important;}
+  .enterprise-quick-filters{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;}
+  .enterprise-quick-filters button{flex:0 0 auto;}
+  .enterprise-focus-button{flex:1 1 auto;justify-content:center;}
+  .master-detail-header{top:0!important;margin:0 0 15px!important;padding:12px!important;border:1px solid #e1e8f1!important;border-radius:10px!important;}
+}
+</style>
+
 </head>
 
 <body>
@@ -1839,9 +2071,15 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
     <button type="button" class="master-menu-toggle" onclick="toggleMasterSidebar()" title="Buka / tutup menu" aria-label="Buka atau tutup menu">
       <i class="fa-solid fa-bars"></i>
     </button>
-    <div class="master-brand-title">
-      <img class="master-brand-logo" src="pkpj.png" alt="Logo PKPJ" onerror="if(this.dataset.logoTry!=='1'){this.dataset.logoTry='1';this.src='PKPJ.png';}else if(this.dataset.logoTry!=='2'){this.dataset.logoTry='2';this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/pkpj.png';}else{this.onerror=null;this.style.display='none';}">
-      <h1>Sistem Inventori Unit IT PKPJ</h1>
+    <div class="master-brand-title enterprise-brand-title">
+      <span class="master-brand-emblem" aria-hidden="true">
+        <img class="master-brand-logo" src="PKPJ.png" alt="Logo PKPJ" onerror="var n=Number(this.dataset.logoTry||0);this.dataset.logoTry=String(n+1);if(n===0){this.src='pkpj.png';}else if(n===1){this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/PKPJ.png';}else if(n===2){this.src='https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/pkpj.png';}else{this.onerror=null;this.style.display='none';this.parentElement.classList.add('logo-missing');}">
+        <i class="fa-solid fa-landmark master-brand-logo-placeholder"></i>
+      </span>
+      <span class="enterprise-brand-copy">
+        <h1>Sistem Inventori Unit IT PKPJ</h1>
+        <small>Pengurusan Aset & Rekod Perkakasan</small>
+      </span>
     </div>
   </header>
 
@@ -2012,6 +2250,7 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
         <div>
           <h2 id="masterInventoryPageTitle">Senarai Inventori</h2>
           <p id="masterInventoryPageSubtitle">Pilih aset daripada senarai di sebelah kiri untuk melihat maklumat penuh.</p>
+          <div id="enterpriseDataState" class="enterprise-data-state"><span></span><b>Menunggu data inventori...</b></div>
         </div>
         <div class="master-page-actions">
           <div class="master-view-toggle" aria-label="Pilihan paparan inventori">
@@ -2019,6 +2258,7 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
             <button type="button" id="masterTableViewBtn" onclick="setMasterInventoryMode('table')" title="Paparan jadual asal"><i class="fa-solid fa-list"></i></button>
           </div>
           <button type="button" id="masterBulkActionBtn" class="master-bulk-button" onclick="openBulkActionPage(document.getElementById('btnBulkActions'))"><i class="fa-solid fa-list-check"></i> Tindakan Pukal</button>
+          <button type="button" id="enterpriseFocusBtn" class="enterprise-focus-button" onclick="enterpriseToggleFocusMode()" title="Fokus pada maklumat aset"><i class="fa-solid fa-expand"></i> Fokus</button>
           <button type="button" class="master-export-button" onclick="exportExcel()"><i class="fa-solid fa-download"></i> Export CSV</button>
         </div>
       </div>
@@ -2049,11 +2289,21 @@ body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-258px)!i
               <button type="button" onclick="resetMasterListFilters()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
             </div>
             <div class="master-list-count">Jumlah aset: <strong id="masterInventoryCount">0</strong></div>
+            <div id="enterpriseQuickFilters" class="enterprise-quick-filters" aria-label="Penapis status pantas">
+              <button type="button" class="active" data-status="" onclick="enterpriseSetStatusFilter('',this)">Semua</button>
+              <button type="button" data-status="Baik" onclick="enterpriseSetStatusFilter('Baik',this)"><span class="qdot baik"></span>Baik</button>
+              <button type="button" data-status="Rosak" onclick="enterpriseSetStatusFilter('Rosak',this)"><span class="qdot rosak"></span>Rosak</button>
+              <button type="button" data-status="Pelupusan" onclick="enterpriseSetStatusFilter('Pelupusan',this)"><span class="qdot pelupusan"></span>Pelupusan</button>
+              <button type="button" data-status="Dipinjam" onclick="enterpriseSetStatusFilter('Dipinjam',this)"><span class="qdot dipinjam"></span>Dipinjam</button>
+              <button type="button" data-status="Dalam Baik Pulih" onclick="enterpriseSetStatusFilter('Dalam Baik Pulih',this)"><span class="qdot baikpulih"></span>Baik Pulih</button>
+            </div>
           </div>
           <div id="masterInventoryGroups" class="master-inventory-groups">
             <div class="master-list-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuatkan data inventori...</div>
           </div>
         </aside>
+
+        <div id="enterpriseWorkspaceSplitter" class="enterprise-workspace-splitter" role="separator" aria-orientation="vertical" aria-label="Ubah saiz panel senarai" title="Tarik untuk ubah lebar senarai; klik dua kali untuk reset"><span></span></div>
 
         <article id="masterAssetDetail" class="master-asset-detail-panel">
           <div class="master-empty-detail">
@@ -6550,6 +6800,175 @@ if(oldRefreshAllSelesai){
     window.setTimeout(scheduleMasterRender,2200);
   });
   window.addEventListener("load",function(){window.setTimeout(scheduleMasterRender,500);});
+})();
+</script>
+
+
+<script id="enterpriseUpgrade20260809Script">
+(function(){
+  "use strict";
+  const WIDTH_KEY = "pkpj.enterprise.listWidth.v3";
+  const SIDEBAR_KEY = "pkpj.enterprise.sidebarCollapsed.v3";
+  const DEFAULT_WIDTH = 385;
+
+  function qs(id){ return document.getElementById(id); }
+
+  window.enterpriseSetStatusFilter = function(status, button){
+    const select = qs("masterStatusFilter");
+    if(select) select.value = status || "";
+    document.querySelectorAll("#enterpriseQuickFilters button").forEach(function(btn){
+      btn.classList.toggle("active", String(btn.dataset.status || "") === String(status || ""));
+    });
+    if(typeof renderMasterInventory === "function") renderMasterInventory();
+  };
+
+  function syncQuickFilter(){
+    const select = qs("masterStatusFilter");
+    const value = select ? String(select.value || "") : "";
+    document.querySelectorAll("#enterpriseQuickFilters button").forEach(function(btn){
+      btn.classList.toggle("active", String(btn.dataset.status || "") === value);
+    });
+  }
+
+  window.enterpriseToggleFocusMode = function(){
+    const workspace = qs("masterInventoryWorkspace");
+    const btn = qs("enterpriseFocusBtn");
+    if(!workspace) return;
+    const active = workspace.classList.toggle("enterprise-focus-detail");
+    if(btn){
+      btn.classList.toggle("active",active);
+      btn.innerHTML = active
+        ? '<i class="fa-solid fa-compress"></i> Senarai'
+        : '<i class="fa-solid fa-expand"></i> Fokus';
+      btn.title = active ? "Kembali ke senarai aset" : "Fokus pada maklumat aset";
+    }
+  };
+
+  function clampWidth(value, workspace){
+    const total = workspace ? workspace.getBoundingClientRect().width : 1200;
+    const max = Math.max(360, Math.min(590, total * .48));
+    return Math.max(300, Math.min(max, Number(value) || DEFAULT_WIDTH));
+  }
+
+  function setListWidth(px, persist){
+    const workspace = qs("masterInventoryWorkspace");
+    if(!workspace || window.innerWidth <= 980) return;
+    const width = Math.round(clampWidth(px,workspace));
+    workspace.style.setProperty("--enterprise-list-width", width + "px");
+    if(persist){
+      try{ localStorage.setItem(WIDTH_KEY,String(width)); }catch(e){}
+    }
+  }
+
+  function initSplitter(){
+    const splitter = qs("enterpriseWorkspaceSplitter");
+    const workspace = qs("masterInventoryWorkspace");
+    if(!splitter || !workspace) return;
+    let startX = 0;
+    let startWidth = DEFAULT_WIDTH;
+    let dragging = false;
+
+    try{
+      const stored = Number(localStorage.getItem(WIDTH_KEY));
+      if(stored) setListWidth(stored,false);
+    }catch(e){}
+
+    function move(ev){
+      if(!dragging) return;
+      setListWidth(startWidth + (ev.clientX - startX),false);
+    }
+    function up(){
+      if(!dragging) return;
+      dragging = false;
+      document.body.classList.remove("enterprise-resizing");
+      const computed = getComputedStyle(workspace).getPropertyValue("--enterprise-list-width");
+      const value = parseFloat(computed) || DEFAULT_WIDTH;
+      setListWidth(value,true);
+      window.removeEventListener("pointermove",move);
+      window.removeEventListener("pointerup",up);
+      window.removeEventListener("pointercancel",up);
+    }
+    splitter.addEventListener("pointerdown",function(ev){
+      if(window.innerWidth <= 980) return;
+      dragging = true;
+      startX = ev.clientX;
+      const list = workspace.querySelector(".master-asset-list-panel");
+      startWidth = list ? list.getBoundingClientRect().width : DEFAULT_WIDTH;
+      document.body.classList.add("enterprise-resizing");
+      splitter.setPointerCapture?.(ev.pointerId);
+      window.addEventListener("pointermove",move);
+      window.addEventListener("pointerup",up);
+      window.addEventListener("pointercancel",up);
+      ev.preventDefault();
+    });
+    splitter.addEventListener("dblclick",function(){ setListWidth(DEFAULT_WIDTH,true); });
+  }
+
+  function updateDataState(){
+    const state = qs("enterpriseDataState");
+    const countEl = qs("masterInventoryCount");
+    if(!state || !countEl) return;
+    const count = Number(String(countEl.textContent || "0").replace(/[^0-9]/g,"")) || 0;
+    state.classList.remove("ready","empty");
+    if(count > 0){
+      state.classList.add("ready");
+      state.querySelector("b").textContent = count + " aset aktif dipaparkan";
+    }else{
+      state.classList.add("empty");
+      state.querySelector("b").textContent = "Tiada aset dipaparkan untuk penapis semasa";
+    }
+  }
+
+  function initDataStateObserver(){
+    const countEl = qs("masterInventoryCount");
+    if(!countEl || typeof MutationObserver === "undefined") return;
+    new MutationObserver(updateDataState).observe(countEl,{childList:true,subtree:true,characterData:true});
+    updateDataState();
+  }
+
+  function initSidebarPersistence(){
+    try{
+      if(localStorage.getItem(SIDEBAR_KEY) === "1") document.body.classList.add("master-sidebar-collapsed");
+    }catch(e){}
+    const toggle = document.querySelector(".master-menu-toggle");
+    if(toggle){
+      toggle.addEventListener("click",function(){
+        window.setTimeout(function(){
+          try{ localStorage.setItem(SIDEBAR_KEY,document.body.classList.contains("master-sidebar-collapsed") ? "1" : "0"); }catch(e){}
+        },0);
+      });
+    }
+  }
+
+  function initKeyboard(){
+    document.addEventListener("keydown",function(ev){
+      if((ev.ctrlKey || ev.metaKey) && String(ev.key).toLowerCase() === "k"){
+        const page = qs("tablePage");
+        const input = qs("masterInventorySearch");
+        if(page && page.classList.contains("active") && input && !qs("masterInventoryWorkspace")?.hidden){
+          ev.preventDefault();
+          input.focus();
+          input.select();
+        }
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded",function(){
+    initSplitter();
+    initDataStateObserver();
+    initSidebarPersistence();
+    initKeyboard();
+    qs("masterStatusFilter")?.addEventListener("change",syncQuickFilter);
+    window.addEventListener("resize",function(){
+      try{
+        const stored = Number(localStorage.getItem(WIDTH_KEY));
+        if(stored) setListWidth(stored,false);
+      }catch(e){}
+    });
+    window.setTimeout(function(){syncQuickFilter();updateDataState();},500);
+    window.setTimeout(updateDataState,1800);
+  });
 })();
 </script>
 
