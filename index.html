@@ -2168,7 +2168,14 @@ updateDateTime();
 setInterval(updateDateTime, 1000);
 
 window.onload = function(){
-  refreshAll();
+  refreshAll().catch(function(err){
+    console.error("Ralat startup refreshAll:", err);
+    // Cuba load inventori secara terus sekiranya fungsi clearForm/staff/history bermasalah.
+    load().catch(function(loadErr){
+      console.error("Ralat startup load:", loadErr);
+      alert("Gagal load data inventori: " + loadErr.message);
+    });
+  });
 };
 
 function initYears(){
@@ -2289,20 +2296,91 @@ function checkApiUrl(){
   return true;
 }
 
-function jsonp(params){
+/* ===== FIX LOAD GITHUB PAGES: FETCH + JSONP FALLBACK =====
+   Semua fungsi asal kekal memanggil jsonp(...).
+   Fungsi ini cuba fetch JSON dahulu. Jika browser/Google block CORS,
+   ia automatik fallback kepada JSONP asal. ===== */
+async function jsonp(params){
+  if(!checkApiUrl()){
+    throw new Error("API_URL belum dimasukkan");
+  }
+
+  const cleanParams = Object.assign({}, params || {});
+  delete cleanParams.callback;
+  cleanParams._ts = Date.now();
+
+  const query = Object.keys(cleanParams)
+    .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(cleanParams[k] == null ? "" : cleanParams[k]))
+    .join("&");
+
+  const requestUrl = API_URL + "?" + query;
+
+  // Cuba GET JSON biasa dahulu. Ini lebih sesuai untuk response data yang besar.
+  try{
+    const response = await fetch(requestUrl, {
+      method: "GET",
+      cache: "no-store",
+      redirect: "follow"
+    });
+
+    if(!response.ok){
+      throw new Error("HTTP " + response.status + " " + response.statusText);
+    }
+
+    const raw = await response.text();
+    const trimmed = String(raw || "").trim();
+
+    if(!trimmed){
+      throw new Error("Apps Script pulangkan response kosong");
+    }
+
+    // Jika Google pulangkan halaman HTML/login, jangan cuba parse sebagai JSON.
+    if(trimmed.charAt(0) === "<"){
+      throw new Error("Apps Script pulangkan HTML, bukan JSON");
+    }
+
+    return JSON.parse(trimmed);
+  }catch(fetchErr){
+    console.warn("Fetch API gagal, cuba JSONP fallback:", fetchErr);
+  }
+
+  // Fallback JSONP asal untuk kes CORS / redirect Apps Script.
   return new Promise((resolve, reject) => {
-    if(!checkApiUrl()){reject(new Error("API_URL belum dimasukkan"));return;}
     const callbackName = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
-    params = params || {};
-    params.callback = callbackName;
-    const query = Object.keys(params).map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k] == null ? "" : params[k])).join("&");
+    const jsonpParams = Object.assign({}, params || {});
+    jsonpParams.callback = callbackName;
+    jsonpParams._ts = Date.now();
+
+    const jsonpQuery = Object.keys(jsonpParams)
+      .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(jsonpParams[k] == null ? "" : jsonpParams[k]))
+      .join("&");
+
     const script = document.createElement("script");
-    const timer = setTimeout(() => {cleanup();reject(new Error("Timeout baca data daripada Apps Script"));}, 25000);
-    function cleanup(){clearTimeout(timer);delete window[callbackName];if(script.parentNode){script.parentNode.removeChild(script)}}
-    window[callbackName] = function(data){cleanup();resolve(data);};
-    script.onerror = function(){cleanup();reject(new Error("Gagal hubungi Apps Script API"));};
-    script.src = API_URL + "?" + query;
-    document.body.appendChild(script);
+    script.async = true;
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("Timeout baca data daripada Apps Script selepas cuba Fetch dan JSONP"));
+    }, 60000);
+
+    function cleanup(){
+      clearTimeout(timer);
+      try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
+      if(script.parentNode){ script.parentNode.removeChild(script); }
+    }
+
+    window[callbackName] = function(data){
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = function(){
+      cleanup();
+      reject(new Error("Gagal hubungi Apps Script API melalui Fetch dan JSONP"));
+    };
+
+    script.src = API_URL + "?" + jsonpQuery;
+    (document.head || document.body || document.documentElement).appendChild(script);
   });
 }
 
