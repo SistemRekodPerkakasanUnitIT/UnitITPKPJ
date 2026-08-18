@@ -2348,18 +2348,27 @@ body.enterprise-resizing *{cursor:col-resize!important;}
         <div>
           <span class="settings-kicker"><i class="fa-solid fa-palette"></i> PAPARAN SISTEM</span>
           <h2>Setting Paparan</h2>
-          <p>Kemaskini gambar latar untuk dashboard Laman Utama dan sidebar. Tetapan disimpan di Apps Script supaya digunakan pada peranti lain juga.</p>
+          <p>Background dashboard dan sidebar dibaca terus daripada GitHub Pages. Tiada upload Google Drive digunakan untuk background, jadi paparan lebih laju dan tidak terikat dengan permission Drive.</p>
         </div>
         <button type="button" class="btn-back-main" onclick="showPage('dashboardPage',document.getElementById('btnDashboard'))"><i class="fa-solid fa-arrow-left"></i> Laman Utama</button>
+      </div>
+
+      <div class="settings-github-note">
+        <i class="fa-brands fa-github"></i>
+        <div><b>Kaedah disyorkan</b><span>Upload gambar ke folder <code>images</code> dalam repository GitHub. Kemudian masukkan path seperti <code>images/dashboard-bg.webp</code>. Anda juga boleh guna URL HTTPS penuh.</span></div>
       </div>
 
       <div class="settings-grid">
         <article class="settings-card">
           <div class="settings-card-title"><i class="fa-solid fa-house"></i><div><b>Background Dashboard</b><span>Latar belakang halaman Laman Utama.</span></div></div>
           <div id="dashboardBgPreview" class="settings-preview"><span><i class="fa-regular fa-image"></i> Tiada gambar khas</span></div>
-          <input id="dashboardBgFile" type="file" accept="image/*" hidden onchange="chooseSettingBackground('dashboard',this.files && this.files[0]);this.value='';">
+          <label class="settings-url-label" for="dashboardBgUrl">Path / URL GitHub</label>
+          <div class="settings-url-row">
+            <input id="dashboardBgUrl" type="text" autocomplete="off" placeholder="images/dashboard-bg.webp" onkeydown="if(event.key==='Enter'){event.preventDefault();previewSettingBackground('dashboard');}">
+            <button type="button" class="settings-preview-btn" onclick="previewSettingBackground('dashboard')"><i class="fa-solid fa-eye"></i> Preview</button>
+          </div>
           <div class="settings-actions">
-            <button type="button" class="settings-upload" onclick="document.getElementById('dashboardBgFile').click()"><i class="fa-solid fa-upload"></i> Pilih Gambar</button>
+            <button type="button" class="settings-example" onclick="useSettingExample('dashboard')"><i class="fa-brands fa-github"></i> Guna Contoh Path</button>
             <button type="button" class="settings-clear" onclick="clearSettingBackground('dashboard')"><i class="fa-solid fa-trash"></i> Buang</button>
           </div>
           <div id="dashboardBgStatus" class="settings-status"></div>
@@ -2368,9 +2377,13 @@ body.enterprise-resizing *{cursor:col-resize!important;}
         <article class="settings-card">
           <div class="settings-card-title"><i class="fa-solid fa-bars"></i><div><b>Background Sidebar</b><span>Latar belakang panel menu sebelah kiri.</span></div></div>
           <div id="sidebarBgPreview" class="settings-preview"><span><i class="fa-regular fa-image"></i> Tiada gambar khas</span></div>
-          <input id="sidebarBgFile" type="file" accept="image/*" hidden onchange="chooseSettingBackground('sidebar',this.files && this.files[0]);this.value='';">
+          <label class="settings-url-label" for="sidebarBgUrl">Path / URL GitHub</label>
+          <div class="settings-url-row">
+            <input id="sidebarBgUrl" type="text" autocomplete="off" placeholder="images/sidebar-bg.webp" onkeydown="if(event.key==='Enter'){event.preventDefault();previewSettingBackground('sidebar');}">
+            <button type="button" class="settings-preview-btn" onclick="previewSettingBackground('sidebar')"><i class="fa-solid fa-eye"></i> Preview</button>
+          </div>
           <div class="settings-actions">
-            <button type="button" class="settings-upload" onclick="document.getElementById('sidebarBgFile').click()"><i class="fa-solid fa-upload"></i> Pilih Gambar</button>
+            <button type="button" class="settings-example" onclick="useSettingExample('sidebar')"><i class="fa-brands fa-github"></i> Guna Contoh Path</button>
             <button type="button" class="settings-clear" onclick="clearSettingBackground('sidebar')"><i class="fa-solid fa-trash"></i> Buang</button>
           </div>
           <div id="sidebarBgStatus" class="settings-status"></div>
@@ -2378,7 +2391,7 @@ body.enterprise-resizing *{cursor:col-resize!important;}
       </div>
 
       <div class="settings-save-bar">
-        <span><i class="fa-solid fa-circle-info"></i> Disyorkan gambar JPG/PNG landskap dan saiz sederhana untuk paparan lebih laju.</span>
+        <span><i class="fa-solid fa-bolt"></i> Untuk kelajuan terbaik, guna WebP/JPG sekitar 1600px lebar untuk dashboard dan 500-800px untuk sidebar. Path relatif GitHub Pages paling ringkas.</span>
         <button id="saveDisplaySettingsBtn" type="button" onclick="saveDisplaySettings()"><i class="fa-solid fa-floppy-disk"></i> Simpan Tetapan</button>
       </div>
     </div>
@@ -3986,6 +3999,7 @@ async function uploadDeviceImages(id, showAlert){
     const gambarEl = document.getElementById("gambar_" + id);
     const existingUrls = parseGambarUrls(gambarEl ? gambarEl.value : "");
     const uploadedUrls = [];
+    const sharingWarnings = [];
 
     for(let i = 0; i < files.length; i++){
       const file = files[i];
@@ -4008,6 +4022,7 @@ async function uploadDeviceImages(id, showAlert){
         throw new Error((res && res.message) ? res.message : "Upload gagal: " + file.name);
       }
       uploadedUrls.push(res.directUrl || res.url);
+      if(res.publicSharing === false && res.sharingWarning){sharingWarnings.push(res.sharingWarning);}
     }
 
     if(gambarEl){gambarEl.value = joinGambarUrls(existingUrls.concat(uploadedUrls));}
@@ -4016,7 +4031,11 @@ async function uploadDeviceImages(id, showAlert){
     updateDeviceGambarPreview(id);
     deviceFiles[id] = [];
     renderDeviceFiles(id);
-    if(showAlert){alert("UPLOAD OK. Link gambar sudah masuk.");}
+    if(sharingWarnings.length){
+      const warning="Gambar berjaya disimpan ke Google Drive, tetapi perkongsian awam disekat oleh organisasi. Gambar hanya boleh dilihat oleh pengguna yang mempunyai akses Drive.";
+      console.warn(warning);
+      if(showAlert)alert(warning);
+    }else if(showAlert){alert("UPLOAD OK. Link gambar sudah masuk.");}
     return true;
   }catch(err){
     alert("Ralat upload gambar: " + err.message);
@@ -5668,8 +5687,9 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .settings-card{background:#fff;border:1px solid #dfe7f1;border-radius:15px;padding:16px;box-shadow:0 8px 24px rgba(26,51,90,.05);}
 .settings-card-title{display:flex;gap:11px;align-items:center;margin-bottom:12px;}.settings-card-title>i{width:40px;height:40px;border-radius:10px;background:#eaf2ff;color:#145fd2;display:grid;place-items:center;font-size:16px;}.settings-card-title b{display:block;color:#172642;font-size:13px;}.settings-card-title span{display:block;margin-top:3px;color:#7b8799;font-size:10px;}
-.settings-preview{height:185px;border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc center/cover no-repeat;display:grid;place-items:center;overflow:hidden;color:#8794a8;text-align:center;}.settings-preview span{background:rgba(255,255,255,.88);padding:8px 11px;border-radius:8px;font-size:10px;font-weight:800;}
-.settings-actions{display:flex;gap:8px;margin-top:10px;}.settings-actions button{flex:1;min-height:38px;}.settings-upload{background:#1767dc;color:#fff;}.settings-clear{background:#eef2f7;color:#475569;}
+.settings-preview{height:185px;border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc center/cover no-repeat;display:grid;place-items:center;overflow:hidden;color:#8794a8;text-align:center;}.settings-preview span{background:rgba(255,255,255,.88);padding:8px 11px;border-radius:8px;font-size:10px;font-weight:800;backdrop-filter:blur(4px);}
+.settings-github-note{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding:13px 15px;border:1px solid #bfdbfe;border-radius:13px;background:linear-gradient(135deg,#eff6ff,#f5f3ff);color:#334155;}.settings-github-note>i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#111827;color:#fff;font-size:18px;flex:0 0 auto;}.settings-github-note b{display:block;font-size:11.5px;color:#172642;margin-bottom:3px;}.settings-github-note span{display:block;font-size:10.5px;line-height:1.5;color:#64748b;}.settings-github-note code{background:rgba(255,255,255,.8);border:1px solid #dbeafe;border-radius:5px;padding:1px 5px;color:#1d4ed8;font-size:10px;}
+.settings-url-label{display:block;margin-top:11px;margin-bottom:5px;color:#475569;font-size:10px;font-weight:900;}.settings-url-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;}.settings-url-row input{min-height:40px;border-radius:9px;font-size:11.5px;font-weight:700;color:#172642;background:#fbfdff;}.settings-preview-btn{min-height:40px;background:#1767dc;color:#fff;white-space:nowrap;}.settings-actions{display:flex;gap:8px;margin-top:10px;}.settings-actions button{flex:1;min-height:38px;}.settings-example{background:#111827;color:#fff;}.settings-clear{background:#eef2f7;color:#475569;}
 .settings-status{min-height:18px;margin-top:8px;color:#536176;font-size:10.5px;font-weight:700;}
 .settings-save-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;background:#fff;border:1px solid #dfe7f1;border-radius:13px;padding:13px 15px;}.settings-save-bar span{color:#64748b;font-size:10.5px;}.settings-save-bar button{background:#16a34a;color:#fff;min-width:160px;}
 
@@ -5720,7 +5740,7 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
   #formPage .upload-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}#formPage .upload-row button{width:100%!important;min-height:40px!important;}
   #formPage .form-buttons{position:sticky!important;bottom:0!important;z-index:3!important;background:#fff!important;margin:8px -10px -10px!important;padding:10px!important;display:grid!important;grid-template-columns:1fr 1fr!important;box-shadow:0 -8px 20px rgba(15,23,42,.08)!important;}.form-buttons button{width:100%!important;min-height:42px!important;}
 
-  .settings-page-head{padding:15px!important;flex-direction:column!important;}.settings-page-head h2{font-size:21px!important;}.settings-page-head .btn-back-main{width:100%!important;}.settings-grid{grid-template-columns:1fr!important;gap:10px!important;}.settings-preview{height:145px!important;}.settings-save-bar{align-items:stretch!important;flex-direction:column!important;}.settings-save-bar button{width:100%!important;}.settings-actions{display:grid!important;grid-template-columns:1fr 1fr!important;}
+  .settings-page-head{padding:15px!important;flex-direction:column!important;}.settings-page-head h2{font-size:21px!important;}.settings-page-head .btn-back-main{width:100%!important;}.settings-grid{grid-template-columns:1fr!important;gap:10px!important;}.settings-preview{height:145px!important;}.settings-save-bar{align-items:stretch!important;flex-direction:column!important;}.settings-save-bar button{width:100%!important;}.settings-url-row{grid-template-columns:1fr!important;}.settings-url-row .settings-preview-btn{width:100%!important;}.settings-actions{display:grid!important;grid-template-columns:1fr 1fr!important;}.settings-github-note{padding:11px!important;}
 }
 @media(max-width:390px){
   .enterprise-dashboard-stats{gap:7px!important;}.enterprise-stat-card{grid-template-columns:36px minmax(0,1fr)!important;padding:10px 8px!important;}.enterprise-stat-icon{width:36px!important;height:36px!important;font-size:16px!important;}.enterprise-stat-copy strong{font-size:21px!important;}.enterprise-stat-copy button i{display:none!important;}
@@ -7366,24 +7386,38 @@ function renderDisplaySettingsPreview(){
   });
 }
 function setSettingStatus(kind,text){const el=document.getElementById(kind==="dashboard"?"dashboardBgStatus":"sidebarBgStatus");if(el)el.textContent=text||"";}
-window.openDisplaySettings=function(btn){showPage("settingsPage",btn||document.getElementById("btnSettings"));renderDisplaySettingsPreview();closeMobileSidebar();};
-window.chooseSettingBackground=async function(kind,file){
-  if(!file)return;
-  if(!file.type || file.type.indexOf("image/")!==0){alert("Sila pilih fail gambar JPG/PNG.");return;}
-  setSettingStatus(kind,"Sedang memproses dan upload gambar...");
+function getSettingInput(kind){return document.getElementById(kind==="dashboard"?"dashboardBgUrl":"sidebarBgUrl");}
+function normalizeGithubBackgroundPath(value){
+  value=String(value||"").trim();
+  if(!value)return "";
+  if(/^javascript:/i.test(value)||/^data:/i.test(value)||/^blob:/i.test(value))throw new Error("Path/URL background tidak dibenarkan.");
+  if(/^https?:\/\//i.test(value))return value;
+  value=value.replace(/^\.\//,"").replace(/^\/+/,"");
+  if(value.indexOf("..")>-1)throw new Error("Path tidak sah. Guna path dalam repository seperti images/dashboard-bg.webp");
+  return value;
+}
+function syncDisplaySettingInputs(){
+  const d=getSettingInput("dashboard"),s=getSettingInput("sidebar");
+  if(d)d.value=displaySettings.dashboardBackground||"";
+  if(s)s.value=displaySettings.sidebarBackground||"";
+}
+window.openDisplaySettings=function(btn){showPage("settingsPage",btn||document.getElementById("btnSettings"));syncDisplaySettingInputs();renderDisplaySettingsPreview();closeMobileSidebar();};
+window.previewSettingBackground=function(kind){
   try{
-    const prepared=await prepareImageForUpload(file);
-    const uploadId="setting_"+kind+"_"+Date.now()+"_"+Math.floor(Math.random()*100000);
-    submitHiddenForm({action:"uploadForm",uploadId:uploadId,fileName:"setting_"+kind+"_"+prepared.fileName,mimeType:prepared.mimeType,image:prepared.base64.split(",")[1]});
-    const res=await waitUploadResultFast(uploadId);
-    if(!res || res.status!=="OK") throw new Error((res&&res.message)||"Upload gagal");
-    if(kind==="dashboard")displaySettings.dashboardBackground=res.directUrl||res.url||"";
-    else displaySettings.sidebarBackground=res.directUrl||res.url||"";
+    const input=getSettingInput(kind);const value=normalizeGithubBackgroundPath(input?input.value:"");
+    if(kind==="dashboard")displaySettings.dashboardBackground=value;else displaySettings.sidebarBackground=value;
+    if(input)input.value=value;
     applyDisplaySettings(displaySettings);
-    setSettingStatus(kind,"Gambar sedia. Tekan Simpan Tetapan.");
-  }catch(err){setSettingStatus(kind,"");alert("Gagal upload background: "+err.message);}
+    setSettingStatus(kind,value?"Preview digunakan. Jika sudah sesuai, tekan Simpan Tetapan.":"Tiada background dipilih.");
+  }catch(err){setSettingStatus(kind,"");alert(err.message);}
+};
+window.useSettingExample=function(kind){
+  const input=getSettingInput(kind);if(!input)return;
+  input.value=kind==="dashboard"?"images/dashboard-bg.webp":"images/sidebar-bg.webp";
+  previewSettingBackground(kind);
 };
 window.clearSettingBackground=function(kind){
+  const input=getSettingInput(kind);if(input)input.value="";
   if(kind==="dashboard")displaySettings.dashboardBackground="";else displaySettings.sidebarBackground="";
   applyDisplaySettings(displaySettings);setSettingStatus(kind,"Background akan dibuang selepas Simpan Tetapan.");
 };
@@ -7406,12 +7440,15 @@ async function waitUploadResultFast(uploadId){
 window.saveDisplaySettings=async function(){
   const btn=document.getElementById("saveDisplaySettingsBtn");if(btn)btn.disabled=true;
   try{
+    const d=normalizeGithubBackgroundPath((getSettingInput("dashboard")||{}).value||"");
+    const s=normalizeGithubBackgroundPath((getSettingInput("sidebar")||{}).value||"");
+    displaySettings.dashboardBackground=d;displaySettings.sidebarBackground=s;applyDisplaySettings(displaySettings);
     const requestId="settings_"+Date.now()+"_"+Math.floor(Math.random()*100000);
-    submitHiddenForm({action:"saveSettings",requestId:requestId,dashboardBackground:displaySettings.dashboardBackground,sidebarBackground:displaySettings.sidebarBackground,replaceSettings:"1"});
+    submitHiddenForm({action:"saveSettings",requestId:requestId,dashboardBackground:d,sidebarBackground:s,replaceSettings:"1"});
     const res=await waitSaveResultFast(requestId);
     if(!res || res.status!=="OK") throw new Error((res&&res.message)||"Gagal simpan tetapan");
-    applyDisplaySettings(res.settings||res);
-    showToast("Tetapan paparan berjaya disimpan");
+    applyDisplaySettings(res.settings||res);syncDisplaySettingInputs();
+    showToast("Tetapan paparan GitHub berjaya disimpan");
   }catch(err){alert("Gagal simpan tetapan: "+err.message);}finally{if(btn)btn.disabled=false;}
 };
 
@@ -7483,6 +7520,7 @@ quickUpdateAsset = async function(row,updates,successText){
   }catch(err){alert("Gagal kemaskini aset: "+err.message);}finally{isSaving=false;setStatus("");}
 };
 
+/* V6: Background dashboard/sidebar menggunakan path GitHub Pages; tiada upload Drive untuk background. */
 /* Poll upload lebih kerap tetapi ringan. */
 waitUploadResult = waitUploadResultFast;
 
