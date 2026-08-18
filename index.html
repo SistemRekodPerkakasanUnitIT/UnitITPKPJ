@@ -2148,9 +2148,11 @@ body.enterprise-resizing *{cursor:col-resize!important;}
         <button id="btnStaffDirectory" onclick="showPage('staffDirectoryPage', this); toggleStaffSubmenu(true); renderStaffDirectory();"><span class="master-sub-dot">•</span><span>Senarai Nama Staff</span></button>
         <button id="btnBirthdayStaff" onclick="showPage('birthdayStaffPage', this); toggleStaffSubmenu(true); renderBirthdayStaff();"><span class="master-sub-dot">•</span><span>Birthday Staff</span></button>
       </div>
+      <button id="btnSettings" onclick="openDisplaySettings(this)"><i class="fa-solid fa-gear"></i><span>Setting Paparan</span></button>
     </div>
     <div class="master-sidebar-version">v1.0.0</div>
   </aside>
+  <div id="mobileSidebarOverlay" class="mobile-sidebar-overlay" onclick="closeMobileSidebar()" aria-hidden="true"></div>
 
   <main class="main">
     <div id="successToast" class="success-toast">Data berjaya dimuatkan</div>
@@ -2181,42 +2183,34 @@ body.enterprise-resizing *{cursor:col-resize!important;}
         <article class="enterprise-stat-card stat-blue" onclick="filterDashboard('all','')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
           <div class="enterprise-stat-copy"><strong id="total">0</strong><span>Jumlah Aset</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-total" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-green" onclick="filterDashboard('status','Baik')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
           <div class="enterprise-stat-copy"><strong id="baik">0</strong><span>Baik</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-baik" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-red" onclick="filterDashboard('status','Rosak')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
           <div class="enterprise-stat-copy"><strong id="rosak">0</strong><span>Rosak</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-rosak" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-purple" onclick="filterDashboard('status','Dalam Baik Pulih')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-screwdriver"></i></div>
           <div class="enterprise-stat-copy"><strong id="dalamBaikPulih">0</strong><span>Dalam Baik Pulih</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-baikpulih" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-cyan" onclick="filterDashboard('status','Dipinjam')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-hand-holding"></i></div>
           <div class="enterprise-stat-copy"><strong id="dipinjam">0</strong><span>Dipinjam</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-dipinjam" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-teal" onclick="filterDashboard('status','Dipulangkan')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-rotate-left"></i></div>
           <div class="enterprise-stat-copy"><strong id="dipulangkan">0</strong><span>Dipulangkan</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-dipulangkan" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-orange" onclick="filterDashboard('status','Pelupusan')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-trash-can"></i></div>
           <div class="enterprise-stat-copy"><strong id="pelupusan">0</strong><span>Pelupusan</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-pelupusan" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
         <article class="enterprise-stat-card stat-slate" onclick="filterDashboard('status','Hilang')">
           <div class="enterprise-stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
           <div class="enterprise-stat-copy"><strong id="hilang">0</strong><span>Hilang</span><button type="button">Lihat Butiran <i class="fa-solid fa-arrow-right"></i></button></div>
-          <svg class="enterprise-stat-spark" id="spark-hilang" viewBox="0 0 120 42" preserveAspectRatio="none" aria-hidden="true"></svg>
         </article>
       </section>
 
@@ -2279,15 +2273,16 @@ body.enterprise-resizing *{cursor:col-resize!important;}
           <input type="hidden" id="editingRow">
 
           <div class="form-grid">
-            <div class="field">
-              <label>Tahun</label>
+            <div class="field inventory-primary-year">
+              <label>Tahun <span class="req">*</span></label>
               <select id="tahun"></select>
+              <div class="inventory-primary-hint">Pilih tahun rekod aset dahulu.</div>
             </div>
 
-            <div class="field half-width">
-              <label>Nama Staff <span class="req">*</span></label>
+            <div class="field half-width inventory-primary-name">
+              <label>Nama / Lokasi / Pemegang <span class="req">*</span></label>
               <div class="staff-search-row">
-                <input type="text" id="namaStaffSearch" list="staffNameDatalist" autocomplete="off" placeholder="Taip nama staff... contoh: Ahm / Nizam / Ali" oninput="filterStaffOptions()" onkeydown="if(event.key==='Enter'){event.preventDefault();filterStaffOptions();}">
+                <input type="text" id="namaStaffSearch" list="staffNameDatalist" autocomplete="off" placeholder="Contoh: Ahmad / WiFi PPR Kempas / Bilik Mesyuarat" oninput="filterStaffOptions()" onkeydown="if(event.key==='Enter'){event.preventDefault();filterStaffOptions();}">
                 <datalist id="staffNameDatalist"></datalist>
                 <button type="button" onclick="filterStaffOptions()"><i class="fa-solid fa-magnifying-glass"></i> Cari</button>
               </div>
@@ -2302,7 +2297,7 @@ body.enterprise-resizing *{cursor:col-resize!important;}
                 <option value="Lain-lain">Lain-lain</option>
               </select>
               <input id="namaStaffManual" placeholder="Masukkan nama staff secara manual..." style="display:none;margin-top:8px;">
-              <div class="note">Taip contoh <b>Ahm</b>; sistem akan cadangkan nama daripada senarai staff Excel. Kotak pilih staff lama disorok untuk jimat ruang.</div>
+              <div class="note">Medan utama ini boleh diisi dengan <b>nama staff</b>, <b>lokasi</b> atau label pemasangan/peralatan seperti <b>WiFi PPR Kempas</b>. Jika sepadan dengan senarai staff, cadangan akan dipaparkan automatik.</div>
               <div id="staffFilterNote" class="staff-filter-note"></div>
             </div>
 
@@ -2344,6 +2339,47 @@ body.enterprise-resizing *{cursor:col-resize!important;}
           </div>
           <div id="statusLine" class="status-line"></div>
         </div>
+      </div>
+    </div>
+
+
+    <div id="settingsPage" class="page settings-page">
+      <div class="settings-page-head">
+        <div>
+          <span class="settings-kicker"><i class="fa-solid fa-palette"></i> PAPARAN SISTEM</span>
+          <h2>Setting Paparan</h2>
+          <p>Kemaskini gambar latar untuk dashboard Laman Utama dan sidebar. Tetapan disimpan di Apps Script supaya digunakan pada peranti lain juga.</p>
+        </div>
+        <button type="button" class="btn-back-main" onclick="showPage('dashboardPage',document.getElementById('btnDashboard'))"><i class="fa-solid fa-arrow-left"></i> Laman Utama</button>
+      </div>
+
+      <div class="settings-grid">
+        <article class="settings-card">
+          <div class="settings-card-title"><i class="fa-solid fa-house"></i><div><b>Background Dashboard</b><span>Latar belakang halaman Laman Utama.</span></div></div>
+          <div id="dashboardBgPreview" class="settings-preview"><span><i class="fa-regular fa-image"></i> Tiada gambar khas</span></div>
+          <input id="dashboardBgFile" type="file" accept="image/*" hidden onchange="chooseSettingBackground('dashboard',this.files && this.files[0]);this.value='';">
+          <div class="settings-actions">
+            <button type="button" class="settings-upload" onclick="document.getElementById('dashboardBgFile').click()"><i class="fa-solid fa-upload"></i> Pilih Gambar</button>
+            <button type="button" class="settings-clear" onclick="clearSettingBackground('dashboard')"><i class="fa-solid fa-trash"></i> Buang</button>
+          </div>
+          <div id="dashboardBgStatus" class="settings-status"></div>
+        </article>
+
+        <article class="settings-card">
+          <div class="settings-card-title"><i class="fa-solid fa-bars"></i><div><b>Background Sidebar</b><span>Latar belakang panel menu sebelah kiri.</span></div></div>
+          <div id="sidebarBgPreview" class="settings-preview"><span><i class="fa-regular fa-image"></i> Tiada gambar khas</span></div>
+          <input id="sidebarBgFile" type="file" accept="image/*" hidden onchange="chooseSettingBackground('sidebar',this.files && this.files[0]);this.value='';">
+          <div class="settings-actions">
+            <button type="button" class="settings-upload" onclick="document.getElementById('sidebarBgFile').click()"><i class="fa-solid fa-upload"></i> Pilih Gambar</button>
+            <button type="button" class="settings-clear" onclick="clearSettingBackground('sidebar')"><i class="fa-solid fa-trash"></i> Buang</button>
+          </div>
+          <div id="sidebarBgStatus" class="settings-status"></div>
+        </article>
+      </div>
+
+      <div class="settings-save-bar">
+        <span><i class="fa-solid fa-circle-info"></i> Disyorkan gambar JPG/PNG landskap dan saiz sederhana untuk paparan lebih laju.</span>
+        <button id="saveDisplaySettingsBtn" type="button" onclick="saveDisplaySettings()"><i class="fa-solid fa-floppy-disk"></i> Simpan Tetapan</button>
       </div>
     </div>
 
@@ -5607,7 +5643,91 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
   }
 }
 
-</style></head><body>${htmlContent}<script>window.onload=function(){setTimeout(function(){window.print();},400)}<\/script></body></html>`);
+</style>
+<style id="requestedMobileSettingsSpeedStyles">
+/* ===== Permintaan 18-08-2026: mobile, borang utama, settings ===== */
+.inventory-primary-year,.inventory-primary-name{background:#f8fbff;border:1px solid #d9e7fb;border-radius:12px;padding:12px;}
+.inventory-primary-year{grid-column:span 1;}
+.inventory-primary-name{grid-column:span 3!important;}
+.inventory-primary-year label,.inventory-primary-name label{font-size:13px;color:#12396e;}
+.inventory-primary-year select,.inventory-primary-name input{min-height:42px;border-radius:9px;font-size:13px;}
+.inventory-primary-hint{font-size:10.5px;color:#64748b;font-weight:700;}
+#formPage .staff-search-row{margin-bottom:5px;}
+#formPage .staff-quick-buttons{margin:5px 0 6px;}
+
+/* mini graph di kad status dibuang sepenuhnya */
+.enterprise-stat-spark{display:none!important;}
+.enterprise-stat-card{padding-bottom:15px!important;}
+.enterprise-stat-copy button{margin-top:12px!important;}
+
+.settings-page{max-width:1180px!important;}
+.settings-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;background:#fff;border:1px solid #dfe7f1;border-radius:15px;padding:20px 22px;margin-bottom:14px;box-shadow:0 8px 24px rgba(26,51,90,.055);}
+.settings-kicker{display:inline-flex;align-items:center;gap:7px;color:#1767dc;font-size:10px;font-weight:900;letter-spacing:.08em;}
+.settings-page-head h2{margin:6px 0 4px;color:#13213d;font-size:25px;}
+.settings-page-head p{margin:0;color:#64748b;font-size:11.5px;line-height:1.5;max-width:720px;}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.settings-card{background:#fff;border:1px solid #dfe7f1;border-radius:15px;padding:16px;box-shadow:0 8px 24px rgba(26,51,90,.05);}
+.settings-card-title{display:flex;gap:11px;align-items:center;margin-bottom:12px;}.settings-card-title>i{width:40px;height:40px;border-radius:10px;background:#eaf2ff;color:#145fd2;display:grid;place-items:center;font-size:16px;}.settings-card-title b{display:block;color:#172642;font-size:13px;}.settings-card-title span{display:block;margin-top:3px;color:#7b8799;font-size:10px;}
+.settings-preview{height:185px;border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc center/cover no-repeat;display:grid;place-items:center;overflow:hidden;color:#8794a8;text-align:center;}.settings-preview span{background:rgba(255,255,255,.88);padding:8px 11px;border-radius:8px;font-size:10px;font-weight:800;}
+.settings-actions{display:flex;gap:8px;margin-top:10px;}.settings-actions button{flex:1;min-height:38px;}.settings-upload{background:#1767dc;color:#fff;}.settings-clear{background:#eef2f7;color:#475569;}
+.settings-status{min-height:18px;margin-top:8px;color:#536176;font-size:10.5px;font-weight:700;}
+.settings-save-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;background:#fff;border:1px solid #dfe7f1;border-radius:13px;padding:13px 15px;}.settings-save-bar span{color:#64748b;font-size:10.5px;}.settings-save-bar button{background:#16a34a;color:#fff;min-width:160px;}
+
+.enterprise-dashboard-page.custom-dashboard-bg{background-image:linear-gradient(rgba(245,247,251,.88),rgba(245,247,251,.88)),var(--dashboard-custom-bg)!important;background-size:cover!important;background-position:center!important;background-attachment:fixed!important;border-radius:16px;padding:12px!important;}
+.master-app-sidebar.custom-sidebar-bg{background-image:linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.88)),var(--sidebar-custom-bg)!important;background-size:cover!important;background-position:center!important;}
+.master-app-sidebar.custom-sidebar-bg .master-sidebar-datetime,.master-app-sidebar.custom-sidebar-bg .master-side-menu>button,.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu,.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu button{background:rgba(255,255,255,.78)!important;backdrop-filter:blur(4px);}
+.mobile-sidebar-overlay{display:none;}
+
+@media(max-width:760px){
+  html,body{overflow-x:hidden!important;}
+  .master-app-topbar{position:fixed!important;top:0!important;left:0!important;right:0!important;height:62px!important;min-height:62px!important;z-index:1100!important;}
+  .master-app-sidebar{position:fixed!important;top:62px!important;left:0!important;width:min(86vw,320px)!important;height:calc(100dvh - 62px)!important;margin:0!important;transform:translateX(-105%)!important;z-index:1090!important;border-right:1px solid #dce5f0!important;box-shadow:10px 0 32px rgba(15,35,69,.20)!important;overflow-y:auto!important;transition:transform .2s ease!important;}
+  body.mobile-sidebar-open .master-app-sidebar{transform:translateX(0)!important;}
+  body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-105%)!important;}
+  .mobile-sidebar-overlay{position:fixed;inset:62px 0 0 0;background:rgba(15,23,42,.42);z-index:1080;}
+  body.mobile-sidebar-open .mobile-sidebar-overlay{display:block;}
+  .main{margin-left:0!important;padding:74px 9px 18px!important;min-height:100dvh!important;}
+  .master-sidebar-version{display:none!important;}
+  .master-side-search{position:sticky;top:0;background:rgba(255,255,255,.96);z-index:2;}
+  .master-side-menu>button,.master-side-menu .side-submenu button{min-height:44px!important;font-size:12px!important;}
+
+  .enterprise-dashboard-page{padding-bottom:4px!important;}
+  .enterprise-dashboard-hero{min-height:auto!important;padding:16px!important;margin-bottom:10px!important;border-radius:13px!important;}
+  .enterprise-dashboard-hero h2{font-size:22px!important;}.enterprise-dashboard-hero p{font-size:11px!important;line-height:1.4;}.enterprise-dashboard-kicker{font-size:9px!important;}
+  .enterprise-dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-bottom:10px!important;}
+  .enterprise-stat-card{min-height:112px!important;padding:12px 10px!important;grid-template-columns:40px minmax(0,1fr)!important;gap:9px!important;border-radius:12px!important;}
+  .enterprise-stat-icon{width:40px!important;height:40px!important;font-size:18px!important;border-radius:10px!important;}
+  .enterprise-stat-copy strong{font-size:23px!important;margin-top:1px!important;}.enterprise-stat-copy span{font-size:10px!important;line-height:1.2;}.enterprise-stat-copy button{font-size:8.5px!important;margin-top:10px!important;}
+  .enterprise-dashboard-panel{border-radius:12px!important;}.enterprise-panel-head{min-height:44px!important;padding:0 11px!important;}.enterprise-preview-table{min-width:480px!important;}
+  .enterprise-profile-banner{margin-bottom:10px!important;}.enterprise-dashboard-bottom-row{display:block!important;}
+  .enterprise-dashboard-footer{font-size:8px!important;padding-top:7px!important;}
+
+  body.inventory-form-open #formPage.form-modal-page.active{padding:6px!important;background:rgba(15,23,42,.68)!important;}
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header{position:sticky!important;top:0!important;z-index:3!important;padding:11px!important;border-radius:11px 11px 0 0!important;flex-direction:row!important;align-items:center!important;text-align:left!important;}
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .page-title{font-size:17px!important;}
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .btn-back-main{font-size:0!important;padding:9px 11px!important;}.form-modal-header .btn-back-main i{font-size:14px!important;margin:0!important;}
+  #formPage .section-title{padding:12px!important;font-size:15px!important;}
+  #formPage .form-area{padding:10px!important;}
+  #formPage .form-grid{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;}
+  #formPage .inventory-primary-year,#formPage .inventory-primary-name,#formPage .full-width,#formPage .half-width,#formPage .three-width{grid-column:1!important;}
+  .inventory-primary-year,.inventory-primary-name{padding:10px!important;}
+  #formPage .staff-search-row{display:grid!important;grid-template-columns:1fr auto!important;gap:6px!important;}
+  #formPage .staff-search-row button{padding:8px 10px!important;}
+  #formPage .staff-quick-buttons{grid-template-columns:1fr 1fr!important;gap:6px!important;}
+  #formPage .checkbox-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+  #formPage .checkbox-item{min-height:44px!important;padding:9px 8px!important;}
+  #formPage .device-card{margin:10px 0!important;border-radius:11px!important;}.device-card-header{padding:10px 11px!important;}.device-card-header .note{display:none!important;}.device-card-body{padding:10px!important;}.device-card-grid{grid-template-columns:1fr!important;gap:9px!important;}
+  #formPage .upload-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}#formPage .upload-row button{width:100%!important;min-height:40px!important;}
+  #formPage .form-buttons{position:sticky!important;bottom:0!important;z-index:3!important;background:#fff!important;margin:8px -10px -10px!important;padding:10px!important;display:grid!important;grid-template-columns:1fr 1fr!important;box-shadow:0 -8px 20px rgba(15,23,42,.08)!important;}.form-buttons button{width:100%!important;min-height:42px!important;}
+
+  .settings-page-head{padding:15px!important;flex-direction:column!important;}.settings-page-head h2{font-size:21px!important;}.settings-page-head .btn-back-main{width:100%!important;}.settings-grid{grid-template-columns:1fr!important;gap:10px!important;}.settings-preview{height:145px!important;}.settings-save-bar{align-items:stretch!important;flex-direction:column!important;}.settings-save-bar button{width:100%!important;}.settings-actions{display:grid!important;grid-template-columns:1fr 1fr!important;}
+}
+@media(max-width:390px){
+  .enterprise-dashboard-stats{gap:7px!important;}.enterprise-stat-card{grid-template-columns:36px minmax(0,1fr)!important;padding:10px 8px!important;}.enterprise-stat-icon{width:36px!important;height:36px!important;font-size:16px!important;}.enterprise-stat-copy strong{font-size:21px!important;}.enterprise-stat-copy button i{display:none!important;}
+  #formPage .checkbox-grid{grid-template-columns:1fr 1fr!important;}.enterprise-brand-copy h1{font-size:12.5px!important;}
+}
+</style>
+</head><body>${htmlContent}<script>window.onload=function(){setTimeout(function(){window.print();},400)}<\/script></body></html>`);
   printWindow.document.close();
 }
 
@@ -7185,5 +7305,199 @@ if(oldRefreshAllSelesai){
 })();
 </script>
 
+
+<script id="requestedMobileSettingsSpeedLogic">
+/* ===== Permintaan 18-08-2026: tetapan paparan + proses lebih pantas ===== */
+var displaySettings = {dashboardBackground:"",sidebarBackground:""};
+
+function fastApplyStaffResponse(res){
+  const parsed = normalizeStaffResponse(res);
+  let records = parsed.records;
+  let names = parsed.names;
+  const cached = getStaffRecordsCache();
+  if(cached.length){
+    const cacheMap = {};
+    cached.forEach(function(r){const n=String(r.namaStaff||r.nama||"").trim().toLowerCase();if(n)cacheMap[n]=r;});
+    records = records.map(function(r){
+      const name=String(r.namaStaff||r.nama||"").trim(); const hit=cacheMap[name.toLowerCase()];
+      if(hit && !String(r.noIC||"").trim() && !String(r.tarikhLahir||"").trim()) return Object.assign({},hit,{namaStaff:name||hit.namaStaff});
+      return r;
+    });
+    if(records.length && records.every(function(r){return !String(r.noIC||"").trim() && !String(r.tarikhLahir||"").trim();})){
+      records = names.map(function(n){return cacheMap[String(n||"").trim().toLowerCase()] || {namaStaff:n,status:"Aktif"};});
+    }
+  }
+  staffRecords = uniqueStaffRecords(records);
+  staffList = uniqueStrings(names.concat(staffRecords.map(function(r){return r.namaStaff||r.nama||"";})));
+  updateStaffSelectOptions();
+  renderStaffDirectory();
+  renderBirthdayStaff();
+}
+
+function normalizeDisplaySettings(res){
+  res = res && typeof res === "object" ? res : {};
+  return {
+    dashboardBackground:String(res.dashboardBackground||res.dashboardBg||"").trim(),
+    sidebarBackground:String(res.sidebarBackground||res.sidebarBg||"").trim()
+  };
+}
+function cssBgUrl(url){return 'url("'+String(url||"").replace(/(["\\])/g,"\\$1")+'")';}
+function applyDisplaySettings(res){
+  displaySettings = normalizeDisplaySettings(res);
+  const dashboard=document.getElementById("dashboardPage");
+  const sidebar=document.querySelector(".master-app-sidebar");
+  if(dashboard){
+    dashboard.classList.toggle("custom-dashboard-bg",!!displaySettings.dashboardBackground);
+    if(displaySettings.dashboardBackground) dashboard.style.setProperty("--dashboard-custom-bg",cssBgUrl(getImagePreviewUrl(displaySettings.dashboardBackground)));
+    else dashboard.style.removeProperty("--dashboard-custom-bg");
+  }
+  if(sidebar){
+    sidebar.classList.toggle("custom-sidebar-bg",!!displaySettings.sidebarBackground);
+    if(displaySettings.sidebarBackground) sidebar.style.setProperty("--sidebar-custom-bg",cssBgUrl(getImagePreviewUrl(displaySettings.sidebarBackground)));
+    else sidebar.style.removeProperty("--sidebar-custom-bg");
+  }
+  renderDisplaySettingsPreview();
+}
+function renderDisplaySettingsPreview(){
+  [["dashboardBgPreview",displaySettings.dashboardBackground],["sidebarBgPreview",displaySettings.sidebarBackground]].forEach(function(pair){
+    const el=document.getElementById(pair[0]);if(!el)return;const url=pair[1];
+    el.style.backgroundImage=url?cssBgUrl(getImagePreviewUrl(url)):"";
+    el.innerHTML=url?'<span><i class="fa-solid fa-circle-check"></i> Gambar dipilih</span>':'<span><i class="fa-regular fa-image"></i> Tiada gambar khas</span>';
+  });
+}
+function setSettingStatus(kind,text){const el=document.getElementById(kind==="dashboard"?"dashboardBgStatus":"sidebarBgStatus");if(el)el.textContent=text||"";}
+window.openDisplaySettings=function(btn){showPage("settingsPage",btn||document.getElementById("btnSettings"));renderDisplaySettingsPreview();closeMobileSidebar();};
+window.chooseSettingBackground=async function(kind,file){
+  if(!file)return;
+  if(!file.type || file.type.indexOf("image/")!==0){alert("Sila pilih fail gambar JPG/PNG.");return;}
+  setSettingStatus(kind,"Sedang memproses dan upload gambar...");
+  try{
+    const prepared=await prepareImageForUpload(file);
+    const uploadId="setting_"+kind+"_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    submitHiddenForm({action:"uploadForm",uploadId:uploadId,fileName:"setting_"+kind+"_"+prepared.fileName,mimeType:prepared.mimeType,image:prepared.base64.split(",")[1]});
+    const res=await waitUploadResultFast(uploadId);
+    if(!res || res.status!=="OK") throw new Error((res&&res.message)||"Upload gagal");
+    if(kind==="dashboard")displaySettings.dashboardBackground=res.directUrl||res.url||"";
+    else displaySettings.sidebarBackground=res.directUrl||res.url||"";
+    applyDisplaySettings(displaySettings);
+    setSettingStatus(kind,"Gambar sedia. Tekan Simpan Tetapan.");
+  }catch(err){setSettingStatus(kind,"");alert("Gagal upload background: "+err.message);}
+};
+window.clearSettingBackground=function(kind){
+  if(kind==="dashboard")displaySettings.dashboardBackground="";else displaySettings.sidebarBackground="";
+  applyDisplaySettings(displaySettings);setSettingStatus(kind,"Background akan dibuang selepas Simpan Tetapan.");
+};
+async function waitSaveResultFast(requestId){
+  for(let i=0;i<45;i++){
+    await sleep(i===0?250:550);
+    const res=await jsonp({action:"saveResult",requestId:requestId});
+    if(res && res.status!=="PENDING") return res;
+  }
+  return {status:"ERROR",message:"Timeout menunggu proses siap"};
+}
+async function waitUploadResultFast(uploadId){
+  for(let i=0;i<55;i++){
+    await sleep(i===0?300:600);
+    const res=await jsonp({action:"uploadResult",uploadId:uploadId});
+    if(res && res.status!=="PENDING") return res;
+  }
+  return {status:"ERROR",message:"Timeout menunggu upload siap"};
+}
+window.saveDisplaySettings=async function(){
+  const btn=document.getElementById("saveDisplaySettingsBtn");if(btn)btn.disabled=true;
+  try{
+    const requestId="settings_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    submitHiddenForm({action:"saveSettings",requestId:requestId,dashboardBackground:displaySettings.dashboardBackground,sidebarBackground:displaySettings.sidebarBackground,replaceSettings:"1"});
+    const res=await waitSaveResultFast(requestId);
+    if(!res || res.status!=="OK") throw new Error((res&&res.message)||"Gagal simpan tetapan");
+    applyDisplaySettings(res.settings||res);
+    showToast("Tetapan paparan berjaya disimpan");
+  }catch(err){alert("Gagal simpan tetapan: "+err.message);}finally{if(btn)btn.disabled=false;}
+};
+
+async function fastBootstrapLoad(options){
+  options=options||{};
+  if(!options.silent)setStatus("Memuatkan data...");
+  const res=await jsonp({action:"bootstrap",v:"5"});
+  if(!res || res.status!=="OK" || !Array.isArray(res.data)) throw new Error((res&&res.message)||"Bootstrap API belum tersedia");
+  allData=res.data;
+  tableBaseData=allData.slice();
+  isFilterActive=false;
+  historyData=Array.isArray(res.history)?res.history:[];
+  fastApplyStaffResponse(res.staff||{});
+  applyDisplaySettings(res.settings||{});
+  applyTableView();
+  applyHistorySearch();
+  stats();
+  renderDashboardMovement();
+  updateStaffSelectOptions();
+  populateMainAssetPickers();
+  if(typeof window.renderEnterpriseDashboardV4==="function")window.renderEnterpriseDashboardV4();
+  if(!options.silent){setStatus("");showToast("Data berjaya dimuatkan");}
+  return res;
+}
+refreshAll = async function(options){
+  options=options||{};
+  if(options.clearForm!==false)clearForm();
+  try{
+    await fastBootstrapLoad(options);
+  }catch(err){
+    console.warn("Bootstrap pantas gagal, guna mod serasi:",err);
+    await Promise.all([load(),loadStaffList(),loadHistory()]);
+  }
+  if(!options.silent)showToast("Refresh selesai");
+};
+
+/* Simpan tidak lagi tunggu 3-8 saat secara tetap: poll result terus dari cache Apps Script. */
+simpan = async function(){
+  if(isSaving)return;
+  if(isUploading){alert("Tunggu upload gambar siap dahulu sebelum simpan.");return;}
+  if(!checkApiUrl())return;
+  const recordsForValidation=collectDevicePayloads(true);if(!recordsForValidation)return;
+  const uploaded=await uploadAllPendingImages();if(!uploaded){alert("Gambar gagal upload. Data belum disimpan.");return;}
+  const records=collectDevicePayloads(false);if(!records)return;
+  const isEdit=editingRowEl.value!=="";
+  isSaving=true;saveBtn.disabled=true;saveText.innerText=isEdit?"Sedang kemaskini...":"Sedang simpan...";setStatus("Sedang simpan data...");
+  try{
+    const requestId="save_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    let payload=isEdit?Object.assign({},records[0],{action:"update",row:editingRowEl.value,requestId:requestId}):{action:"simpan",recordsJson:JSON.stringify(records),requestId:requestId};
+    submitHiddenForm(payload);
+    const result=await waitSaveResultFast(requestId);
+    if(!result || result.status!=="OK")throw new Error((result&&result.message)||"Simpanan gagal");
+    await refreshAll({clearForm:false,silent:true});
+    alert(isEdit?"BERJAYA DIKEMASKINI":"BERJAYA DISIMPAN");
+    clearForm();tableBaseData=allData.slice();isFilterActive=false;applyTableView();goPage("tablePage");toggleInventorySubmenu(true);
+    const b=document.getElementById("btnTable");if(b)b.classList.add("active");
+  }catch(err){alert("Gagal simpan data: "+err.message);console.error(err);}finally{isSaving=false;saveBtn.disabled=false;saveText.innerText=editingRowEl.value?"Kemaskini":"Simpan Inventori";setStatus("");}
+};
+
+quickUpdateAsset = async function(row,updates,successText){
+  if(isSaving)return;const v=findAssetByRow(row);if(!v){alert("Rekod aset tidak dijumpai.");return;}if(!checkApiUrl())return;
+  isSaving=true;setStatus("Sedang kemaskini aset...");
+  try{
+    const requestId="quick_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+    const payload=makeUpdatePayloadFromAsset(v,updates);payload.requestId=requestId;
+    submitHiddenForm(payload);
+    const result=await waitSaveResultFast(requestId);if(!result || result.status!=="OK")throw new Error((result&&result.message)||"Kemaskini gagal");
+    await refreshAll({clearForm:false,silent:true});showToast(successText||"Aset berjaya dikemaskini");applyTableView();
+  }catch(err){alert("Gagal kemaskini aset: "+err.message);}finally{isSaving=false;setStatus("");}
+};
+
+/* Poll upload lebih kerap tetapi ringan. */
+waitUploadResult = waitUploadResultFast;
+
+window.closeMobileSidebar=function(){document.body.classList.remove("mobile-sidebar-open");};
+window.toggleMasterSidebar=function(){
+  if(window.matchMedia && window.matchMedia("(max-width:760px)").matches){document.body.classList.toggle("mobile-sidebar-open");document.body.classList.remove("master-sidebar-collapsed");}
+  else{document.body.classList.toggle("master-sidebar-collapsed");}
+};
+document.addEventListener("click",function(ev){
+  if(!(window.matchMedia&&window.matchMedia("(max-width:760px)").matches))return;
+  const sidebar=document.querySelector(".master-app-sidebar");const toggle=document.querySelector(".master-menu-toggle");
+  if(document.body.classList.contains("mobile-sidebar-open") && sidebar && !sidebar.contains(ev.target) && toggle && !toggle.contains(ev.target))closeMobileSidebar();
+  const menuButton=ev.target.closest&&ev.target.closest(".master-side-menu button");if(menuButton && !menuButton.classList.contains("side-parent"))window.setTimeout(closeMobileSidebar,80);
+});
+window.addEventListener("resize",function(){if(window.innerWidth>760)closeMobileSidebar();});
+</script>
 </body>
 </html>
