@@ -1,0 +1,264 @@
+name: One-time dashboard background fix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/one-time-dashboard-bg-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Patch live index.html
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("index.html")
+          text = path.read_text(encoding="utf-8")
+          marker = 'id="dashboardBackgroundGlobalFix20260818"'
+
+          if marker in text:
+              print("Global dashboard background fix already present.")
+          else:
+              css = r'''
+          <style id="dashboardBackgroundGlobalFix20260818">
+          /* ===== GLOBAL DISPLAY SETTINGS + DASHBOARD BACKGROUND FIX 18-08-2026 ===== */
+          /* This block must live in the real page head, not inside the print-profile template. */
+
+          .inventory-primary-year,.inventory-primary-name{
+            background:#f8fbff;
+            border:1px solid #d9e7fb;
+            border-radius:12px;
+            padding:12px;
+          }
+          .inventory-primary-year{grid-column:span 1;}
+          .inventory-primary-name{grid-column:span 3!important;}
+          .inventory-primary-year label,.inventory-primary-name label{font-size:13px;color:#12396e;}
+          .inventory-primary-year select,.inventory-primary-name input{min-height:42px;border-radius:9px;font-size:13px;}
+          .inventory-primary-hint{font-size:10.5px;color:#64748b;font-weight:700;}
+          #formPage .staff-search-row{margin-bottom:5px;}
+          #formPage .staff-quick-buttons{margin:5px 0 6px;}
+
+          /* Kad status dashboard tanpa mini graph. */
+          .enterprise-stat-spark{display:none!important;}
+          .enterprise-stat-card{padding-bottom:15px!important;}
+          .enterprise-stat-copy button{margin-top:12px!important;}
+
+          /* Setting Paparan */
+          .settings-page{max-width:1180px!important;}
+          .settings-page-head{
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:16px;
+            background:#fff;
+            border:1px solid #dfe7f1;
+            border-radius:15px;
+            padding:20px 22px;
+            margin-bottom:14px;
+            box-shadow:0 8px 24px rgba(26,51,90,.055);
+          }
+          .settings-kicker{display:inline-flex;align-items:center;gap:7px;color:#1767dc;font-size:10px;font-weight:900;letter-spacing:.08em;}
+          .settings-page-head h2{margin:6px 0 4px;color:#13213d;font-size:25px;}
+          .settings-page-head p{margin:0;color:#64748b;font-size:11.5px;line-height:1.5;max-width:720px;}
+          .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+          .settings-card{background:#fff;border:1px solid #dfe7f1;border-radius:15px;padding:16px;box-shadow:0 8px 24px rgba(26,51,90,.05);}
+          .settings-card-title{display:flex;gap:11px;align-items:center;margin-bottom:12px;}
+          .settings-card-title>i{width:40px;height:40px;border-radius:10px;background:#eaf2ff;color:#145fd2;display:grid;place-items:center;font-size:16px;}
+          .settings-card-title b{display:block;color:#172642;font-size:13px;}
+          .settings-card-title span{display:block;margin-top:3px;color:#7b8799;font-size:10px;}
+          .settings-preview{height:185px;border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc center/cover no-repeat;display:grid;place-items:center;overflow:hidden;color:#8794a8;text-align:center;}
+          .settings-preview span{background:rgba(255,255,255,.88);padding:8px 11px;border-radius:8px;font-size:10px;font-weight:800;backdrop-filter:blur(4px);}
+          .settings-github-note{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding:13px 15px;border:1px solid #bfdbfe;border-radius:13px;background:linear-gradient(135deg,#eff6ff,#f5f3ff);color:#334155;}
+          .settings-github-note>i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#111827;color:#fff;font-size:18px;flex:0 0 auto;}
+          .settings-github-note b{display:block;font-size:11.5px;color:#172642;margin-bottom:3px;}
+          .settings-github-note span{display:block;font-size:10.5px;line-height:1.5;color:#64748b;}
+          .settings-github-note code{background:rgba(255,255,255,.8);border:1px solid #dbeafe;border-radius:5px;padding:1px 5px;color:#1d4ed8;font-size:10px;}
+          .settings-url-label{display:block;margin-top:11px;margin-bottom:5px;color:#475569;font-size:10px;font-weight:900;}
+          .settings-url-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;}
+          .settings-url-row input{min-height:40px;border-radius:9px;font-size:11.5px;font-weight:700;color:#172642;background:#fbfdff;}
+          .settings-preview-btn{min-height:40px;background:#1767dc;color:#fff;white-space:nowrap;}
+          .settings-actions{display:flex;gap:8px;margin-top:10px;}
+          .settings-actions button{flex:1;min-height:38px;}
+          .settings-example{background:#111827;color:#fff;}
+          .settings-clear{background:#eef2f7;color:#475569;}
+          .settings-status{min-height:18px;margin-top:8px;color:#536176;font-size:10.5px;font-weight:700;}
+          .settings-save-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;background:#fff;border:1px solid #dfe7f1;border-radius:13px;padding:13px 15px;}
+          .settings-save-bar span{color:#64748b;font-size:10.5px;}
+          .settings-save-bar button{background:#16a34a;color:#fff;min-width:160px;}
+
+          /* Background dashboard: gambar digunakan terus pada HERO Laman Utama. */
+          .enterprise-dashboard-page.custom-dashboard-bg{
+            background:transparent!important;
+            padding:0!important;
+          }
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero{
+            background-color:#0a1d3b!important;
+            background-image:
+              linear-gradient(90deg,rgba(5,17,40,.82) 0%,rgba(7,24,55,.58) 48%,rgba(7,24,55,.20) 100%),
+              var(--dashboard-custom-bg)!important;
+            background-size:cover!important;
+            background-position:center center!important;
+            background-repeat:no-repeat!important;
+            min-height:220px!important;
+            padding:32px 36px!important;
+            border:1px solid rgba(255,255,255,.12)!important;
+            box-shadow:0 16px 38px rgba(15,35,70,.24)!important;
+          }
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero:before{display:none!important;}
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero-copy{max-width:760px!important;}
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero-art{display:none!important;}
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero h2{
+            color:#fff!important;
+            text-shadow:0 2px 12px rgba(0,0,0,.24);
+          }
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero p{
+            color:rgba(255,255,255,.91)!important;
+            text-shadow:0 1px 8px rgba(0,0,0,.20);
+          }
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-kicker{color:#dbeafe!important;}
+          .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-kicker span{background:#60a5fa!important;}
+
+          /* Sidebar custom background. */
+          .master-app-sidebar.custom-sidebar-bg{
+            background-image:
+              linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)),
+              var(--sidebar-custom-bg)!important;
+            background-size:cover!important;
+            background-position:center!important;
+            background-repeat:no-repeat!important;
+          }
+          .master-app-sidebar.custom-sidebar-bg .master-sidebar-datetime,
+          .master-app-sidebar.custom-sidebar-bg .master-side-menu>button,
+          .master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu,
+          .master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu button{
+            background:rgba(255,255,255,.76)!important;
+            backdrop-filter:blur(5px);
+          }
+
+          .mobile-sidebar-overlay{display:none;}
+
+          @media(max-width:760px){
+            html,body{overflow-x:hidden!important;}
+            .master-app-topbar{position:fixed!important;top:0!important;left:0!important;right:0!important;height:62px!important;min-height:62px!important;z-index:1100!important;}
+            .master-app-sidebar{position:fixed!important;top:62px!important;left:0!important;width:min(86vw,320px)!important;height:calc(100dvh - 62px)!important;margin:0!important;transform:translateX(-105%)!important;z-index:1090!important;border-right:1px solid #dce5f0!important;box-shadow:10px 0 32px rgba(15,35,69,.20)!important;overflow-y:auto!important;transition:transform .2s ease!important;}
+            body.mobile-sidebar-open .master-app-sidebar{transform:translateX(0)!important;}
+            body.master-sidebar-collapsed .master-app-sidebar{transform:translateX(-105%)!important;}
+            .mobile-sidebar-overlay{position:fixed;inset:62px 0 0 0;background:rgba(15,23,42,.42);z-index:1080;}
+            body.mobile-sidebar-open .mobile-sidebar-overlay{display:block;}
+            .main{margin-left:0!important;padding:74px 9px 18px!important;min-height:100dvh!important;}
+            .master-sidebar-version{display:none!important;}
+            .master-side-search{position:sticky;top:0;background:rgba(255,255,255,.96);z-index:2;}
+            .master-side-menu>button,.master-side-menu .side-submenu button{min-height:44px!important;font-size:12px!important;}
+
+            .enterprise-dashboard-page{padding-bottom:4px!important;}
+            .enterprise-dashboard-hero{min-height:auto!important;padding:16px!important;margin-bottom:10px!important;border-radius:13px!important;}
+            .enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero{min-height:158px!important;padding:22px 18px!important;background-position:center center!important;}
+            .enterprise-dashboard-hero h2{font-size:22px!important;}
+            .enterprise-dashboard-hero p{font-size:11px!important;line-height:1.4;}
+            .enterprise-dashboard-kicker{font-size:9px!important;}
+            .enterprise-dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-bottom:10px!important;}
+            .enterprise-stat-card{min-height:112px!important;padding:12px 10px!important;grid-template-columns:40px minmax(0,1fr)!important;gap:9px!important;border-radius:12px!important;}
+            .enterprise-stat-icon{width:40px!important;height:40px!important;font-size:18px!important;border-radius:10px!important;}
+            .enterprise-stat-copy strong{font-size:23px!important;margin-top:1px!important;}
+            .enterprise-stat-copy span{font-size:10px!important;line-height:1.2;}
+            .enterprise-stat-copy button{font-size:8.5px!important;margin-top:10px!important;}
+            .enterprise-dashboard-panel{border-radius:12px!important;}
+            .enterprise-panel-head{min-height:44px!important;padding:0 11px!important;}
+            .enterprise-preview-table{min-width:480px!important;}
+            .enterprise-profile-banner{margin-bottom:10px!important;}
+            .enterprise-dashboard-bottom-row{display:block!important;}
+            .enterprise-dashboard-footer{font-size:8px!important;padding-top:7px!important;}
+
+            body.inventory-form-open #formPage.form-modal-page.active{padding:6px!important;background:rgba(15,23,42,.68)!important;}
+            body.inventory-form-open #formPage.form-modal-page.active .form-modal-header{position:sticky!important;top:0!important;z-index:3!important;padding:11px!important;border-radius:11px 11px 0 0!important;flex-direction:row!important;align-items:center!important;text-align:left!important;}
+            body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .page-title{font-size:17px!important;}
+            body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .btn-back-main{font-size:0!important;padding:9px 11px!important;}
+            .form-modal-header .btn-back-main i{font-size:14px!important;margin:0!important;}
+            #formPage .section-title{padding:12px!important;font-size:15px!important;}
+            #formPage .form-area{padding:10px!important;}
+            #formPage .form-grid{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;}
+            #formPage .inventory-primary-year,#formPage .inventory-primary-name,#formPage .full-width,#formPage .half-width,#formPage .three-width{grid-column:1!important;}
+            .inventory-primary-year,.inventory-primary-name{padding:10px!important;}
+            #formPage .staff-search-row{display:grid!important;grid-template-columns:1fr auto!important;gap:6px!important;}
+            #formPage .staff-search-row button{padding:8px 10px!important;}
+            #formPage .staff-quick-buttons{grid-template-columns:1fr 1fr!important;gap:6px!important;}
+            #formPage .checkbox-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+            #formPage .checkbox-item{min-height:44px!important;padding:9px 8px!important;}
+            #formPage .device-card{margin:10px 0!important;border-radius:11px!important;}
+            .device-card-header{padding:10px 11px!important;}
+            .device-card-header .note{display:none!important;}
+            .device-card-body{padding:10px!important;}
+            .device-card-grid{grid-template-columns:1fr!important;gap:9px!important;}
+            #formPage .upload-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}
+            #formPage .upload-row button{width:100%!important;min-height:40px!important;}
+            #formPage .form-buttons{position:sticky!important;bottom:0!important;z-index:3!important;background:#fff!important;margin:8px -10px -10px!important;padding:10px!important;display:grid!important;grid-template-columns:1fr 1fr!important;box-shadow:0 -8px 20px rgba(15,23,42,.08)!important;}
+            .form-buttons button{width:100%!important;min-height:42px!important;}
+
+            .settings-page-head{padding:15px!important;flex-direction:column!important;}
+            .settings-page-head h2{font-size:21px!important;}
+            .settings-page-head .btn-back-main{width:100%!important;}
+            .settings-grid{grid-template-columns:1fr!important;gap:10px!important;}
+            .settings-preview{height:145px!important;}
+            .settings-save-bar{align-items:stretch!important;flex-direction:column!important;}
+            .settings-save-bar button{width:100%!important;}
+            .settings-url-row{grid-template-columns:1fr!important;}
+            .settings-url-row .settings-preview-btn{width:100%!important;}
+            .settings-actions{display:grid!important;grid-template-columns:1fr 1fr!important;}
+            .settings-github-note{padding:11px!important;}
+          }
+
+          @media(max-width:390px){
+            .enterprise-dashboard-stats{gap:7px!important;}
+            .enterprise-stat-card{grid-template-columns:36px minmax(0,1fr)!important;padding:10px 8px!important;}
+            .enterprise-stat-icon{width:36px!important;height:36px!important;font-size:16px!important;}
+            .enterprise-stat-copy strong{font-size:21px!important;}
+            .enterprise-stat-copy button i{display:none!important;}
+            #formPage .checkbox-grid{grid-template-columns:1fr 1fr!important;}
+            .enterprise-brand-copy h1{font-size:12.5px!important;}
+          }
+          </style>
+          '''
+
+              target = "</head>"
+              pos = text.find(target)
+              if pos < 0:
+                  raise RuntimeError("Closing </head> not found in index.html")
+              text = text[:pos] + css + "\n" + text[pos:]
+              path.write_text(text, encoding="utf-8")
+              print("Global dashboard/background CSS inserted into the real document head.")
+
+      - name: Validate patch
+        shell: bash
+        run: |
+          set -e
+          grep -q 'dashboardBackgroundGlobalFix20260818' index.html
+          grep -q 'requestedMobileSettingsSpeedLogic' index.html
+          grep -q 'enterprise-dashboard-page.custom-dashboard-bg .enterprise-dashboard-hero' index.html
+          grep -q 'dashboardBgUrl' index.html
+          grep -q 'images/dashboard-bg.webp' index.html
+          echo "Validation OK"
+
+      - name: Commit fix and remove one-time workflow
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-time-dashboard-bg-fix.yml
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Fix dashboard background on live page"
+          git push origin HEAD:main
