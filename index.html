@@ -2429,6 +2429,108 @@ body.enterprise-resizing *{cursor:col-resize!important;}
 }
 </style>
 
+
+<style id="pkpjColourfulSkinV9">
+/* ===== PKPJ COLOURFUL UI V9 - VISUAL LAYER ONLY ===== */
+:root{
+  --pkpj-blue:#2563eb;--pkpj-indigo:#4f46e5;--pkpj-purple:#7c3aed;--pkpj-pink:#ec4899;
+  --pkpj-green:#10b981;--pkpj-orange:#f59e0b;--pkpj-red:#f43f5e;--pkpj-cyan:#06b6d4;
+  --pkpj-navy:#081a3b;--pkpj-soft:#f6f8ff;
+}
+html,body{background:linear-gradient(135deg,#f8fbff 0%,#f8f7ff 48%,#fff8fb 100%)!important;}
+.master-app-topbar{background:linear-gradient(100deg,#1759e8 0%,#4f46e5 42%,#7c3aed 72%,#ec4899 100%)!important;box-shadow:0 7px 24px rgba(79,70,229,.22)!important;}
+.master-global-search{background:rgba(255,255,255,.18)!important;border:1px solid rgba(255,255,255,.20)!important;box-shadow:none!important;backdrop-filter:blur(12px);}
+.master-global-search input,.master-global-search input::placeholder,.master-global-search i{color:#fff!important;}.master-global-search kbd{background:rgba(255,255,255,.18)!important;color:#fff!important;border-color:rgba(255,255,255,.2)!important;}
+.master-app-sidebar{background:linear-gradient(180deg,#071a3e 0%,#0b2250 55%,#101a42 100%)!important;border-right:0!important;box-shadow:7px 0 30px rgba(6,24,55,.13)!important;}
+.master-sidebar-datetime{background:rgba(255,255,255,.04)!important;color:#dbeafe!important;border-bottom-color:rgba(255,255,255,.08)!important;}
+.master-side-search{background:transparent!important;}.master-side-search input{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.11)!important;color:#fff!important;}.master-side-search input::placeholder,.master-side-search i{color:#a9b9d6!important;}
+.master-side-menu>button,.master-side-menu .side-submenu button,.master-side-menu .side-parent,.master-side-menu .side-submenu{background:transparent!important;color:#dce7fb!important;}
+.master-side-menu>button>i:first-child{color:#91b7ff!important;}.master-side-menu>button:hover,.master-side-menu .side-submenu button:hover{background:rgba(255,255,255,.08)!important;color:#fff!important;}
+.master-side-menu>button.active,.master-side-menu .side-submenu button.active{background:linear-gradient(100deg,#2456e8,#6d4df5)!important;color:#fff!important;box-shadow:0 7px 18px rgba(68,72,235,.30)!important;}
+.master-side-menu>button.active>i:first-child,.master-sub-dot{color:#fff!important;}.master-menu-chevron{color:#b9c6dc!important;}.master-sidebar-version{background:#071a3e!important;color:#8296b7!important;border-top-color:rgba(255,255,255,.08)!important;}
+.main{background:transparent!important;}
+
+/* Dashboard */
+#dashboardPage .enterprise-dashboard-hero{background:linear-gradient(120deg,#2457e8 0%,#5b42e8 48%,#a42ed0 100%)!important;border:0!important;box-shadow:0 18px 38px rgba(79,70,229,.18)!important;}
+#dashboardPage .enterprise-dashboard-hero h2,#dashboardPage .enterprise-dashboard-hero p,#dashboardPage .enterprise-dashboard-kicker{color:#fff!important;}
+#dashboardPage .enterprise-dashboard-kicker span{background:#fbbf24!important;box-shadow:0 0 0 5px rgba(251,191,36,.16)!important;}
+.enterprise-stat-card{border:0!important;box-shadow:0 9px 24px rgba(28,45,84,.08)!important;transition:transform .18s ease,box-shadow .18s ease!important;}
+.enterprise-stat-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(28,45,84,.13)!important;}
+.enterprise-stat-card.stat-blue .enterprise-stat-icon{background:linear-gradient(135deg,#2563eb,#3b82f6)!important;color:#fff!important;}
+.enterprise-stat-card.stat-green .enterprise-stat-icon{background:linear-gradient(135deg,#059669,#22c55e)!important;color:#fff!important;}
+.enterprise-stat-card.stat-red .enterprise-stat-icon{background:linear-gradient(135deg,#f43f5e,#fb7185)!important;color:#fff!important;}
+.enterprise-stat-card.stat-purple .enterprise-stat-icon{background:linear-gradient(135deg,#7c3aed,#a855f7)!important;color:#fff!important;}
+.enterprise-stat-card.stat-cyan .enterprise-stat-icon{background:linear-gradient(135deg,#0891b2,#22d3ee)!important;color:#fff!important;}
+.enterprise-stat-card.stat-teal .enterprise-stat-icon{background:linear-gradient(135deg,#0f766e,#2dd4bf)!important;color:#fff!important;}
+.enterprise-stat-card.stat-orange .enterprise-stat-icon{background:linear-gradient(135deg,#ea580c,#fbbf24)!important;color:#fff!important;}
+.enterprise-stat-card.stat-slate .enterprise-stat-icon{background:linear-gradient(135deg,#334155,#64748b)!important;color:#fff!important;}
+.enterprise-dashboard-panel,.enterprise-profile-banner{border:0!important;box-shadow:0 10px 28px rgba(30,41,59,.08)!important;}
+body.api-offline-mode .enterprise-system-dot{color:#f43f5e!important;}
+body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c!important;font-weight:900;}
+.enterprise-panel-head{border-bottom:1px solid #edf0f7!important;}.enterprise-panel-head>div>i{width:28px;height:28px;border-radius:8px;display:inline-grid;place-items:center;background:#eef2ff;color:#4f46e5!important;}
+
+/* Generic colourful tab treatment: visual only */
+.page:not(#dashboardPage)>.page-title,.master-page-heading h2{position:relative;}
+.page:not(#dashboardPage)>.page-title:after,.master-page-heading h2:after{content:"";display:block;width:58px;height:4px;border-radius:999px;margin-top:9px;background:linear-gradient(90deg,#2563eb,#7c3aed,#ec4899);}
+.section-box,.master-asset-list-panel,.master-asset-detail-panel,.profile-print-card{border:0!important;box-shadow:0 10px 28px rgba(30,41,59,.08)!important;}
+.section-title{border-bottom:0!important;background:linear-gradient(90deg,#eff6ff,#f5f3ff,#fdf2f8)!important;color:#243b72!important;}
+
+/* Form / Add inventory = blue-purple */
+#formPage .form-modal-header{background:linear-gradient(100deg,#2563eb,#6d4df5)!important;color:#fff!important;}
+#formPage .form-modal-header .page-title,#formPage .form-modal-header .page-title:after{color:#fff!important;border:0!important;}
+#formPage .form-modal-header .page-title:after{background:#fff!important;opacity:.72;}
+#formPage .device-card-header{background:linear-gradient(90deg,#2563eb,#4f46e5)!important;}
+#formPage .btn-save{background:linear-gradient(100deg,#0ea5e9,#2563eb)!important;box-shadow:0 7px 18px rgba(37,99,235,.22)!important;}
+.selected-device-chip.set-chip{background:linear-gradient(100deg,#4f46e5,#7c3aed)!important;color:#fff!important;border:0!important;}
+.inventory-type-card-set{background:linear-gradient(145deg,#eef2ff,#faf5ff)!important;border-color:#c4b5fd!important;}
+
+/* Inventory tab = orange-blue */
+#tablePage .master-page-heading h2:after{background:linear-gradient(90deg,#f59e0b,#f97316,#2563eb)!important;}
+#tablePage .master-list-tools{background:linear-gradient(180deg,#fffaf2,#fff)!important;}
+#tablePage .master-group-header>i:first-child{color:#f97316!important;}
+#tablePage .master-group-count{background:#fff1dd!important;color:#c2410c!important;}
+#tablePage .master-asset-list-item.selected{background:linear-gradient(90deg,#fff7ed,#eff6ff)!important;box-shadow:inset 4px 0 0 #f97316!important;}
+#tablePage .master-detail-card h4 i{color:#f97316!important;}
+.master-primary-holder{display:flex;align-items:center;gap:10px;margin-top:8px;padding:9px 11px;border-radius:10px;background:linear-gradient(90deg,#eef2ff,#f5f3ff);border:1px solid #ddd6fe;color:#312e81;max-width:560px;}
+.master-primary-holder>i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;flex:0 0 auto;}
+.master-primary-holder span{display:flex;flex-direction:column;min-width:0;}.master-primary-holder small{font-size:9px;color:#6d5fb4;font-weight:800;text-transform:uppercase;letter-spacing:.04em;}.master-primary-holder b{font-size:12px;color:#1f2a5a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.master-list-copy{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;}.master-list-copy small{display:block!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.master-list-staff{font-weight:900!important;color:#4f46e5!important;font-size:9.5px!important;}.master-list-staff i{margin-right:3px;}.master-list-serial{color:#7a879a!important;font-size:8.8px!important;}
+
+/* Staff tabs = green */
+#staffDirectoryPage .page-title:after,#birthdayStaffPage .page-title:after{background:linear-gradient(90deg,#10b981,#22c55e,#06b6d4)!important;}
+#staffDirectoryPage .section-title,#birthdayStaffPage .section-title{background:linear-gradient(90deg,#ecfdf5,#f0fdfa)!important;color:#065f46!important;}
+#staffDirectoryPage .btn-staff,#birthdayStaffPage .btn-staff{background:linear-gradient(100deg,#059669,#10b981)!important;}
+
+/* History = pink-red */
+#historyPage .page-title:after{background:linear-gradient(90deg,#ec4899,#f43f5e,#f97316)!important;}
+#historyPage .section-title{background:linear-gradient(90deg,#fdf2f8,#fff1f2)!important;color:#9f1239!important;}
+#historyPage th{background:linear-gradient(90deg,#db2777,#f43f5e)!important;border-color:rgba(255,255,255,.14)!important;}
+
+/* Profile / summary = cyan-indigo */
+#profileMainPage .page-title:after,#summaryMainPage .page-title:after{background:linear-gradient(90deg,#06b6d4,#2563eb,#7c3aed)!important;}
+#profileMainPage .section-title,#summaryMainPage .section-title{background:linear-gradient(90deg,#ecfeff,#eef2ff)!important;color:#164e63!important;}
+
+/* Completed = slate-orange */
+#completedAssetsPage .page-title:after{background:linear-gradient(90deg,#64748b,#f59e0b)!important;}
+
+/* Buttons */
+.btn-reset-filter,.btn-staff,.btn-profile,.btn-history,.btn-excel,.master-export-button{transition:transform .15s ease,box-shadow .15s ease!important;}.btn-reset-filter:hover,.btn-staff:hover,.btn-profile:hover,.btn-history:hover,.btn-excel:hover,.master-export-button:hover{transform:translateY(-1px);}
+
+/* Mobile colourful and compact */
+@media(max-width:760px){
+  html,body{background:#f7f8ff!important;}
+  .master-app-topbar{background:linear-gradient(105deg,#2556e8,#7046e8,#dc3c91)!important;}
+  .master-app-sidebar{background:linear-gradient(180deg,#071a3e,#172554)!important;}
+  .main{padding-top:76px!important;}
+  .page{border-radius:0!important;}
+  .master-primary-holder{max-width:none!important;padding:10px!important;}.master-primary-holder b{font-size:13px!important;}
+  .master-detail-meta{font-size:10px!important;line-height:1.55!important;}
+  .master-list-staff{font-size:10px!important;}.master-list-serial{font-size:9px!important;}
+  .enterprise-stat-card{box-shadow:0 7px 18px rgba(30,41,59,.08)!important;}
+  #historyPage th{background:#db2777!important;}
+}
+</style>
+
 </head>
 
 <body>
@@ -6153,7 +6255,10 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
   #formPage .checkbox-grid{grid-template-columns:1fr 1fr!important;}.enterprise-brand-copy h1{font-size:12.5px!important;}
 }
 </style>
-</head><body>${htmlContent}<script>window.onload=function(){setTimeout(function(){window.print();},400)}<\/script></body></html>`);
+</head><body>${htmlContent}<script>window.onload=function(){setTimeout(function(){window.print();},400)}<\/script>
+
+
+</body></html>`);
   printWindow.document.close();
 }
 
@@ -7171,9 +7276,11 @@ if(oldRefreshAllSelesai){
       const items = group.items.map(item => {
         const statusKey = masterStatusKey(item.status);
         const selectedClass = String(item.row) === String(masterSelectedRow) ? " selected" : "";
+        const staffName = masterMeaningful(item && (item.namaStaff || item.namaPemegang || item.nama)) || "Tiada Nama Staff";
+        const serialText = masterMeaningful(item && item.noSiri) || masterMeaningful(item && item.tagAset) || masterMeaningful(item && item.noInventori) || ("Row " + masterValue(item && item.row,"-"));
         return `<button type="button" class="master-asset-list-item${selectedClass}" onclick="masterSelectAsset(${Number(item.row)})">
           <span class="master-status-dot ${statusKey}"></span>
-          <span class="master-list-copy"><strong>${escapeHtml(masterAssetTitle(item))}</strong><small>${escapeHtml(masterAssetSubtext(item))}</small></span>
+          <span class="master-list-copy"><strong>${escapeHtml(masterAssetTitle(item))}</strong><small class="master-list-staff"><i class="fa-regular fa-user"></i> ${escapeHtml(staffName)}</small><small class="master-list-serial">No Siri: ${escapeHtml(serialText)}</small></span>
           <span class="master-list-status ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span>
         </button>`;
       }).join("");
@@ -7247,6 +7354,7 @@ if(oldRefreshAllSelesai){
       <div class="master-detail-thumb">${thumb}</div>
       <div class="master-detail-title">
         <div class="master-detail-title-row"><h3>${escapeHtml(masterAssetTitle(item))}</h3><span class="master-status-badge ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span></div>
+        <div class="master-primary-holder"><i class="fa-solid fa-user-check"></i><span><small>Nama Staff / Pemegang</small><b>${escapeHtml(masterValue(item.namaStaff || item.namaPemegang || item.nama,"Tiada Nama Staff"))}</b></span></div>
         <div class="master-detail-meta"><span>No Siri: <b>${escapeHtml(masterValue(item.noSiri))}</b></span><span>•</span><span>Tag Aset: <b>${escapeHtml(masterValue(item.tagAset || item.noInventori))}</b></span><span>•</span><span>ID Paparan: <b>ITPKPJ-${String(item.row || "").padStart(4,"0")}</b></span></div>
       </div>
       <div class="master-detail-actions">
@@ -8391,6 +8499,91 @@ renderSelectedDeviceSummary();
       if(typeof setStatus==="function") setStatus("");
     },0);
   }
+})();
+</script>
+
+<script id="pkpjMobileApiGuardV9">
+/* ===== MOBILE API GUARD V9 =====
+   Tidak mengubah action/API contract. Hanya retry, cache-busting, offline fallback,
+   dan elak popup ralat berulang pada Chrome telefon. */
+(function(){
+  var MOBILE_RETRY_DELAYS=[0,650,1600];
+  var API_TIMEOUT_MS=18000;
+  var apiFailureShown=false;
+
+  function sleepMs(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
+  function isMobileChrome(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent||"");}
+
+  function jsonpOnceV9(params){
+    return new Promise(function(resolve,reject){
+      if(typeof checkApiUrl==="function" && !checkApiUrl()){reject(new Error("API_URL belum dimasukkan"));return;}
+      var callbackName="cbv9_"+Date.now()+"_"+Math.floor(Math.random()*1000000);
+      var p=Object.assign({},params||{});
+      p.callback=callbackName;
+      p._cb=Date.now()+"_"+Math.random().toString(36).slice(2,7);
+      var query=Object.keys(p).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(p[k]==null?"":p[k]);}).join("&");
+      var script=document.createElement("script");
+      script.async=true;
+      var done=false;
+      var timer=setTimeout(function(){finish(new Error("Timeout sambungan Apps Script"));},API_TIMEOUT_MS);
+      function cleanup(){clearTimeout(timer);try{delete window[callbackName];}catch(e){window[callbackName]=undefined;}if(script.parentNode)script.parentNode.removeChild(script);}
+      function finish(err,data){if(done)return;done=true;cleanup();err?reject(err):resolve(data);}
+      window[callbackName]=function(data){finish(null,data);};
+      script.onerror=function(){finish(new Error("Gagal hubungi Apps Script API"));};
+      script.src=API_URL+(API_URL.indexOf("?")>-1?"&":"?")+query;
+      (document.head||document.documentElement).appendChild(script);
+    });
+  }
+
+  window.jsonp=async function(params){
+    var lastErr=null;
+    var attempts=isMobileChrome()?MOBILE_RETRY_DELAYS.length:2;
+    for(var i=0;i<attempts;i++){
+      if(i>0)await sleepMs(MOBILE_RETRY_DELAYS[Math.min(i,MOBILE_RETRY_DELAYS.length-1)]||600);
+      if(navigator.onLine===false){lastErr=new Error("Telefon sedang offline");continue;}
+      try{return await jsonpOnceV9(params);}catch(err){lastErr=err;console.warn("API retry "+(i+1)+"/"+attempts,err);}
+    }
+    throw lastErr||new Error("Gagal hubungi Apps Script API");
+  };
+
+  function showApiModeMessage(text,isError){
+    if(typeof setStatus==="function")setStatus(text||"");
+    if(typeof showToast==="function" && text)showToast(text);
+    if(isError)document.body.classList.add("api-offline-mode");else document.body.classList.remove("api-offline-mode");
+  }
+
+  /* Replace refresh with bootstrap-first + browser-cache fallback. No legacy triple request on mobile failure. */
+  window.refreshAll=async function(options){
+    options=options||{};
+    if(options.clearForm!==false && typeof clearForm==="function")clearForm();
+    try{
+      if(typeof fastBootstrapLoad!=="function")throw new Error("Bootstrap belum tersedia");
+      var result=await fastBootstrapLoad(options);
+      apiFailureShown=false;
+      showApiModeMessage("",false);
+      if(!options.silent && typeof showToast==="function")showToast("Data inventori dikemaskini");
+      return result;
+    }catch(err){
+      console.error("Mobile/API bootstrap gagal:",err);
+      var restored=Array.isArray(window.allData||allData) && (window.allData||allData).length>0;
+      if(restored){
+        showApiModeMessage("Mod cache: data terakhir dipaparkan. Sistem akan cuba sambung semula.",true);
+        return {status:"CACHE",message:err.message||String(err)};
+      }
+      showApiModeMessage("Gagal sambung ke Apps Script API.",true);
+      if(!apiFailureShown){
+        apiFailureShown=true;
+        alert("Gagal hubungi Apps Script API.\n\nSistem sudah cuba sambung semula secara automatik. Jika masih gagal, semak internet dan pastikan deployment Apps Script ditetapkan 'Who has access: Anyone'.");
+      }
+      throw err;
+    }
+  };
+
+  window.addEventListener("online",function(){
+    showApiModeMessage("Internet kembali. Menyambung semula...",false);
+    setTimeout(function(){if(typeof fastBootstrapLoad==="function")fastBootstrapLoad({silent:true}).then(function(){showApiModeMessage("Sambungan API kembali aktif",false);}).catch(function(){});},350);
+  });
+  window.addEventListener("offline",function(){showApiModeMessage("Offline: menggunakan data terakhir dalam telefon",true);});
 })();
 </script>
 
