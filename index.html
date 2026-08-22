@@ -2305,9 +2305,195 @@ body.enterprise-resizing *{cursor:col-resize!important;}
 }
 </style>
 
+
+<style>
+/* ===== UX TAMBAH INVENTORI V7: PILIH JENIS DULU + IKON + MOBILE ===== */
+.inventory-type-picker{
+  position:fixed;
+  inset:0;
+  z-index:100500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background:rgba(15,23,42,.72);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+.inventory-type-picker.show{display:flex;}
+.inventory-type-picker-card{
+  width:min(980px,96vw);
+  max-height:92dvh;
+  overflow:auto;
+  background:#f8fafc;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:20px;
+  box-shadow:0 28px 80px rgba(15,23,42,.38);
+}
+.inventory-type-picker-head{
+  position:sticky;
+  top:0;
+  z-index:3;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:22px 24px 18px;
+  color:#fff;
+  background:linear-gradient(135deg,#173b86,#214596 52%,#0b75bb);
+  border-radius:20px 20px 0 0;
+}
+.inventory-type-kicker{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:900;letter-spacing:.08em;color:#dbeafe;}
+.inventory-type-picker-head h2{margin:5px 0 5px;font-size:25px;line-height:1.12;color:#fff;}
+.inventory-type-picker-head p{margin:0;max-width:690px;font-size:13px;line-height:1.5;color:#e8f1ff;}
+.inventory-type-close{width:42px;height:42px;min-width:42px;padding:0;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:18px;border:1px solid rgba(255,255,255,.24);}
+.inventory-type-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:20px 22px;}
+.inventory-type-card{
+  position:relative;
+  min-height:154px;
+  padding:18px 14px 15px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  text-align:center;
+  background:#fff;
+  color:#172033;
+  border:1px solid #dbe4f0;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(30,64,175,.07);
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.inventory-type-card:hover{transform:translateY(-3px);border-color:#7aa7ef;box-shadow:0 12px 26px rgba(30,64,175,.15);}
+.inventory-type-card:active{transform:scale(.985);}
+.inventory-type-card-set{grid-column:span 2;background:linear-gradient(145deg,#eef5ff,#fff 72%);border:2px solid #4f82dd;}
+.inventory-type-icon{width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:17px;background:#eaf2ff;color:#214596;font-size:29px;box-shadow:inset 0 0 0 1px #d9e8ff;}
+.inventory-type-card-set .inventory-type-icon{width:72px;height:72px;font-size:32px;background:#214596;color:#fff;box-shadow:0 10px 20px rgba(33,69,150,.22);}
+.inventory-type-copy{display:flex;flex-direction:column;gap:5px;align-items:center;}
+.inventory-type-copy b{font-size:15px;font-weight:900;}
+.inventory-type-copy small{font-size:11px;line-height:1.35;color:#64748b;font-weight:700;}
+.inventory-type-badge{position:absolute;top:10px;right:10px;background:#dcfce7;color:#166534;border:1px solid #bbf7d0;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;}
+.inventory-type-picker-foot{display:flex;align-items:center;justify-content:center;gap:8px;padding:0 20px 18px;color:#64748b;font-size:11px;font-weight:800;text-align:center;}
+
+.inventory-hidden-checks{display:none!important;}
+.inventory-selected-type-box{background:#f8fbff;border:1px solid #cbdcf8;border-radius:12px;padding:12px!important;}
+.selected-device-summary{display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:42px;}
+.selected-device-empty{width:100%;padding:10px 12px;border-radius:9px;background:#fff7ed;border:1px dashed #fdba74;color:#9a3412;font-size:12px;font-weight:800;}
+.selected-device-chip{display:inline-flex;align-items:center;gap:7px;background:#eaf2ff;color:#163d86;border:1px solid #bfd4f7;border-radius:999px;padding:7px 8px 7px 11px;font-size:12px;font-weight:900;}
+.selected-device-chip.set-chip{background:#214596;color:#fff;border-color:#214596;}
+.selected-device-chip button{width:24px;height:24px;min-height:24px;padding:0;border-radius:50%;background:rgba(255,255,255,.78);color:#334155;font-size:10px;}
+.selected-device-chip.set-chip button{display:none;}
+.inventory-type-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+.inventory-type-actions button{min-height:36px;padding:8px 11px;border-radius:8px;font-size:12px;font-weight:900;}
+.btn-type-add{background:#214596;color:#fff;}
+.btn-type-replace{background:#e2e8f0;color:#334155;}
+.inventory-primary-name{grid-column:1 / -1!important;background:#f7fbff;border:1px solid #d9e8fb;border-radius:12px;padding:12px;}
+.inventory-primary-year{max-width:270px;}
+#formPage .device-section-title{margin-top:2px;}
+#formPage .device-card-header span:first-child i{margin-right:6px;}
+
+@media(max-width:900px){
+  .inventory-type-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .inventory-type-card-set{grid-column:span 2;}
+}
+@media(max-width:760px){
+  .inventory-type-picker{padding:0;align-items:flex-end;}
+  .inventory-type-picker-card{width:100%;max-height:96dvh;border-radius:20px 20px 0 0;}
+  .inventory-type-picker-head{padding:17px 16px 14px;border-radius:20px 20px 0 0;}
+  .inventory-type-picker-head h2{font-size:20px;}
+  .inventory-type-picker-head p{font-size:11px;}
+  .inventory-type-close{width:38px;height:38px;min-width:38px;}
+  .inventory-type-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:12px;}
+  .inventory-type-card{min-height:128px;padding:13px 8px 11px;border-radius:13px;gap:8px;}
+  .inventory-type-card-set{grid-column:span 2;min-height:142px;}
+  .inventory-type-icon{width:52px;height:52px;border-radius:14px;font-size:23px;}
+  .inventory-type-card-set .inventory-type-icon{width:58px;height:58px;font-size:26px;}
+  .inventory-type-copy b{font-size:13px;}
+  .inventory-type-copy small{font-size:9.5px;}
+  .inventory-type-badge{top:8px;right:8px;font-size:8px;}
+  .inventory-type-picker-foot{padding:1px 12px 13px;font-size:9.5px;}
+  .inventory-selected-type-box{padding:10px!important;}
+  .selected-device-summary{gap:6px;}
+  .selected-device-chip{font-size:11px;padding:6px 7px 6px 9px;}
+  .inventory-type-actions{display:grid;grid-template-columns:1fr 1fr;width:100%;}
+  .inventory-type-actions button{width:100%;font-size:11px;padding:8px 6px;}
+  .inventory-primary-year{max-width:none;}
+  #formPage .inventory-primary-name{padding:10px!important;}
+}
+@media(max-width:390px){
+  .inventory-type-grid{gap:7px;padding:9px;}
+  .inventory-type-card{min-height:120px;}
+  .inventory-type-card-set{min-height:136px;}
+  .inventory-type-copy small{font-size:9px;}
+}
+</style>
+
 </head>
 
 <body>
+
+<!-- ===== PEMILIH JENIS PERKAKASAN BERIKON ===== -->
+<div id="inventoryTypePicker" class="inventory-type-picker" aria-hidden="true">
+  <div class="inventory-type-picker-card" role="dialog" aria-modal="true" aria-labelledby="inventoryTypePickerTitle">
+    <div class="inventory-type-picker-head">
+      <div>
+        <span class="inventory-type-kicker"><i class="fa-solid fa-plus"></i> TAMBAH INVENTORI</span>
+        <h2 id="inventoryTypePickerTitle">Pilih Jenis Perkakasan</h2>
+        <p>Pilih satu jenis perkakasan. Untuk aset desktop seorang staff, pilih <b>Set Komputer</b>.</p>
+      </div>
+      <button type="button" class="inventory-type-close" onclick="closeInventoryTypePicker()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="inventory-type-grid">
+      <button type="button" class="inventory-type-card inventory-type-card-set" onclick="selectComputerSet()">
+        <span class="inventory-type-icon"><i class="fa-solid fa-computer"></i></span>
+        <span class="inventory-type-copy"><b>Set Komputer</b><small>PC / CPU + Monitor + Keyboard + Mouse</small></span>
+        <span class="inventory-type-badge">Disyorkan</span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Laptop')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-laptop"></i></span>
+        <span class="inventory-type-copy"><b>Laptop</b><small>Komputer mudah alih</small></span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('CPU')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-desktop"></i></span>
+        <span class="inventory-type-copy"><b>PC / CPU</b><small>Desktop / unit sistem</small></span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Monitor')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-display"></i></span>
+        <span class="inventory-type-copy"><b>Monitor</b><small>Paparan komputer</small></span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Keyboard')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-keyboard"></i></span>
+        <span class="inventory-type-copy"><b>Keyboard</b><small>Papan kekunci</small></span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Mouse')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-computer-mouse"></i></span>
+        <span class="inventory-type-copy"><b>Mouse</b><small>Tetikus komputer</small></span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Printer')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-print"></i></span>
+        <span class="inventory-type-copy"><b>Printer</b><small>Pencetak pejabat</small></span>
+      </button>
+
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Lain-lain')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+        <span class="inventory-type-copy"><b>Lain-lain</b><small>Projector, scanner, UPS dan lain-lain</small></span>
+      </button>
+    </div>
+
+    <div class="inventory-type-picker-foot">
+      <i class="fa-solid fa-mobile-screen-button"></i>
+      <span>Paparan ini dioptimumkan untuk desktop dan Chrome di telefon.</span>
+    </div>
+  </div>
+</div>
 <div class="app">
   <header class="topbar master-app-topbar">
     <button type="button" class="master-menu-toggle" onclick="toggleMasterSidebar()" title="Buka / tutup menu" aria-label="Buka atau tutup menu">
@@ -2340,7 +2526,7 @@ body.enterprise-resizing *{cursor:col-resize!important;}
         <button id="btnProfileMain" onclick="showPage('profileMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Profil Aset Lengkap</span></button>
         <button id="btnSummaryMain" onclick="showPage('summaryMainPage', this); toggleInventorySubmenu(true); populateMainAssetPickers();"><span class="master-sub-dot">•</span><span>Ringkasan Aset Lengkap</span></button>
       </div>
-      <button id="btnHistory" onclick="showPage('historyPage', this); loadHistory();"><i class="fa-regular fa-clock"></i><span>Sejarah Pergerakan Aset</span></button>
+      <button id="btnHistory" onclick="showHistoryPageFast(this)"><i class="fa-regular fa-clock"></i><span>Sejarah Pergerakan Aset</span></button>
       <button id="btnCompletedAssets" onclick="showCompletedAssetsPage(this)"><i class="fa-regular fa-square-check"></i><span>Aset Selesai</span></button>
       <button id="btnStaffParent" class="side-parent" onclick="toggleStaffSubmenu()"><i class="fa-solid fa-users"></i><span>Nama Staff / Upload Excel</span><i class="fa-solid fa-chevron-down master-menu-chevron"></i></button>
       <div id="staffSubmenu" class="side-submenu">
@@ -2500,6 +2686,19 @@ body.enterprise-resizing *{cursor:col-resize!important;}
               <div id="staffFilterNote" class="staff-filter-note"></div>
             </div>
 
+            <div class="field inventory-primary-location">
+              <label>Lokasi Utama <span class="req">*</span></label>
+              <select id="lokasiUtama" onchange="syncPrimaryLocationToDevices(false)">
+                <option value="">Pilih lokasi utama</option>
+                <option value="Stor PKPJ">Stor PKPJ</option>
+                <option value="Pejabat PKPJ">Pejabat PKPJ</option>
+                <option value="Tidak Berkaitan">Tidak Berkaitan</option>
+                <option value="Lain-lain">Lain-lain</option>
+              </select>
+              <input id="lokasiUtamaLain" placeholder="Contoh: Unit IT / Bahagian Kewangan / Bilik Mesyuarat" style="display:none;margin-top:8px;" oninput="syncPrimaryLocationToDevices(false)">
+              <div class="inventory-primary-hint">Untuk Set Komputer, lokasi ini akan diisi terus kepada PC, Monitor, Keyboard dan Mouse. Lokasi setiap item masih boleh diubah pada kad aset.</div>
+            </div>
+
             <div class="field form-staff-upload-field">
               <label>Upload Nama Staff Excel</label>
                   <div class="staff-actions">
@@ -2508,9 +2707,16 @@ body.enterprise-resizing *{cursor:col-resize!important;}
               <div class="note" id="staffImportStatus">Excel/CSV: guna column pertama atau column bertajuk Nama Staff. Upload fail baru akan auto reset senarai staff lama dan guna senarai baru.</div>
             </div>
 
-            <div class="field full-width">
-              <label>Jenis Perkakasan <span class="req">*</span></label>
-              <div class="checkbox-grid">
+            <div class="field full-width inventory-selected-type-box">
+              <label>Jenis Perkakasan Dipilih <span class="req">*</span></label>
+              <div id="selectedDeviceSummary" class="selected-device-summary">
+                <div class="selected-device-empty"><i class="fa-solid fa-circle-info"></i> Belum ada perkakasan dipilih.</div>
+              </div>
+              <div id="inventoryTypeActions" class="inventory-type-actions">
+                <button type="button" class="btn-type-add" onclick="showInventoryTypePicker('add')"><i class="fa-solid fa-plus"></i> Tambah Perkakasan</button>
+                <button type="button" class="btn-type-replace" onclick="showInventoryTypePicker('replace')"><i class="fa-solid fa-rotate"></i> Pilih Semula</button>
+              </div>
+              <div class="checkbox-grid inventory-hidden-checks" aria-hidden="true">
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Laptop" onchange="syncDeviceSections()"> Laptop</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="CPU" onchange="syncDeviceSections()"> CPU</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Monitor" onchange="syncDeviceSections()"> Monitor</label>
@@ -2519,7 +2725,7 @@ body.enterprise-resizing *{cursor:col-resize!important;}
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Printer" onchange="syncDeviceSections()"> Printer</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Lain-lain" onchange="syncDeviceSections()"> Lain-lain</label>
               </div>
-              <div class="note">Bila pilih Laptop / CPU / Monitor dan lain-lain, sistem akan buka kad maklumat aset berasingan untuk setiap perkakasan.</div>
+              <div class="note">Set Komputer akan membuka PC/CPU, Monitor, Keyboard dan Mouse serentak. Setiap item masih direkodkan secara berasingan di bawah nama/lokasi yang sama.</div>
             </div>
 
             <div class="field full-width">
@@ -4001,6 +4207,7 @@ function syncDeviceSections(){
 
 function createDeviceCard(jenis){
   const id = deviceId(jenis);
+  const jenisPaparan = String(jenis || "") === "CPU" ? "PC / CPU" : jenis;
   deviceFiles[id] = deviceFiles[id] || [];
 
   const card = document.createElement("div");
@@ -4017,8 +4224,8 @@ function createDeviceCard(jenis){
 
   card.innerHTML = `
     <div class="device-card-header">
-      <span><i class="fa-solid fa-box"></i> ${escapeHtml(jenis)}</span>
-      <span class="note" style="color:#dbeafe">Isi maklumat aset untuk ${escapeHtml(jenis)}</span>
+      <span><i class="fa-solid fa-box"></i> ${escapeHtml(jenisPaparan)}</span>
+      <span class="note" style="color:#dbeafe">Isi maklumat aset untuk ${escapeHtml(jenisPaparan)}</span>
     </div>
     <div class="device-card-body">
       <div class="device-card-grid">
@@ -7735,6 +7942,457 @@ document.addEventListener("click",function(ev){
   const menuButton=ev.target.closest&&ev.target.closest(".master-side-menu button");if(menuButton && !menuButton.classList.contains("side-parent"))window.setTimeout(closeMobileSidebar,80);
 });
 window.addEventListener("resize",function(){if(window.innerWidth>760)closeMobileSidebar();});
+
+
+/* ===== UX TAMBAH INVENTORI V7: PILIH JENIS DULU + SET KOMPUTER ===== */
+var inventoryPickerMode = "replace";
+var inventoryBundleMode = "";
+var INVENTORY_COMPUTER_SET = ["CPU", "Monitor", "Keyboard", "Mouse"];
+var __pkpjOpenInventoryFormDirect = window.openInventoryFormModal;
+var __pkpjSyncDeviceSections = window.syncDeviceSections;
+var __pkpjClearForm = window.clearForm;
+
+function displayJenisLabel(jenis){
+  return String(jenis || "") === "CPU" ? "PC / CPU" : String(jenis || "");
+}
+
+function prepareInventoryFormLayout(){
+  var formGrid = document.querySelector("#formPage .form-grid");
+  var nameField = document.querySelector("#formPage .inventory-primary-name");
+  var yearField = document.querySelector("#formPage .inventory-primary-year");
+  if(formGrid && nameField && yearField && yearField.previousElementSibling !== nameField){
+    formGrid.insertBefore(nameField, yearField);
+  }
+}
+
+function showInventoryTypePicker(mode){
+  inventoryPickerMode = mode === "add" ? "add" : "replace";
+  var picker = document.getElementById("inventoryTypePicker");
+  if(!picker) return;
+  picker.classList.add("show");
+  picker.setAttribute("aria-hidden", "false");
+  document.body.classList.add("inventory-type-picker-open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeInventoryTypePicker(){
+  var picker = document.getElementById("inventoryTypePicker");
+  if(picker){picker.classList.remove("show");picker.setAttribute("aria-hidden", "true");}
+  document.body.classList.remove("inventory-type-picker-open");
+  if(!document.body.classList.contains("inventory-form-open")){
+    document.body.style.overflow = "";
+  }
+}
+
+function setJenisChecks(types, appendMode){
+  var target = Array.isArray(types) ? types : [types];
+  if(!appendMode){
+    document.querySelectorAll(".jenis-check").forEach(function(cb){cb.checked = false;});
+  }
+  target.forEach(function(jenis){
+    var cb = Array.from(document.querySelectorAll(".jenis-check")).find(function(x){return x.value === jenis;});
+    if(cb){cb.checked = true;}
+  });
+  syncDeviceSections();
+}
+
+function selectInventoryType(jenis){
+  var appendMode = inventoryPickerMode === "add";
+  if(!appendMode){inventoryBundleMode = "";}
+  setJenisChecks([jenis], appendMode);
+  closeInventoryTypePicker();
+  prepareInventoryFormLayout();
+  __pkpjOpenInventoryFormDirect();
+  renderSelectedDeviceSummary();
+  window.setTimeout(function(){
+    var nameInput = document.getElementById("namaStaffSearch");
+    if(nameInput && !nameInput.value){nameInput.focus();}
+  }, 120);
+}
+
+function selectComputerSet(){
+  var appendMode = inventoryPickerMode === "add";
+  inventoryBundleMode = "Set Komputer";
+  setJenisChecks(INVENTORY_COMPUTER_SET, appendMode);
+  closeInventoryTypePicker();
+  prepareInventoryFormLayout();
+  __pkpjOpenInventoryFormDirect();
+  renderSelectedDeviceSummary();
+  window.setTimeout(function(){
+    var nameInput = document.getElementById("namaStaffSearch");
+    if(nameInput && !nameInput.value){nameInput.focus();}
+  }, 120);
+}
+
+function removeSelectedDeviceType(jenis){
+  var cb = Array.from(document.querySelectorAll(".jenis-check")).find(function(x){return x.value === jenis;});
+  if(cb){cb.checked = false;}
+  if(INVENTORY_COMPUTER_SET.indexOf(jenis) > -1){inventoryBundleMode = "";}
+  syncDeviceSections();
+}
+
+function renderSelectedDeviceSummary(){
+  var box = document.getElementById("selectedDeviceSummary");
+  if(!box) return;
+  var selected = typeof getSelectedJenisValues === "function" ? getSelectedJenisValues() : [];
+  var formTitle = document.querySelector("#formPage .form-modal-header .page-title");
+  if(!selected.length){
+    if(formTitle){formTitle.textContent = "Tambah Inventori";}
+    box.innerHTML = '<div class="selected-device-empty"><i class="fa-solid fa-circle-info"></i> Belum ada perkakasan dipilih.</div>';
+    return;
+  }
+
+  var hasComputerSet = INVENTORY_COMPUTER_SET.every(function(jenis){return selected.indexOf(jenis) > -1;});
+  var html = "";
+  var editRow = document.getElementById("editingRow");
+  if(formTitle){
+    var titleLabel = inventoryBundleMode === "Set Komputer" && hasComputerSet ? "Set Komputer" : selected.map(displayJenisLabel).join(" + ");
+    formTitle.textContent = (editRow && String(editRow.value || "").trim() ? "Kemaskini Inventori — " : "Tambah Inventori — ") + titleLabel;
+  }
+  if(inventoryBundleMode === "Set Komputer" && hasComputerSet){
+    html += '<span class="selected-device-chip set-chip"><i class="fa-solid fa-computer"></i> Set Komputer</span>';
+  }
+  selected.forEach(function(jenis){
+    html += '<span class="selected-device-chip"><i class="fa-solid fa-check"></i> ' + escapeHtml(displayJenisLabel(jenis)) + '<button type="button" title="Buang '+escapeAttr(displayJenisLabel(jenis))+'" onclick="removeSelectedDeviceType(\''+String(jenis).replace(/'/g,"\\'")+'\')"><i class="fa-solid fa-xmark"></i></button></span>';
+  });
+  box.innerHTML = html;
+}
+
+window.syncDeviceSections = function(){
+  __pkpjSyncDeviceSections();
+  renderSelectedDeviceSummary();
+};
+
+window.clearForm = function(){
+  inventoryBundleMode = "";
+  __pkpjClearForm();
+  renderSelectedDeviceSummary();
+};
+
+window.openInventoryFormModal = function(){
+  var editRow = document.getElementById("editingRow");
+  if(editRow && String(editRow.value || "").trim()){
+    prepareInventoryFormLayout();
+    __pkpjOpenInventoryFormDirect();
+    renderSelectedDeviceSummary();
+    return;
+  }
+  clearForm();
+  showInventoryTypePicker("replace");
+};
+
+window.showInventoryTypePicker = showInventoryTypePicker;
+window.closeInventoryTypePicker = closeInventoryTypePicker;
+window.selectInventoryType = selectInventoryType;
+window.selectComputerSet = selectComputerSet;
+window.removeSelectedDeviceType = removeSelectedDeviceType;
+
+/* Klik ruang gelap untuk tutup pemilih jenis. */
+document.addEventListener("click", function(ev){
+  var picker = document.getElementById("inventoryTypePicker");
+  if(picker && picker.classList.contains("show") && ev.target === picker){closeInventoryTypePicker();}
+});
+
+document.addEventListener("keydown", function(ev){
+  if(ev.key === "Escape"){
+    var picker = document.getElementById("inventoryTypePicker");
+    if(picker && picker.classList.contains("show")){closeInventoryTypePicker();}
+  }
+});
+
+prepareInventoryFormLayout();
+renderSelectedDeviceSummary();
+
 </script>
+
+
+<style id="pkpjFinalSetComputerSpeedStyle">
+/* ===== FINAL 22-08-2026: SET KOMPUTER + LOKASI UTAMA + MOBILE SPEED ===== */
+.inventory-primary-name{grid-column:span 2!important;}
+.inventory-primary-location{grid-column:span 1!important;}
+.inventory-primary-year{grid-column:span 1!important;}
+.inventory-primary-location select,.inventory-primary-location input{min-height:42px;}
+.inventory-primary-hint{font-size:11px;color:#64748b;font-weight:700;line-height:1.4;margin-top:5px;}
+.page.fast-tab-enter{animation:pkpjFastTabIn .14s ease-out;}
+@keyframes pkpjFastTabIn{from{opacity:.75;transform:translateY(2px)}to{opacity:1;transform:none}}
+@media(max-width:760px){
+  .inventory-primary-name,.inventory-primary-location,.inventory-primary-year{grid-column:1!important;}
+  .inventory-primary-name{order:1}.inventory-primary-location{order:2}.inventory-primary-year{order:3}
+  #formPage .inventory-selected-type-box{order:4}
+  #formPage .inventory-primary-location select,#formPage .inventory-primary-location input{font-size:16px!important;min-height:44px!important;}
+}
+</style>
+<script id="pkpjFinalSetComputerSpeedLogic">
+/* ===== FINAL 22-08-2026: SHARED LOCATION + LAZY TAB RENDER + BROWSER CACHE ===== */
+(function(){
+  "use strict";
+
+  var CACHE_KEY = "pkpjInventoryBootstrapV8";
+  var CACHE_MAX_AGE = 10 * 60 * 1000;
+  var HISTORY_FRESH_MS = 60 * 1000;
+  var lastHistoryNetworkAt = 0;
+  var tabDirty = Object.create(null);
+  var allTabIds = ["dashboardPage","tablePage","profileMainPage","summaryMainPage","historyPage","completedAssetsPage","staffDirectoryPage","birthdayStaffPage","settingsPage"];
+
+  function markAllTabsDirty(){ allTabIds.forEach(function(id){tabDirty[id]=true;}); }
+  function markTabClean(id){ tabDirty[id]=false; }
+
+  function safeIdle(fn){
+    if(typeof requestIdleCallback === "function") requestIdleCallback(fn,{timeout:700});
+    else setTimeout(fn,60);
+  }
+
+  function getPrimaryLocation(){
+    var sel=document.getElementById("lokasiUtama");
+    var other=document.getElementById("lokasiUtamaLain");
+    if(!sel) return "";
+    if(sel.value === "Lain-lain") return String(other && other.value || "").trim();
+    return String(sel.value || "").trim();
+  }
+
+  window.syncPrimaryLocationToDevices = function(force){
+    var sel=document.getElementById("lokasiUtama");
+    var other=document.getElementById("lokasiUtamaLain");
+    if(!sel) return;
+    if(other){
+      other.style.display = sel.value === "Lain-lain" ? "block" : "none";
+      if(sel.value !== "Lain-lain") other.value = "";
+    }
+    var locationValue=getPrimaryLocation();
+    if(!locationValue) return;
+    document.querySelectorAll("#deviceSections .device-card").forEach(function(card){
+      var id=card.getAttribute("data-id");
+      var locSel=document.getElementById("lokasi_"+id);
+      var locOther=document.getElementById("lokasiLain_"+id);
+      if(!locSel) return;
+      var current = locSel.value === "Lain-lain" ? String(locOther && locOther.value || "").trim() : String(locSel.value || "").trim();
+      if(current && !force) return;
+      var standard=["Stor PKPJ","Pejabat PKPJ","Tidak Berkaitan"];
+      if(standard.indexOf(locationValue)>-1){
+        locSel.value=locationValue;
+        if(locOther){locOther.style.display="none";locOther.value="";}
+      }else{
+        locSel.value="Lain-lain";
+        if(locOther){locOther.style.display="block";locOther.value=locationValue;}
+      }
+    });
+  };
+
+  function syncPrimaryLocationFromCards(){
+    var sel=document.getElementById("lokasiUtama");
+    var other=document.getElementById("lokasiUtamaLain");
+    if(!sel) return;
+    var cards=Array.from(document.querySelectorAll("#deviceSections .device-card"));
+    if(!cards.length) return;
+    var first=cards[0].getAttribute("data-id");
+    var locSel=document.getElementById("lokasi_"+first);
+    var locOther=document.getElementById("lokasiLain_"+first);
+    if(!locSel || !locSel.value) return;
+    if(locSel.value === "Lain-lain"){
+      sel.value="Lain-lain";
+      if(other){other.style.display="block";other.value=String(locOther && locOther.value || "");}
+    }else{
+      sel.value=locSel.value;
+      if(other){other.style.display="none";other.value="";}
+    }
+  }
+
+  /* When device cards are created, copy the shared location only into blank cards. */
+  if(typeof window.syncDeviceSections === "function"){
+    var baseSyncDeviceSections=window.syncDeviceSections;
+    window.syncDeviceSections=function(){
+      baseSyncDeviceSections();
+      window.syncPrimaryLocationToDevices(false);
+    };
+  }
+
+  if(typeof window.clearForm === "function"){
+    var baseClearForm=window.clearForm;
+    window.clearForm=function(){
+      baseClearForm();
+      var sel=document.getElementById("lokasiUtama"),other=document.getElementById("lokasiUtamaLain");
+      if(sel) sel.value="";
+      if(other){other.value="";other.style.display="none";}
+    };
+  }
+
+  function applyStaffWithoutHeavyTables(res){
+    if(typeof normalizeStaffResponse !== "function") return;
+    var parsed=normalizeStaffResponse(res||{});
+    var records=parsed.records||[];
+    var names=parsed.names||[];
+    try{
+      var cached=typeof getStaffRecordsCache === "function" ? getStaffRecordsCache() : [];
+      if(cached.length){
+        var cacheMap={};
+        cached.forEach(function(r){var n=String(r.namaStaff||r.nama||"").trim().toLowerCase();if(n)cacheMap[n]=r;});
+        records=records.map(function(r){
+          var name=String(r.namaStaff||r.nama||"").trim(),hit=cacheMap[name.toLowerCase()];
+          if(hit && !String(r.noIC||"").trim() && !String(r.tarikhLahir||"").trim()) return Object.assign({},hit,{namaStaff:name||hit.namaStaff});
+          return r;
+        });
+        if(records.length && records.every(function(r){return !String(r.noIC||"").trim()&&!String(r.tarikhLahir||"").trim();})){
+          records=names.map(function(n){return cacheMap[String(n||"").trim().toLowerCase()]||{namaStaff:n,status:"Aktif"};});
+        }
+      }
+    }catch(e){}
+    staffRecords=typeof uniqueStaffRecords === "function" ? uniqueStaffRecords(records) : records;
+    staffList=typeof uniqueStrings === "function" ? uniqueStrings(names.concat(staffRecords.map(function(r){return r.namaStaff||r.nama||"";}))) : names;
+    if(typeof saveStaffRecordsCache === "function") saveStaffRecordsCache(staffRecords);
+    if(typeof updateStaffSelectOptions === "function") updateStaffSelectOptions();
+  }
+
+  function saveBootstrapBrowserCache(res){
+    try{
+      localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),payload:res}));
+    }catch(e){ console.warn("Cache inventori browser tidak dapat disimpan:",e); }
+  }
+
+  function renderPageFast(pageId,force){
+    if(!force && tabDirty[pageId]===false) return;
+    try{
+      if(pageId==="dashboardPage"){
+        if(typeof stats==="function") stats();
+        if(typeof renderDashboardMovement==="function") renderDashboardMovement();
+        if(typeof window.renderEnterpriseDashboardV4==="function") window.renderEnterpriseDashboardV4();
+      }else if(pageId==="tablePage"){
+        if(typeof window.renderMasterInventory==="function") window.renderMasterInventory();
+        else if(typeof applyTableView==="function") applyTableView();
+      }else if(pageId==="profileMainPage" || pageId==="summaryMainPage"){
+        if(typeof populateMainAssetPickers==="function") populateMainAssetPickers();
+      }else if(pageId==="historyPage"){
+        if(typeof applyHistorySearch==="function") applyHistorySearch();
+      }else if(pageId==="completedAssetsPage"){
+        if(typeof renderCompletedAssets==="function") renderCompletedAssets();
+      }else if(pageId==="staffDirectoryPage"){
+        if(typeof renderStaffDirectory==="function") renderStaffDirectory();
+      }else if(pageId==="birthdayStaffPage"){
+        if(typeof renderBirthdayStaff==="function") renderBirthdayStaff();
+      }else if(pageId==="settingsPage"){
+        if(typeof syncDisplaySettingInputs==="function") syncDisplaySettingInputs();
+        if(typeof renderDisplaySettingsPreview==="function") renderDisplaySettingsPreview();
+      }
+      markTabClean(pageId);
+    }catch(err){console.error("Render tab pantas gagal:",pageId,err);}
+  }
+
+  function applyBootstrapPayload(res,opts){
+    opts=opts||{};
+    allData=Array.isArray(res.data)?res.data:[];
+    tableBaseData=allData.slice();
+    isFilterActive=false;
+    historyData=Array.isArray(res.history)?res.history:[];
+    if(historyData.length) lastHistoryNetworkAt=Date.now();
+    applyStaffWithoutHeavyTables(res.staff||{});
+    if(typeof applyDisplaySettings==="function") applyDisplaySettings(res.settings||{});
+    markAllTabsDirty();
+
+    var active=document.querySelector(".page.active");
+    var activeId=active && active.id ? active.id : "dashboardPage";
+    renderPageFast(activeId,true);
+
+    /* Heavy hidden tabs are prepared only when the browser is idle. */
+    safeIdle(function(){
+      if(activeId!=="tablePage" && typeof window.renderMasterInventory==="function"){
+        /* Do not build a large table while hidden; just leave it dirty. */
+      }
+    });
+  }
+
+  function restoreBrowserCache(){
+    try{
+      var raw=localStorage.getItem(CACHE_KEY); if(!raw) return false;
+      var item=JSON.parse(raw); if(!item||!item.payload||!Array.isArray(item.payload.data)) return false;
+      if(Date.now()-Number(item.savedAt||0)>CACHE_MAX_AGE) return false;
+      applyBootstrapPayload(item.payload,{fromCache:true});
+      return true;
+    }catch(e){return false;}
+  }
+
+  /* Override the existing bootstrap: one API request, but render only the visible tab. */
+  fastBootstrapLoad=async function(options){
+    options=options||{};
+    if(!options.silent && typeof setStatus==="function") setStatus("Memuatkan data...");
+    var params={action:"bootstrap",v:"8"};
+    if(options.fresh) params.fresh="1";
+    var res=await jsonp(params);
+    if(!res || res.status!=="OK" || !Array.isArray(res.data)) throw new Error((res&&res.message)||"Bootstrap API belum tersedia");
+    applyBootstrapPayload(res,options);
+    saveBootstrapBrowserCache(res);
+    if(!options.silent && typeof setStatus==="function") setStatus("");
+    return res;
+  };
+
+  refreshAll=async function(options){
+    options=options||{};
+    if(options.clearForm!==false && typeof clearForm==="function") clearForm();
+    try{
+      await fastBootstrapLoad(options);
+    }catch(err){
+      console.warn("Bootstrap pantas gagal, guna mod serasi:",err);
+      await Promise.all([load(),loadStaffList(),loadHistory(true)]);
+      markAllTabsDirty();
+      var active=document.querySelector(".page.active");
+      renderPageFast(active&&active.id?active.id:"dashboardPage",true);
+    }
+    if(!options.silent && typeof showToast==="function") showToast("Data inventori dikemaskini");
+  };
+
+  /* Navigation does not hit Apps Script. It renders from memory only when data changed. */
+  if(typeof showPage==="function"){
+    var baseShowPage=showPage;
+    showPage=function(pageId,btn){
+      baseShowPage(pageId,btn);
+      var page=document.getElementById(pageId);
+      if(page){page.classList.remove("fast-tab-enter");void page.offsetWidth;page.classList.add("fast-tab-enter");}
+      requestAnimationFrame(function(){renderPageFast(pageId,false);});
+    };
+  }
+
+  var baseLoadHistory=typeof loadHistory==="function"?loadHistory:null;
+  loadHistory=async function(force){
+    if(!force && historyData && historyData.length && Date.now()-lastHistoryNetworkAt<HISTORY_FRESH_MS){
+      if(typeof applyHistorySearch==="function") applyHistorySearch();
+      return historyData;
+    }
+    if(!baseLoadHistory) return [];
+    await baseLoadHistory();
+    lastHistoryNetworkAt=Date.now();
+    tabDirty.historyPage=false;
+    try{
+      var raw=localStorage.getItem(CACHE_KEY);
+      if(raw){var item=JSON.parse(raw);if(item&&item.payload){item.payload.history=historyData;item.savedAt=Date.now();localStorage.setItem(CACHE_KEY,JSON.stringify(item));}}
+    }catch(e){}
+    return historyData;
+  };
+
+  window.showHistoryPageFast=function(btn){
+    showPage("historyPage",btn||document.getElementById("btnHistory"));
+    if(!historyData || !historyData.length || Date.now()-lastHistoryNetworkAt>=HISTORY_FRESH_MS){
+      /* Let the existing list appear instantly, then refresh in the background. */
+      loadHistory(false).catch(function(err){console.error(err);});
+    }
+  };
+
+  /* Existing edit flow: expose the card's location at the top after fields are filled. */
+  if(typeof editData==="function"){
+    var baseEditData=editData;
+    editData=function(row){
+      var result=baseEditData(row);
+      setTimeout(syncPrimaryLocationFromCards,0);
+      return result;
+    };
+  }
+
+  /* Use cached content immediately on Chrome/mobile, then startup refresh replaces it silently. */
+  var hadCache=restoreBrowserCache();
+  if(hadCache){
+    setTimeout(function(){
+      if(typeof setStatus==="function") setStatus("");
+    },0);
+  }
+})();
+</script>
+
 </body>
 </html>
