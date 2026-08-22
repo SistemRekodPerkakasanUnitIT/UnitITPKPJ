@@ -2529,6 +2529,66 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
   .enterprise-stat-card{box-shadow:0 7px 18px rgba(30,41,59,.08)!important;}
   #historyPage th{background:#db2777!important;}
 }
+
+/* ===== V10 FIX: CUSTOM SIDEBAR BACKGROUND JANGAN TIMPA COLOURFUL SIDEBAR =====
+   Tetapan background sidebar lama menggunakan overlay putih yang mempunyai specificity
+   lebih tinggi. Rule ini mengekalkan gambar custom jika ada tetapi menggunakan overlay
+   gelap, supaya menu tidak menjadi putih/pudar. Fungsi dan ID tidak disentuh. */
+.master-app-sidebar.custom-sidebar-bg{
+  background-color:#071a3e!important;
+  background-image:
+    linear-gradient(180deg,rgba(7,26,62,.90),rgba(11,34,80,.91) 55%,rgba(16,26,66,.94)),
+    var(--sidebar-custom-bg)!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+.master-app-sidebar.custom-sidebar-bg .master-sidebar-datetime{
+  background:rgba(255,255,255,.04)!important;
+  color:#dbeafe!important;
+  border-bottom-color:rgba(255,255,255,.08)!important;
+  backdrop-filter:none!important;
+}
+.master-app-sidebar.custom-sidebar-bg .master-side-search{background:transparent!important;}
+.master-app-sidebar.custom-sidebar-bg .master-side-search input{
+  background:rgba(255,255,255,.08)!important;
+  border-color:rgba(255,255,255,.11)!important;
+  color:#fff!important;
+}
+.master-app-sidebar.custom-sidebar-bg .master-side-search input::placeholder,
+.master-app-sidebar.custom-sidebar-bg .master-side-search i{color:#a9b9d6!important;}
+.master-app-sidebar.custom-sidebar-bg .master-side-menu>button,
+.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-parent,
+.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu,
+.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu button{
+  background:transparent!important;
+  color:#dce7fb!important;
+  backdrop-filter:none!important;
+}
+.master-app-sidebar.custom-sidebar-bg .master-side-menu>button>i:first-child{color:#91b7ff!important;}
+.master-app-sidebar.custom-sidebar-bg .master-side-menu>button:hover,
+.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu button:hover{
+  background:rgba(255,255,255,.08)!important;
+  color:#fff!important;
+}
+.master-app-sidebar.custom-sidebar-bg .master-side-menu>button.active,
+.master-app-sidebar.custom-sidebar-bg .master-side-menu .side-submenu button.active{
+  background:linear-gradient(100deg,#2456e8,#6d4df5)!important;
+  color:#fff!important;
+  box-shadow:0 7px 18px rgba(68,72,235,.30)!important;
+}
+.master-app-sidebar.custom-sidebar-bg .master-side-menu>button.active>i:first-child,
+.master-app-sidebar.custom-sidebar-bg .master-sub-dot{color:#fff!important;}
+.master-app-sidebar.custom-sidebar-bg .master-menu-chevron{color:#b9c6dc!important;}
+
+@media(max-width:760px){
+  .master-app-sidebar.custom-sidebar-bg{
+    background-color:#071a3e!important;
+    background-image:
+      linear-gradient(180deg,rgba(7,26,62,.92),rgba(23,37,84,.95)),
+      var(--sidebar-custom-bg)!important;
+  }
+}
 </style>
 
 </head>
