@@ -8647,5 +8647,349 @@ renderSelectedDeviceSummary();
 })();
 </script>
 
+
+
+<style id="pkpjMobileNativeV11Style">
+/* ===== V11 MOBILE NATIVE UX + FULL PHONE VISIBILITY =====
+   UI/responsive only. IDs, API contract, save/edit/delete logic remain unchanged. */
+@media(max-width:760px){
+  html,body{max-width:100%!important;overflow-x:hidden!important;}
+  body{overscroll-behavior-x:none;}
+  *,*::before,*::after{box-sizing:border-box;}
+  img,svg,canvas,video{max-width:100%;}
+  button,a,input,select,textarea{touch-action:manipulation;}
+
+  /* Prevent iOS/Android zoom + clipped controls. */
+  input,select,textarea{
+    max-width:100%!important;
+    min-width:0!important;
+    font-size:16px!important;
+  }
+  .page,.section-box,.form-area,.form-grid,.field,.device-card,.device-card-body,
+  .device-card-grid,.inventory-selected-type-box,.main-asset-tools,.staff-directory-tools,
+  .master-inventory-workspace,.master-asset-list-panel,.master-asset-detail-panel{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  /* Native-style Add Inventory sheet. */
+  body.inventory-form-open #formPage.form-modal-page.active{
+    padding:0!important;
+    background:#f4f7fc!important;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-top:64px;
+    scroll-padding-bottom:120px;
+  }
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header{
+    position:sticky!important;
+    top:0!important;
+    z-index:50!important;
+    min-height:58px!important;
+    margin:0!important;
+    padding:12px 62px 12px 15px!important;
+    border-radius:0!important;
+    border-top:0!important;
+    border-bottom:1px solid #dbe4f0!important;
+    background:rgba(255,255,255,.96)!important;
+    box-shadow:0 5px 18px rgba(15,23,42,.08)!important;
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    text-align:left!important;
+  }
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .page-title{
+    font-size:17px!important;
+    line-height:1.25!important;
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  /* Existing header back button becomes a compact phone-style icon at top-right. */
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header>.btn-back-main{
+    position:absolute!important;
+    top:9px!important;
+    right:10px!important;
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    min-height:42px!important;
+    padding:0!important;
+    margin:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:50%!important;
+    font-size:0!important;
+    color:#1d4ed8!important;
+    background:#eef4ff!important;
+    border:1px solid #d7e5ff!important;
+    box-shadow:none!important;
+  }
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header>.btn-back-main i{
+    display:block!important;
+    margin:0!important;
+    font-size:17px!important;
+    color:#1d4ed8!important;
+  }
+  body.inventory-form-open #formPage.form-modal-page.active>.section-box{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+  #formPage .section-title{padding:13px 14px!important;font-size:15px!important;}
+  #formPage .form-area{padding:11px!important;padding-bottom:max(16px,env(safe-area-inset-bottom))!important;}
+  #formPage .form-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;}
+  #formPage .inventory-primary-name,#formPage .inventory-primary-location,#formPage .inventory-primary-year,
+  #formPage .full-width,#formPage .half-width,#formPage .three-width{grid-column:1!important;}
+  #formPage .inventory-primary-name,#formPage .inventory-primary-location,#formPage .inventory-primary-year{
+    width:100%!important;
+    padding:10px!important;
+    border-radius:12px!important;
+  }
+  #formPage .staff-search-row{grid-template-columns:minmax(0,1fr) 46px!important;gap:6px!important;}
+  #formPage .staff-search-row button{width:46px!important;min-width:46px!important;padding:0!important;font-size:0!important;}
+  #formPage .staff-search-row button i{font-size:14px!important;}
+  #formPage .staff-quick-buttons{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+  #formPage .inventory-type-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+  #formPage .inventory-type-actions button{width:100%!important;white-space:normal!important;}
+  #formPage .selected-device-summary{max-width:100%!important;}
+  #formPage .selected-device-chip{max-width:100%!important;white-space:normal!important;word-break:break-word!important;}
+  #formPage .device-card{width:100%!important;overflow:hidden!important;}
+  #formPage .device-card-header{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:7px!important;}
+  #formPage .device-card-header span{min-width:0!important;max-width:100%!important;white-space:normal!important;word-break:break-word!important;}
+  #formPage .device-card-grid{grid-template-columns:minmax(0,1fr)!important;}
+  #formPage .upload-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  #formPage .selected-file-item{min-width:0!important;align-items:flex-start!important;}
+  #formPage .selected-file-item span{min-width:0!important;word-break:break-word!important;}
+
+  /* Bottom actions stay visible, but web-style 'Tutup' is removed on phone. */
+  #formPage .form-buttons{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:45!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+    width:auto!important;
+    margin:10px -11px -11px!important;
+    padding:10px 11px max(10px,env(safe-area-inset-bottom))!important;
+    background:rgba(255,255,255,.97)!important;
+    border-top:1px solid #e2e8f0!important;
+    box-shadow:0 -8px 24px rgba(15,23,42,.08)!important;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+  }
+  #formPage .form-buttons>.btn-back-main{display:none!important;}
+  #formPage .form-buttons .btn-save,#formPage .form-buttons .btn-update{grid-column:1 / -1!important;}
+  #formPage .form-buttons button{min-width:0!important;min-height:46px!important;white-space:normal!important;}
+
+  /* Type picker fits all common phones. */
+  .inventory-type-picker{padding:0!important;align-items:flex-end!important;}
+  .inventory-type-picker-card{
+    width:100%!important;
+    max-width:100%!important;
+    max-height:calc(100dvh - env(safe-area-inset-top))!important;
+    border-radius:20px 20px 0 0!important;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  .inventory-type-picker-head{padding:16px 58px 14px 15px!important;}
+  .inventory-type-close{position:absolute!important;right:12px!important;top:12px!important;}
+  .inventory-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:11px!important;}
+  .inventory-type-card{min-width:0!important;min-height:122px!important;padding:11px 7px!important;}
+  .inventory-type-card-set{grid-column:1 / -1!important;}
+  .inventory-type-copy small{white-space:normal!important;word-break:break-word!important;}
+
+  /* Master inventory: no clipped detail cards on phone. */
+  .master-detail-page{height:auto!important;min-height:0!important;overflow:visible!important;}
+  .master-page-heading{min-width:0!important;gap:8px!important;}
+  .master-page-heading h2,.master-page-heading p{max-width:100%!important;white-space:normal!important;word-break:break-word!important;}
+  .master-page-actions{width:100%!important;display:flex!important;flex-wrap:wrap!important;gap:7px!important;}
+  .master-page-actions>*{min-width:0!important;}
+  .master-inventory-workspace{grid-template-columns:minmax(0,1fr)!important;height:auto!important;gap:10px!important;}
+  .master-asset-list-panel{width:100%!important;max-height:58dvh!important;}
+  .master-asset-detail-panel{width:100%!important;padding:11px!important;overflow:visible!important;}
+  .master-detail-header{display:grid!important;grid-template-columns:60px minmax(0,1fr)!important;gap:10px!important;align-items:start!important;}
+  .master-detail-thumb{width:58px!important;height:58px!important;}
+  .master-detail-title h3{font-size:17px!important;max-width:100%!important;white-space:normal!important;word-break:break-word!important;}
+  .master-detail-title-row{min-width:0!important;}
+  .master-detail-meta{display:flex!important;flex-wrap:wrap!important;gap:4px 6px!important;}
+  .master-detail-actions{grid-column:1 / -1!important;width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;}
+  .master-detail-actions button{width:100%!important;min-width:0!important;padding:0 7px!important;justify-content:center!important;white-space:normal!important;}
+  .master-detail-grid{grid-template-columns:minmax(0,1fr)!important;gap:9px!important;}
+  .master-detail-column,.master-detail-column:last-child{grid-column:auto!important;display:flex!important;min-width:0!important;}
+  .master-field-row{grid-template-columns:minmax(92px,.8fr) minmax(0,1.2fr)!important;gap:8px!important;}
+  .master-history-head{flex-wrap:wrap!important;}
+
+  /* Search/filter pages: controls reflow instead of disappearing. */
+  .main-asset-search-row,.staff-directory-search-row,.inventory-summary-row{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;
+    align-items:stretch!important;
+  }
+  .main-asset-search-row input,.main-asset-search-row button,
+  .staff-directory-search-row .search-box,.staff-directory-search-row select,
+  .table-filter-select,.main-asset-select{width:100%!important;max-width:100%!important;}
+  .staff-directory-actions,.main-asset-buttons{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important;width:100%!important;}
+  .staff-directory-actions button,.main-asset-buttons button{width:100%!important;}
+
+  /* Tables remain accessible through local horizontal scroll, never page clipping. */
+  .table-wrap,.enterprise-preview-table-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+  }
+  .staff-directory-table,.birthday-table,.history-table,.inventory-table{max-width:none!important;}
+
+  /* Modals/drawers use full phone width and safe scrolling. */
+  .profile-modal,.image-modal{
+    left:6px!important;
+    right:6px!important;
+    top:6px!important;
+    width:auto!important;
+    max-width:none!important;
+    max-height:calc(100dvh - 12px)!important;
+    transform:none!important;
+  }
+  .history-drawer{width:100%!important;max-width:100%!important;}
+  .profile-modal-body,.image-modal-body,.history-drawer-body{-webkit-overflow-scrolling:touch;}
+
+  /* Top bar keeps its title readable at 320px. */
+  .master-brand-title{min-width:0!important;}
+  .master-brand-title h1,.enterprise-brand-copy h1{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+}
+
+@media(max-width:360px){
+  #formPage .staff-quick-buttons,#formPage .inventory-type-actions,#formPage .upload-row{grid-template-columns:minmax(0,1fr)!important;}
+  .inventory-type-grid{gap:7px!important;padding:9px!important;}
+  .inventory-type-card{min-height:116px!important;}
+  .master-detail-actions{grid-template-columns:minmax(0,1fr)!important;}
+  .master-field-row{grid-template-columns:minmax(0,1fr)!important;gap:3px!important;}
+  .enterprise-dashboard-stats{grid-template-columns:minmax(0,1fr)!important;}
+}
+</style>
+
+<script id="pkpjMobileNativeV11Logic">
+/* ===== V11 PHONE-LIKE BACK NAVIGATION ===== */
+(function(){
+  "use strict";
+  var previousInventoryPageId="dashboardPage";
+  var previousInventoryButtonId="btnDashboard";
+  var originalOpen=window.openInventoryFormModal;
+  var originalShowPicker=window.showInventoryTypePicker;
+  var originalCloseToDashboard=window.closeInventoryFormModalToDashboard;
+  var gestureStart=null;
+
+  function isPhone(){return !!(window.matchMedia&&window.matchMedia("(max-width:760px)").matches);}
+  function activePage(){return document.querySelector(".page.active");}
+  function rememberCurrentPage(){
+    var p=activePage();
+    if(!p||p.id==="formPage")return;
+    previousInventoryPageId=p.id||"dashboardPage";
+    var activeBtn=document.querySelector(".master-side-menu button.active,.side-menu button.active");
+    previousInventoryButtonId=activeBtn&&activeBtn.id?activeBtn.id:(previousInventoryPageId==="tablePage"?"btnTable":"btnDashboard");
+  }
+  function closeFormShell(){
+    var form=document.getElementById("formPage");
+    if(form)form.classList.remove("active");
+    document.body.classList.remove("inventory-form-open");
+    document.body.style.overflow="";
+  }
+  function returnToRememberedPage(){
+    var target=document.getElementById(previousInventoryPageId)||document.getElementById("dashboardPage");
+    var btn=document.getElementById(previousInventoryButtonId)||document.getElementById(previousInventoryPageId==="tablePage"?"btnTable":"btnDashboard");
+    closeFormShell();
+    if(typeof showPage==="function")showPage(target?target.id:"dashboardPage",btn);
+    if(target&&target.id==="tablePage"&&typeof applyTableView==="function")requestAnimationFrame(function(){applyTableView();});
+  }
+
+  if(typeof originalOpen==="function"){
+    window.openInventoryFormModal=function(){
+      if(!document.body.classList.contains("inventory-form-open"))rememberCurrentPage();
+      return originalOpen.apply(this,arguments);
+    };
+  }
+  if(typeof originalShowPicker==="function"){
+    window.showInventoryTypePicker=function(mode){
+      if(!document.body.classList.contains("inventory-form-open"))rememberCurrentPage();
+      return originalShowPicker.apply(this,arguments);
+    };
+  }
+
+  window.inventorySmartBack=function(){
+    if(!isPhone()){
+      if(typeof originalCloseToDashboard==="function")return originalCloseToDashboard();
+      return;
+    }
+    var form=document.getElementById("formPage");
+    var formOpen=!!(form&&form.classList.contains("active")&&document.body.classList.contains("inventory-form-open"));
+    if(!formOpen){return;}
+    var edit=document.getElementById("editingRow");
+    var isEdit=!!(edit&&String(edit.value||"").trim());
+    if(isEdit){
+      if(!confirm("Batal kemaskini dan kembali ke halaman sebelumnya?"))return;
+      if(typeof clearForm==="function")clearForm();
+      returnToRememberedPage();
+      return;
+    }
+    /* Add flow: previous screen is the equipment picker. Form stays behind it. */
+    if(typeof window.showInventoryTypePicker==="function")window.showInventoryTypePicker("replace");
+  };
+
+  function setupHeaderBack(){
+    var btn=document.querySelector("#formPage .form-modal-header>.btn-back-main");
+    if(!btn)return;
+    btn.onclick=window.inventorySmartBack;
+    btn.setAttribute("aria-label","Kembali");
+    btn.setAttribute("title","Kembali");
+    var icon=btn.querySelector("i");
+    if(icon){icon.className="fa-solid fa-chevron-left";}
+  }
+
+  function ignoreGestureTarget(target){
+    return !!(target&&target.closest&&target.closest("input,select,textarea,[contenteditable='true'],.table-wrap,.master-timeline,.enterprise-preview-table-wrap"));
+  }
+  document.addEventListener("touchstart",function(ev){
+    if(!isPhone()||!document.body.classList.contains("inventory-form-open"))return;
+    if(ev.touches.length!==1||ignoreGestureTarget(ev.target))return;
+    var t=ev.touches[0];
+    /* Native-phone pattern: begin from the left screen edge. */
+    if(t.clientX>34)return;
+    gestureStart={x:t.clientX,y:t.clientY,time:Date.now()};
+  },{passive:true});
+  document.addEventListener("touchend",function(ev){
+    if(!gestureStart||!isPhone()){gestureStart=null;return;}
+    var t=ev.changedTouches&&ev.changedTouches[0];
+    if(!t){gestureStart=null;return;}
+    var dx=t.clientX-gestureStart.x,dy=t.clientY-gestureStart.y,dt=Date.now()-gestureStart.time;
+    gestureStart=null;
+    if(dx>=72&&Math.abs(dy)<=70&&dx>Math.abs(dy)*1.25&&dt<900){
+      if(navigator.vibrate){try{navigator.vibrate(8);}catch(e){}}
+      window.inventorySmartBack();
+    }
+  },{passive:true});
+  document.addEventListener("touchcancel",function(){gestureStart=null;},{passive:true});
+
+  setupHeaderBack();
+  window.addEventListener("pageshow",setupHeaderBack);
+})();
+</script>
 </body>
 </html>
