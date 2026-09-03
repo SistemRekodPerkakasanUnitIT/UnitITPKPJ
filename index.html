@@ -9425,5 +9425,226 @@ body.voip-only-mode #formPage .voip-linked-staff input{cursor:text!important;}
 })();
 </script>
 
+
+<style id="pkpjVoipStaffPickerV15Style">
+/* ===== V15: PILIHAN NAMA STAFF KHAS VOIP ===== */
+body.voip-only-mode #formPage .voip-staff-field{position:relative!important;z-index:20!important;}
+body.voip-only-mode #formPage .voip-linked-staff{position:relative!important;padding-right:4px!important;}
+body.voip-only-mode #formPage .voip-linked-staff input{min-width:0!important;flex:1 1 auto!important;}
+.voip-staff-toggle{
+  width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  padding:0!important;border-radius:8px!important;background:#eaf2ff!important;color:#1d4ed8!important;
+  border:1px solid #bfdbfe!important;flex:0 0 auto!important;
+}
+.voip-staff-suggestion-box{
+  display:none;margin-top:6px;background:#fff;border:1px solid #bfdbfe;border-radius:11px;
+  box-shadow:0 12px 30px rgba(15,23,42,.16);overflow:hidden;position:relative;z-index:1000;
+}
+.voip-staff-suggestion-box.show{display:block;}
+.voip-staff-suggestion-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;
+  background:#eff6ff;border-bottom:1px solid #dbeafe;color:#1e3a8a;font-size:11px;font-weight:900;
+}
+.voip-staff-suggestion-list{max-height:240px;overflow:auto;overscroll-behavior:contain;padding:5px;}
+.voip-staff-option{
+  width:100%!important;min-height:42px!important;display:flex!important;align-items:center!important;gap:9px!important;
+  background:#fff!important;color:#0f172a!important;border:0!important;border-radius:8px!important;
+  padding:9px 10px!important;text-align:left!important;font-size:12.5px!important;font-weight:800!important;
+}
+.voip-staff-option i{width:20px;text-align:center;color:#2563eb;}
+.voip-staff-option:hover,.voip-staff-option:focus{background:#eff6ff!important;color:#1d4ed8!important;outline:none!important;}
+.voip-staff-option + .voip-staff-option{border-top:1px solid #f1f5f9!important;}
+.voip-staff-empty{padding:13px 11px;color:#64748b;font-size:12px;font-weight:700;line-height:1.4;text-align:center;}
+.voip-staff-selected-note{margin-top:5px;font-size:11px;font-weight:800;color:#15803d;}
+@media(max-width:760px){
+  .voip-staff-suggestion-list{max-height:220px;}
+  .voip-staff-option{min-height:46px!important;font-size:13px!important;padding:10px 11px!important;}
+  .voip-staff-toggle{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
+}
+</style>
+
+<script id="pkpjVoipStaffPickerV15Logic">
+(function(){
+  "use strict";
+
+  function esc(value){
+    return String(value==null?"":value)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+
+  function getStaffNames(){
+    var names=[];
+    var seen={};
+    function add(value){
+      var name=String(value||"").trim();
+      if(!name) return;
+      var key=name.toLowerCase();
+      if(seen[key]) return;
+      seen[key]=true;
+      names.push(name);
+    }
+
+    try{
+      if(typeof mergeStaffRecordsFix2==="function"){
+        var merged=mergeStaffRecordsFix2()||[];
+        merged.forEach(function(r){add(r&&(r.namaStaff||r.nama||r.name));});
+      }
+    }catch(e){}
+    try{
+      if(typeof staffRecords!=="undefined" && Array.isArray(staffRecords)){
+        staffRecords.forEach(function(r){add(r&&(r.namaStaff||r.nama||r.name));});
+      }
+    }catch(e){}
+    try{
+      if(typeof staffList!=="undefined" && Array.isArray(staffList)){
+        staffList.forEach(add);
+      }
+    }catch(e){}
+    try{
+      var dl=document.getElementById("staffNameDatalist");
+      if(dl) Array.from(dl.options||[]).forEach(function(o){add(o.value);});
+    }catch(e){}
+
+    names.sort(function(a,b){return a.localeCompare(b,"ms",{sensitivity:"base"});});
+    return names;
+  }
+
+  function getBox(input){
+    var field=input && input.closest ? input.closest(".voip-staff-field") : null;
+    if(!field) return null;
+    var box=field.querySelector(".voip-staff-suggestion-box");
+    if(!box){
+      box=document.createElement("div");
+      box.className="voip-staff-suggestion-box";
+      box.innerHTML='<div class="voip-staff-suggestion-head"><span><i class="fa-solid fa-users"></i> Pilih Nama Staff</span><span class="voip-staff-count"></span></div><div class="voip-staff-suggestion-list"></div>';
+      var note=field.querySelector(".note");
+      if(note) field.insertBefore(box,note); else field.appendChild(box);
+    }
+    return box;
+  }
+
+  function ensureToggle(input){
+    var wrap=input && input.closest ? input.closest(".voip-linked-staff") : null;
+    if(!wrap) return;
+    if(wrap.querySelector(".voip-staff-toggle")) return;
+    var btn=document.createElement("button");
+    btn.type="button";
+    btn.className="voip-staff-toggle";
+    btn.setAttribute("aria-label","Papar senarai nama staff");
+    btn.setAttribute("title","Papar senarai nama staff");
+    btn.innerHTML='<i class="fa-solid fa-chevron-down"></i>';
+    wrap.appendChild(btn);
+  }
+
+  function render(input,forceAll){
+    if(!input) return;
+    ensureToggle(input);
+    input.removeAttribute("list");
+    var box=getBox(input);
+    if(!box) return;
+    var list=box.querySelector(".voip-staff-suggestion-list");
+    var count=box.querySelector(".voip-staff-count");
+    var keyword=forceAll?"":String(input.value||"").trim().toLowerCase();
+    var all=getStaffNames();
+    var filtered=keyword ? all.filter(function(name){return name.toLowerCase().indexOf(keyword)>-1;}) : all;
+    var shown=filtered.slice(0,40);
+
+    if(count) count.textContent=filtered.length ? (filtered.length+" nama") : "";
+    if(!all.length){
+      list.innerHTML='<div class="voip-staff-empty"><i class="fa-solid fa-circle-notch fa-spin"></i> Senarai staff belum tersedia. Sistem sedang cuba memuatkan senarai...</div>';
+      box.classList.add("show");
+      try{
+        if(typeof loadStaffList==="function" && !input.dataset.staffReloading && !input.dataset.staffReloadTried){
+          input.dataset.staffReloading="1";
+          input.dataset.staffReloadTried="1";
+          Promise.resolve(loadStaffList()).then(function(){
+            input.dataset.staffReloading="";
+            window.setTimeout(function(){render(input,forceAll);},30);
+          }).catch(function(){input.dataset.staffReloading="";});
+        }
+      }catch(e){}
+      return;
+    }
+
+    if(!shown.length){
+      list.innerHTML='<div class="voip-staff-empty">Tiada nama staff sepadan dengan <b>'+esc(input.value)+'</b>.<br>Anda masih boleh terus gunakan nama yang ditaip.</div>';
+    }else{
+      list.innerHTML=shown.map(function(name){
+        return '<button type="button" class="voip-staff-option" data-staff-name="'+esc(name)+'"><i class="fa-solid fa-user"></i><span>'+esc(name)+'</span></button>';
+      }).join("");
+      if(filtered.length>shown.length){
+        list.innerHTML+='<div class="voip-staff-empty">Taip beberapa huruf lagi untuk tapis '+(filtered.length-shown.length)+' nama lain.</div>';
+      }
+    }
+    box.classList.add("show");
+  }
+
+  function hideAll(except){
+    document.querySelectorAll(".voip-staff-suggestion-box.show").forEach(function(box){
+      if(box!==except) box.classList.remove("show");
+    });
+  }
+
+  function enhanceVisibleVoipInput(){
+    var input=document.querySelector('#deviceCard_telefon_voip [id^="voipStaffDisplay_"]');
+    if(!input) return;
+    ensureToggle(input);
+    input.removeAttribute("list");
+  }
+
+  document.addEventListener("focusin",function(ev){
+    var input=ev.target && ev.target.matches && ev.target.matches('[id^="voipStaffDisplay_"]') ? ev.target : null;
+    if(!input) return;
+    render(input,!String(input.value||"").trim());
+  });
+
+  document.addEventListener("input",function(ev){
+    var input=ev.target && ev.target.matches && ev.target.matches('[id^="voipStaffDisplay_"]') ? ev.target : null;
+    if(!input) return;
+    try{if(typeof window.syncVoipStaffToPrimary==="function") window.syncVoipStaffToPrimary(input.value);}catch(e){}
+    render(input,false);
+  });
+
+  document.addEventListener("click",function(ev){
+    var option=ev.target && ev.target.closest ? ev.target.closest(".voip-staff-option") : null;
+    if(option){
+      var field=option.closest(".voip-staff-field");
+      var input=field ? field.querySelector('[id^="voipStaffDisplay_"]') : null;
+      var name=option.getAttribute("data-staff-name")||"";
+      if(input){
+        input.value=name;
+        try{if(typeof window.syncVoipStaffToPrimary==="function") window.syncVoipStaffToPrimary(name);}catch(e){}
+        input.dispatchEvent(new Event("change",{bubbles:true}));
+      }
+      var box=option.closest(".voip-staff-suggestion-box");
+      if(box) box.classList.remove("show");
+      if(input) input.focus();
+      return;
+    }
+
+    var toggle=ev.target && ev.target.closest ? ev.target.closest(".voip-staff-toggle") : null;
+    if(toggle){
+      var wrap=toggle.closest(".voip-linked-staff");
+      var input2=wrap ? wrap.querySelector('[id^="voipStaffDisplay_"]') : null;
+      if(!input2) return;
+      var box2=getBox(input2);
+      if(box2 && box2.classList.contains("show")) box2.classList.remove("show");
+      else render(input2,true);
+      input2.focus({preventScroll:true});
+      return;
+    }
+
+    if(!(ev.target && ev.target.closest && ev.target.closest(".voip-staff-field"))) hideAll(null);
+  });
+
+  var observer=new MutationObserver(function(){enhanceVisibleVoipInput();});
+  var sections=document.getElementById("deviceSections");
+  if(sections) observer.observe(sections,{childList:true,subtree:true});
+  enhanceVisibleVoipInput();
+})();
+</script>
+
 </body>
 </html>
