@@ -10032,9 +10032,28 @@ body.voip-only-mode #formPage .voip-staff-suggestion-box{display:none!important;
     render(input);
   });
 
-  var obs=new MutationObserver(function(){enhance();});
+  /* V20 FIX: jangan observe subtree panel staff.
+     render() menukar innerHTML senarai; observer subtree akan memanggil render berulang kali
+     dan menyebabkan Chrome hang. Kita hanya perhatikan kad aset yang ditambah terus ke deviceSections. */
   var sections=document.getElementById("deviceSections");
-  if(sections) obs.observe(sections,{childList:true,subtree:true});
+  if(sections && typeof MutationObserver!=="undefined"){
+    var obs=new MutationObserver(function(mutations){
+      var voipCardAdded=false;
+      for(var i=0;i<mutations.length && !voipCardAdded;i++){
+        var added=mutations[i].addedNodes||[];
+        for(var j=0;j<added.length;j++){
+          var node=added[j];
+          if(!node || node.nodeType!==1) continue;
+          if(node.id==="deviceCard_telefon_voip" || (node.querySelector && node.querySelector("#deviceCard_telefon_voip"))){
+            voipCardAdded=true;
+            break;
+          }
+        }
+      }
+      if(voipCardAdded) window.setTimeout(enhance,0);
+    });
+    obs.observe(sections,{childList:true});
+  }
   window.addEventListener("pageshow",function(){window.setTimeout(enhance,30);});
   window.setTimeout(enhance,50);
 })();
