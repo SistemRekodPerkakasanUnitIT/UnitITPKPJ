@@ -10389,5 +10389,151 @@ body.voip-only-mode #formPage .voip-staff-field{grid-column:1/-1!important;}
   document.addEventListener('keydown',function(ev){if(ev.key==='Escape')closeAll();});
 })();
 </script>
+
+
+<style id="pkpjVoipTypeFilterV24Style">
+/* ===== V24: INPUT BOLEH TAIP + FILTER DROPDOWN UNTUK KEDUA-DUA NAMA VOIP ===== */
+body.voip-only-mode #formPage [id^="voipStaffDisplay_"],
+body.voip-only-mode #formPage [id^="namaPaparanVoip_"]{
+  pointer-events:auto!important;
+  user-select:text!important;
+  -webkit-user-select:text!important;
+  cursor:text!important;
+  caret-color:auto!important;
+}
+/* Versi lama mungkin menambah class .open ketika focus. V24 hanya buka bila pengguna menaip atau tekan anak panah. */
+body.voip-only-mode #formPage .voip-staff-always-panel.open:not(.v24-open){display:none!important;}
+body.voip-only-mode #formPage .voip-staff-always-panel.v24-open{display:block!important;}
+body.voip-only-mode #formPage .voip-display-dropdown-panel.open:not(.v24-open){display:none!important;}
+body.voip-only-mode #formPage .voip-display-dropdown-panel.v24-open{display:block!important;}
+.voip-v24-match-text{font-size:10.5px;color:#64748b;font-weight:800;padding:6px 10px 2px;}
+@media(max-width:760px){
+  body.voip-only-mode #formPage [id^="voipStaffDisplay_"],
+  body.voip-only-mode #formPage [id^="namaPaparanVoip_"]{font-size:16px!important;}
+}
+</style>
+<script id="pkpjVoipTypeFilterV24Logic">
+(function(){
+  "use strict";
+  function norm(v){return String(v==null?"":v).trim().toLowerCase();}
+  function esc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");}
+  function add(list,seen,v){var n=String(v||"").trim();if(!n)return;var k=n.toLowerCase();if(seen[k])return;seen[k]=1;list.push(n);}
+  function staffNames(){
+    var out=[],seen={};
+    try{if(typeof staffRecords!=="undefined"&&Array.isArray(staffRecords))staffRecords.forEach(function(r){add(out,seen,r&&(r.namaStaff||r.nama||r.name));});}catch(e){}
+    try{if(typeof staffList!=="undefined"&&Array.isArray(staffList))staffList.forEach(function(n){add(out,seen,n);});}catch(e){}
+    try{var dl=document.getElementById("staffNameDatalist");if(dl)Array.from(dl.options||[]).forEach(function(o){add(out,seen,o.value);});}catch(e){}
+    out.sort(function(a,b){return a.localeCompare(b,"ms",{sensitivity:"base"});});
+    return out;
+  }
+  function isHolderInput(el){return !!(el&&el.matches&&el.matches('[id^="voipStaffDisplay_"]'));}
+  function isDisplayInput(el){return !!(el&&el.matches&&el.matches('[id^="namaPaparanVoip_"]'));}
+  function makeEditable(input){
+    if(!input)return;
+    input.readOnly=false;
+    input.disabled=false;
+    input.removeAttribute("readonly");
+    input.removeAttribute("disabled");
+    input.removeAttribute("list");
+    input.setAttribute("autocomplete","off");
+    input.setAttribute("inputmode","text");
+    input.setAttribute("enterkeyhint","done");
+    if(isHolderInput(input)) input.setAttribute("placeholder","Taip nama, contoh: ah");
+    if(isDisplayInput(input)) input.setAttribute("placeholder","Taip nama paparan, contoh: ah");
+  }
+  function holderPanel(input){var f=input&&input.closest?input.closest('.voip-staff-field'):null;return f?f.querySelector('.voip-staff-always-panel'):null;}
+  function displayPanel(input){var f=input&&input.closest?input.closest('.voip-display-name-field'):null;return f?f.querySelector('.voip-display-dropdown-panel'):null;}
+  function closePanel(p){if(!p)return;p.classList.remove('v24-open');p.classList.remove('open');}
+  function openPanel(p){if(!p)return;p.classList.add('open');p.classList.add('v24-open');}
+  function renderHolder(input,showAll){
+    makeEditable(input);
+    var p=holderPanel(input);if(!p)return;
+    var list=p.querySelector('.voip-staff-always-list'),count=p.querySelector('.voip-staff-always-count');if(!list)return;
+    var all=staffNames(),q=showAll?"":norm(input.value),filtered=q?all.filter(function(n){return norm(n).indexOf(q)>-1;}):all;
+    if(count)count.textContent=filtered.length+' / '+all.length+' nama';
+    if(!all.length){list.innerHTML='<div class="voip-staff-always-empty">Senarai staff belum tersedia.</div>';openPanel(p);return;}
+    if(!filtered.length){list.innerHTML='<div class="voip-staff-always-empty">Tiada nama yang mengandungi <b>'+esc(input.value)+'</b>.<br>Nama masih boleh ditaip manual.</div>';openPanel(p);return;}
+    list.innerHTML='<div class="voip-v24-match-text">Padanan: '+filtered.length+' nama</div>'+filtered.map(function(n){return '<button type="button" class="voip-staff-always-option" data-v17-staff="'+esc(n)+'"><i class="fa-solid fa-user"></i><span>'+esc(n)+'</span></button>';}).join('');
+    openPanel(p);
+  }
+  function renderDisplay(input,showAll){
+    makeEditable(input);
+    var p=displayPanel(input);if(!p)return;
+    var list=p.querySelector('.voip-display-dropdown-list'),count=p.querySelector('.voip-display-count');if(!list)return;
+    var all=staffNames(),q=showAll?"":norm(input.value),filtered=q?all.filter(function(n){return norm(n).indexOf(q)>-1;}):all;
+    if(count)count.textContent=filtered.length+' / '+all.length+' nama';
+    if(!all.length){list.innerHTML='<div class="voip-display-empty">Senarai staff belum tersedia.</div>';openPanel(p);return;}
+    if(!filtered.length){list.innerHTML='<div class="voip-display-empty">Tiada nama yang mengandungi <b>'+esc(input.value)+'</b>.<br>Nama paparan manual masih boleh ditaip.</div>';openPanel(p);return;}
+    list.innerHTML='<div class="voip-v24-match-text">Padanan: '+filtered.length+' nama</div>'+filtered.map(function(n){return '<button type="button" class="voip-display-option" data-display-name="'+esc(n)+'"><i class="fa-solid fa-user-tag"></i><span>'+esc(n)+'</span></button>';}).join('');
+    openPanel(p);
+  }
+  function closeAll(){document.querySelectorAll('.voip-staff-always-panel,.voip-display-dropdown-panel').forEach(closePanel);}
+  function prepare(root){
+    (root||document).querySelectorAll('[id^="voipStaffDisplay_"],[id^="namaPaparanVoip_"]').forEach(makeEditable);
+  }
+
+  /* Focus hanya beri cursor/keyboard. Jangan terus buka 142 nama. */
+  document.addEventListener('focusin',function(ev){
+    if(!isHolderInput(ev.target)&&!isDisplayInput(ev.target))return;
+    makeEditable(ev.target);
+    var p=isHolderInput(ev.target)?holderPanel(ev.target):displayPanel(ev.target);
+    if(p&&!norm(ev.target.value))closePanel(p);
+  });
+
+  /* Taip "ah" -> semua nama yang MENGANDUNGI "ah" terus keluar. */
+  document.addEventListener('input',function(ev){
+    var input=ev.target;
+    if(isHolderInput(input)){
+      if(norm(input.value))renderHolder(input,false);else closePanel(holderPanel(input));
+    }else if(isDisplayInput(input)){
+      if(norm(input.value))renderDisplay(input,false);else closePanel(displayPanel(input));
+    }
+  });
+
+  /* Ambil alih anak panah & pilihan supaya handler versi lama tidak mengganggu medan taip. */
+  document.addEventListener('click',function(ev){
+    var ht=ev.target&&ev.target.closest?ev.target.closest('.voip-staff-dropdown-toggle'):null;
+    if(ht){
+      ev.preventDefault();ev.stopImmediatePropagation();
+      var f=ht.closest('.voip-staff-field'),input=f?f.querySelector('[id^="voipStaffDisplay_"]'):null,p=input?holderPanel(input):null;
+      if(!input)return;makeEditable(input);
+      if(p&&p.classList.contains('v24-open'))closePanel(p);else renderHolder(input,true);
+      try{input.focus({preventScroll:true});}catch(e){input.focus();}
+      return;
+    }
+    var dt=ev.target&&ev.target.closest?ev.target.closest('.voip-display-dropdown-toggle'):null;
+    if(dt){
+      ev.preventDefault();ev.stopImmediatePropagation();
+      var f2=dt.closest('.voip-display-name-field'),input2=f2?f2.querySelector('[id^="namaPaparanVoip_"]'):null,p2=input2?displayPanel(input2):null;
+      if(!input2)return;makeEditable(input2);
+      if(p2&&p2.classList.contains('v24-open'))closePanel(p2);else renderDisplay(input2,true);
+      try{input2.focus({preventScroll:true});}catch(e){input2.focus();}
+      return;
+    }
+    var ho=ev.target&&ev.target.closest?ev.target.closest('.voip-staff-always-option'):null;
+    if(ho){
+      ev.preventDefault();ev.stopImmediatePropagation();
+      var hf=ho.closest('.voip-staff-field'),hi=hf?hf.querySelector('[id^="voipStaffDisplay_"]'):null;
+      if(hi){hi.value=ho.getAttribute('data-v17-staff')||'';hi.dispatchEvent(new Event('change',{bubbles:true}));closePanel(holderPanel(hi));try{hi.focus({preventScroll:true});}catch(e){}}
+      return;
+    }
+    var od=ev.target&&ev.target.closest?ev.target.closest('.voip-display-option'):null;
+    if(od){
+      ev.preventDefault();ev.stopImmediatePropagation();
+      var df=od.closest('.voip-display-name-field'),di=df?df.querySelector('[id^="namaPaparanVoip_"]'):null;
+      if(di){di.value=od.getAttribute('data-display-name')||'';di.dispatchEvent(new Event('change',{bubbles:true}));closePanel(displayPanel(di));try{di.focus({preventScroll:true});}catch(e){}}
+      return;
+    }
+    if(!(ev.target&&ev.target.closest&&ev.target.closest('.voip-staff-field,.voip-display-name-field')))closeAll();
+  },true);
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){prepare(document);});else prepare(document);
+  var sections=document.getElementById('deviceSections');
+  if(sections&&typeof MutationObserver!=='undefined'){
+    new MutationObserver(function(muts){muts.forEach(function(m){Array.from(m.addedNodes||[]).forEach(function(n){if(n&&n.nodeType===1)prepare(n);});});}).observe(sections,{childList:true});
+  }
+})();
+</script>
+
 </body>
 </html>
