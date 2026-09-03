@@ -4417,7 +4417,8 @@ function createDeviceCard(jenis){
   card.setAttribute("data-jenis", jenis);
 
   if(jenis === "Telefon VOIP"){
-    const currentStaff = (typeof getFinalStaffName === "function" ? getFinalStaffName() : "") || "";
+    /* VOIP mesti bebas daripada medan Nama Staff umum di atas. Rekod baru bermula kosong. */
+    const currentStaff = "";
     card.classList.add("device-card-voip");
     card.innerHTML = `
       <div class="device-card-header voip-card-header">
@@ -4448,18 +4449,15 @@ function createDeviceCard(jenis){
 
           <div class="field full-width voip-staff-field">
             <label>Nama Staff / Pemegang <span class="req">*</span></label>
-            <div class="voip-linked-staff"><i class="fa-solid fa-user"></i><input id="voipStaffDisplay_${id}" value="${escapeAttr(currentStaff)}" list="staffNameDatalist" autocomplete="off" placeholder="Taip atau pilih nama staff" oninput="syncVoipStaffToPrimary(this.value)"></div>
-            <div class="note">Taip nama staff atau pilih daripada cadangan senarai staff.</div>
+            <div class="voip-linked-staff"><i class="fa-solid fa-user"></i><input id="voipStaffDisplay_${id}" value="${escapeAttr(currentStaff)}" autocomplete="off" placeholder="Taip atau pilih nama staff"></div>
+            <div class="note">Nama ini ialah pemegang semasa Telefon VOIP dan akan digunakan sebagai Nama Paparan di Skrin VOIP.</div>
           </div>
 
           <div class="field">
             <label>No. Extension <span class="req">*</span></label>
             <input id="noExt_${id}" inputmode="numeric" autocomplete="off" placeholder="Contoh: 1234">
           </div>
-          <div class="field">
-            <label>Nama Paparan di Skrin VOIP <span class="req">*</span></label>
-            <input id="namaPaparanVoip_${id}" autocomplete="off" placeholder="Contoh: UNIT IT / AHMAD">
-          </div>
+          <input type="hidden" id="namaPaparanVoip_${id}" value="">
           <div class="field full-width">
             <label>Keadaan VOIP <span class="req">*</span></label>
             <select id="status_${id}">
@@ -4501,7 +4499,6 @@ function createDeviceCard(jenis){
       </div>`;
     deviceSectionsEl.appendChild(card);
     if(typeof window.syncPrimaryLocationToDevices === "function") window.syncPrimaryLocationToDevices(false);
-    if(typeof window.syncVoipStaffDisplay === "function") window.syncVoipStaffDisplay();
     return;
   }
 
@@ -4918,12 +4915,8 @@ function defaultTiada(value){
 }
 
 function collectDevicePayloads(validateOnly){
-  const staff = getFinalStaffName();
-  if(!staff){
-    alert("Sila pilih Nama Staff. Pilih Tidak Berkaitan jika tiada maklumat aset.");
-    namaStaffSelectEl.focus();
-    return null;
-  }
+  /* Nama umum hanya digunakan untuk aset biasa. Telefon VOIP guna nama dalam kad VOIP sendiri. */
+  const globalStaff = getFinalStaffName();
 
   const cards = Array.from(document.querySelectorAll(".device-card"));
   if(cards.length === 0){
@@ -4952,7 +4945,21 @@ function collectDevicePayloads(validateOnly){
     const statusValue = getValue("status_" + id);
     const tarikhValue = getValue("tarikh_" + id);
     const noExtValue = getValue("noExt_" + id);
-    const namaPaparanVoipValue = getValue("namaPaparanVoip_" + id);
+    const voipStaffValue = getValue("voipStaffDisplay_" + id);
+    const recordStaff = jenisCheckbox === "Telefon VOIP" ? voipStaffValue : globalStaff;
+    /* Untuk VOIP, Nama Pemegang dan Nama Paparan Skrin adalah nilai yang sama. */
+    const namaPaparanVoipValue = jenisCheckbox === "Telefon VOIP" ? voipStaffValue : getValue("namaPaparanVoip_" + id);
+
+    if(!recordStaff){
+      if(jenisCheckbox === "Telefon VOIP"){
+        alert("Sila pilih Nama Staff / Pemegang untuk Telefon VOIP.");
+        focusEl("voipStaffDisplay_" + id);
+      }else{
+        alert("Sila pilih Nama Staff. Pilih Tidak Berkaitan jika tiada maklumat aset.");
+        if(namaStaffSelectEl) namaStaffSelectEl.focus();
+      }
+      return null;
+    }
 
     if(jenisCheckbox === "Lain-lain" && !jenisLainValue){
       alert("Sila masukkan Jenis Perkakasan Lain-lain.");
@@ -4965,11 +4972,7 @@ function collectDevicePayloads(validateOnly){
         focusEl("noExt_" + id);
         return null;
       }
-      if(!namaPaparanVoipValue){
-        alert("Sila masukkan Nama Paparan di Skrin VOIP.");
-        focusEl("namaPaparanVoip_" + id);
-        return null;
-      }
+      /* Nama Paparan VOIP sama dengan Nama Staff / Pemegang; tiada medan kedua diperlukan. */
     }
     if(!kategoriValue){
       alert("Sila pilih Kategori untuk " + jenisCheckbox + ". Pilih Tidak Berkaitan jika tiada maklumat aset.");
@@ -5008,9 +5011,9 @@ function collectDevicePayloads(validateOnly){
 
     records.push({
       tahun:tahunEl.value,
-      namaStaff:staff,
-      namaPemegang:staff,
-      nama:staff,
+      namaStaff:recordStaff,
+      namaPemegang:recordStaff,
+      nama:recordStaff,
       jenisPerkakasan:jenisCheckbox,
       jenisPerkakasanLain:jenisCheckbox === "Lain-lain" ? jenisLainValue : "",
       kategori:kategoriValue,
@@ -5738,8 +5741,14 @@ function editData(row){
   setValue("gambarClear_" + id, "0");
   setValue("catatan_" + id, data.catatan || "");
   setValue("noExt_" + id, data.noExt || "");
-  setValue("namaPaparanVoip_" + id, data.namaPaparanVoip || "");
-  if(typeof window.syncVoipStaffDisplay === "function") window.syncVoipStaffDisplay();
+  if(jenisForCheckbox === "Telefon VOIP"){
+    /* Edit VOIP: ambil pemegang daripada rekod VOIP itu sendiri, bukan medan umum di atas. */
+    const voipHolder = String(data.namaStaff || data.namaPemegang || data.nama || data.namaPaparanVoip || "").trim();
+    setValue("voipStaffDisplay_" + id, voipHolder);
+    setValue("namaPaparanVoip_" + id, voipHolder);
+  }else{
+    setValue("namaPaparanVoip_" + id, data.namaPaparanVoip || "");
+  }
   updateDeviceGambarPreview(id);
 
   saveBtn.classList.remove("btn-save");
@@ -10285,5 +10294,38 @@ body.voip-only-mode #formPage .voip-staff-toggle{display:none!important;}
   }
 })();
 </script>
+
+
+<style id="pkpjVoipOneNameV22Style">
+/* ===== V22: SATU NAMA VOIP, BEBAS DARIPADA NAMA UMUM ===== */
+body.voip-only-mode #formPage .voip-staff-field{grid-column:1/-1!important;}
+</style>
+<script id="pkpjVoipOneNameV22Logic">
+(function(){
+  "use strict";
+  function isVoipStaff(el){return !!(el&&el.matches&&el.matches('[id^="voipStaffDisplay_"]'));}
+  function keepSame(input){
+    if(!input) return;
+    var card=input.closest?input.closest('.device-card-voip'):null;
+    if(!card) return;
+    var hidden=card.querySelector('[id^="namaPaparanVoip_"]');
+    if(hidden) hidden.value=String(input.value||'').trim();
+  }
+
+  /* Putuskan warisan Nama Staff umum -> VOIP daripada versi lama. */
+  window.syncVoipStaffDisplay=function(){};
+
+  document.addEventListener('input',function(ev){if(isVoipStaff(ev.target)) keepSame(ev.target);});
+  document.addEventListener('change',function(ev){if(isVoipStaff(ev.target)) keepSame(ev.target);});
+  document.addEventListener('click',function(ev){
+    var opt=ev.target&&ev.target.closest?ev.target.closest('.voip-staff-always-option'):null;
+    if(!opt) return;
+    var field=opt.closest('.voip-staff-field');
+    var input=field?field.querySelector('[id^="voipStaffDisplay_"]'):null;
+    if(input) window.setTimeout(function(){keepSame(input);},0);
+  });
+})();
+</script>
+
 </body>
 </html>
