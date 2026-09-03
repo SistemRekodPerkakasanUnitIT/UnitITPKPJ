@@ -9646,5 +9646,168 @@ body.voip-only-mode #formPage .voip-linked-staff input{min-width:0!important;fle
 })();
 </script>
 
+
+
+<style id="pkpjVoipAutoDisplayV16Style">
+/* ===== V16: NAMA PAPARAN VOIP AUTO IKUT NAMA STAFF ===== */
+.voip-display-auto-note{
+  margin-top:5px;font-size:11px;font-weight:800;color:#2563eb;line-height:1.35;
+  display:flex;align-items:center;gap:6px;
+}
+.voip-display-auto-note i{font-size:10px;}
+.voip-display-auto-flash{animation:voipDisplayAutoFlash .55s ease-out;}
+@keyframes voipDisplayAutoFlash{
+  0%{background:#dbeafe;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  100%{background:#fff;box-shadow:none}
+}
+@media(max-width:760px){
+  .voip-display-auto-note{font-size:11.5px;}
+}
+</style>
+
+<script id="pkpjVoipAutoDisplayV16Logic">
+(function(){
+  "use strict";
+
+  function norm(v){return String(v==null?"":v).trim();}
+
+  function collectStaffNames(){
+    var names=[], seen={};
+    function add(v){
+      var n=norm(v); if(!n) return;
+      var k=n.toLowerCase(); if(seen[k]) return;
+      seen[k]=true; names.push(n);
+    }
+    try{
+      if(typeof mergeStaffRecordsFix2==="function"){
+        (mergeStaffRecordsFix2()||[]).forEach(function(r){add(r&&(r.namaStaff||r.nama||r.name));});
+      }
+    }catch(e){}
+    try{
+      if(typeof staffRecords!=="undefined" && Array.isArray(staffRecords)){
+        staffRecords.forEach(function(r){add(r&&(r.namaStaff||r.nama||r.name));});
+      }
+    }catch(e){}
+    try{
+      if(typeof staffList!=="undefined" && Array.isArray(staffList)){staffList.forEach(add);}
+    }catch(e){}
+    try{
+      var dl=document.getElementById("staffNameDatalist");
+      if(dl) Array.from(dl.options||[]).forEach(function(o){add(o.value);});
+    }catch(e){}
+    return names;
+  }
+
+  function getVoipDisplayInput(staffInput){
+    var card=staffInput && staffInput.closest ? staffInput.closest(".device-card-voip") : null;
+    return card ? card.querySelector('[id^="namaPaparanVoip_"]') : null;
+  }
+
+  function addAutoNote(displayInput){
+    if(!displayInput || displayInput.dataset.autoNoteReady==="1") return;
+    displayInput.dataset.autoNoteReady="1";
+    var field=displayInput.closest(".field");
+    if(!field) return;
+    var note=document.createElement("div");
+    note.className="voip-display-auto-note";
+    note.innerHTML='<i class="fa-solid fa-wand-magic-sparkles"></i><span>Auto ikut Nama Staff. Masih boleh diubah secara manual.</span>';
+    field.appendChild(note);
+  }
+
+  function markAuto(displayInput,value){
+    if(!displayInput) return;
+    displayInput.dataset.voipAutoWriting="1";
+    displayInput.value=value;
+    displayInput.dataset.voipAutoValue=value;
+    displayInput.dataset.voipManual="0";
+    displayInput.classList.remove("voip-display-auto-flash");
+    void displayInput.offsetWidth;
+    displayInput.classList.add("voip-display-auto-flash");
+    window.setTimeout(function(){displayInput.classList.remove("voip-display-auto-flash");},650);
+    displayInput.dispatchEvent(new Event("input",{bubbles:true}));
+    displayInput.dispatchEvent(new Event("change",{bubbles:true}));
+    window.setTimeout(function(){displayInput.dataset.voipAutoWriting="0";},0);
+  }
+
+  function resolveBestStaffName(typed){
+    var raw=norm(typed); if(!raw) return "";
+    var lower=raw.toLowerCase();
+    var names=collectStaffNames();
+    var exact=names.find(function(n){return n.toLowerCase()===lower;});
+    if(exact) return exact;
+
+    /* Jika hanya SATU nama bermula dengan teks yang ditaip (cth. "is" -> "Iskandar"),
+       ia selamat digunakan sebagai cadangan automatik untuk paparan VOIP. */
+    if(lower.length>=2){
+      var starts=names.filter(function(n){return n.toLowerCase().indexOf(lower)===0;});
+      if(starts.length===1) return starts[0];
+    }
+    return "";
+  }
+
+  function autoFromStaffInput(staffInput,forceSelected){
+    if(!staffInput) return;
+    var display=getVoipDisplayInput(staffInput); if(!display) return;
+    addAutoNote(display);
+    var typed=norm(staffInput.value);
+    if(!typed){
+      if(display.dataset.voipManual!=="1") markAuto(display,"");
+      return;
+    }
+    var resolved=resolveBestStaffName(typed);
+    var value=resolved || (forceSelected ? typed : "");
+    if(!value) return;
+
+    /* Bila staff dipilih / bertukar, nama paparan ikut staff secara automatik.
+       Selepas itu pengguna masih boleh edit medan paparan secara manual. */
+    markAuto(display,value);
+  }
+
+  function enhance(){
+    document.querySelectorAll('.device-card-voip [id^="namaPaparanVoip_"]').forEach(addAutoNote);
+  }
+
+  /* Staff dipilih daripada panel V15: V15 dispatch event change selepas klik nama. */
+  document.addEventListener("change",function(ev){
+    if(ev.target && ev.target.matches && ev.target.matches('[id^="voipStaffDisplay_"]')){
+      window.setTimeout(function(){autoFromStaffInput(ev.target,true);},0);
+    }
+  });
+
+  /* Semasa menaip, jika hanya satu padanan awalan wujud, isi paparan penuh.
+     Jika banyak padanan, tunggu pengguna memilih nama daripada senarai. */
+  var typingTimer=null;
+  document.addEventListener("input",function(ev){
+    if(ev.target && ev.target.matches && ev.target.matches('[id^="voipStaffDisplay_"]')){
+      var input=ev.target;
+      clearTimeout(typingTimer);
+      typingTimer=window.setTimeout(function(){autoFromStaffInput(input,false);},160);
+      return;
+    }
+    if(ev.target && ev.target.matches && ev.target.matches('[id^="namaPaparanVoip_"]')){
+      /* Input yang dicetuskan oleh markAuto berlaku ketika dataset manual=0. */
+      if(ev.target.dataset.voipAutoWriting==="1") return;
+      var auto=norm(ev.target.dataset.voipAutoValue);
+      if(norm(ev.target.value)!==auto) ev.target.dataset.voipManual="1";
+    }
+  });
+
+  /* Klik pilihan nama: tangkap selepas handler V15 mengisi input staff. */
+  document.addEventListener("click",function(ev){
+    var option=ev.target && ev.target.closest ? ev.target.closest(".voip-staff-option") : null;
+    if(!option) return;
+    var field=option.closest(".voip-staff-field");
+    var input=field ? field.querySelector('[id^="voipStaffDisplay_"]') : null;
+    if(input) window.setTimeout(function(){autoFromStaffInput(input,true);},0);
+  });
+
+  /* Existing VOIP edit: jangan overwrite nama paparan yang memang telah disimpan. */
+  var observer=new MutationObserver(function(){enhance();});
+  var sections=document.getElementById("deviceSections");
+  if(sections) observer.observe(sections,{childList:true,subtree:true});
+  enhance();
+})();
+</script>
+
 </body>
 </html>
