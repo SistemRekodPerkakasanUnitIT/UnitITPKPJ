@@ -4394,7 +4394,7 @@ function createDeviceCard(jenis){
         <span class="note" style="color:#dbeafe">Maklumat sambungan telefon staff</span>
       </div>
       <div class="device-card-body">
-        <div class="voip-form-intro"><i class="fa-solid fa-circle-info"></i><span>Nama Staff disambungkan terus dengan medan pemegang di bahagian atas. Isi maklumat VOIP di bawah.</span></div>
+        <div class="voip-form-intro"><i class="fa-solid fa-circle-info"></i><span>Isi maklumat Telefon VOIP sahaja di bawah. Nama Staff boleh ditaip atau dipilih terus di sini.</span></div>
         <div class="device-card-grid voip-device-grid">
           <input type="hidden" id="jenisLain_${id}" value="">
           <input type="hidden" id="kategori_${id}" value="ICT">
@@ -4417,8 +4417,8 @@ function createDeviceCard(jenis){
 
           <div class="field full-width voip-staff-field">
             <label>Nama Staff / Pemegang <span class="req">*</span></label>
-            <div class="voip-linked-staff"><i class="fa-solid fa-user"></i><input id="voipStaffDisplay_${id}" value="${escapeAttr(currentStaff)}" readonly placeholder="Pilih nama staff di bahagian atas"></div>
-            <div class="note">Nama ini diambil daripada medan Nama Staff / Pemegang di bahagian atas borang.</div>
+            <div class="voip-linked-staff"><i class="fa-solid fa-user"></i><input id="voipStaffDisplay_${id}" value="${escapeAttr(currentStaff)}" list="staffNameDatalist" autocomplete="off" placeholder="Taip atau pilih nama staff" oninput="syncVoipStaffToPrimary(this.value)"></div>
+            <div class="note">Taip nama staff atau pilih daripada cadangan senarai staff.</div>
           </div>
 
           <div class="field">
@@ -9165,6 +9165,262 @@ renderSelectedDeviceSummary();
   var baseSelectInventoryType = window.selectInventoryType;
   if(typeof baseSelectInventoryType === "function"){
     window.selectInventoryType = function(jenis){var out=baseSelectInventoryType(jenis);if(jenis === "Telefon VOIP") setTimeout(window.syncVoipStaffDisplay,60);return out;};
+  }
+})();
+</script>
+
+
+<style id="pkpjVoipOnlyV13Style">
+/* ===== V13 VOIP FOCUSED FORM - DESKTOP + MOBILE ===== */
+body.voip-only-mode #formPage .section-box > .section-title{display:none!important;}
+body.voip-only-mode #formPage .form-grid > .inventory-primary-name,
+body.voip-only-mode #formPage .form-grid > .inventory-primary-location,
+body.voip-only-mode #formPage .form-grid > .inventory-primary-year,
+body.voip-only-mode #formPage .form-grid > .form-staff-upload-field,
+body.voip-only-mode #formPage .form-grid > .inventory-selected-type-box{display:none!important;}
+body.voip-only-mode #formPage .form-grid{display:block!important;}
+body.voip-only-mode #formPage .voip-only-device-shell{display:block!important;width:100%!important;max-width:none!important;grid-column:1/-1!important;}
+body.voip-only-mode #formPage .device-section-title{margin:0 0 12px!important;}
+body.voip-only-mode #formPage .device-card-voip{margin:0!important;}
+body.voip-only-mode #formPage .form-buttons{justify-content:flex-end!important;}
+body.voip-only-mode #formPage .form-buttons .btn-reset,
+body.voip-only-mode #formPage .form-buttons .btn-back-main{display:none!important;}
+body.voip-only-mode #formPage .form-buttons #saveBtn{min-width:190px!important;}
+body.voip-only-mode #formPage .voip-linked-staff input{cursor:text!important;}
+
+@media(max-width:760px){
+  body.voip-only-mode #formPage .form-area{padding:9px!important;}
+  body.voip-only-mode #formPage .device-section-title{font-size:14px!important;padding:10px 11px!important;margin-bottom:8px!important;}
+  body.voip-only-mode #formPage .device-card-voip{border-radius:12px!important;overflow:hidden!important;}
+  body.voip-only-mode #formPage .voip-card-header{padding:11px 12px!important;}
+  body.voip-only-mode #formPage .voip-card-header .note{display:none!important;}
+  body.voip-only-mode #formPage .device-card-body{padding:10px!important;}
+  body.voip-only-mode #formPage .voip-form-intro{margin-bottom:10px!important;padding:9px 10px!important;}
+  body.voip-only-mode #formPage .voip-device-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important;}
+  body.voip-only-mode #formPage .voip-device-grid > .field{min-width:0!important;width:100%!important;}
+  body.voip-only-mode #formPage .voip-photo-field .upload-row{grid-template-columns:1fr 1fr!important;}
+  body.voip-only-mode #formPage .form-buttons{display:grid!important;grid-template-columns:1fr!important;margin-top:10px!important;}
+  body.voip-only-mode #formPage .form-buttons #saveBtn{width:100%!important;min-width:0!important;min-height:48px!important;font-size:14px!important;}
+  body.voip-only-mode #formPage #cancelBtn{width:100%!important;min-height:44px!important;}
+}
+
+@media(max-width:360px){
+  body.voip-only-mode #formPage .voip-photo-field .upload-row{grid-template-columns:1fr!important;}
+  body.voip-only-mode #formPage .voip-form-intro{font-size:11px!important;}
+}
+</style>
+
+<script id="pkpjVoipOnlyV13Logic">
+(function(){
+  "use strict";
+
+  function getVoipCard(){
+    return document.getElementById("deviceCard_telefon_voip");
+  }
+
+  function voipIsOnlySelected(){
+    var selected=[];
+    try{selected=Array.from(document.querySelectorAll(".jenis-check:checked")).map(function(x){return x.value;});}catch(e){}
+    return selected.length===1 && selected[0]==="Telefon VOIP";
+  }
+
+  window.syncVoipStaffToPrimary=function(value){
+    value=String(value||"").trim();
+    var search=document.getElementById("namaStaffSearch");
+    var manual=document.getElementById("namaStaffManual");
+    var select=document.getElementById("namaStaffSelect");
+    var note=document.getElementById("staffFilterNote");
+    if(search && search.value!==value) search.value=value;
+    if(manual) manual.value=value;
+    if(select){
+      var exact=Array.from(select.options||[]).find(function(o){return String(o.value||"").toLowerCase()===value.toLowerCase();});
+      select.value=exact && value ? exact.value : (value ? "Lain-lain" : "");
+    }
+    if(note) note.innerText=value ? "Nama staff dipilih: "+value : "";
+  };
+
+  function prepareVoipOnlyCard(){
+    var card=getVoipCard();
+    if(!card) return;
+
+    var input=card.querySelector('[id^="voipStaffDisplay_"]');
+    if(input){
+      input.readOnly=false;
+      input.setAttribute("list","staffNameDatalist");
+      input.setAttribute("autocomplete","off");
+      input.setAttribute("placeholder","Taip atau pilih nama staff");
+      if(!input.dataset.voipDirectBound){
+        input.dataset.voipDirectBound="1";
+        input.addEventListener("input",function(){window.syncVoipStaffToPrimary(input.value);});
+        input.addEventListener("change",function(){window.syncVoipStaffToPrimary(input.value);});
+      }
+    }
+
+    var location=card.querySelector('[id^="lokasi_"]');
+    if(location && !String(location.value||"").trim()) location.value="Tidak Berkaitan";
+    var date=card.querySelector('[id^="tarikh_"]');
+    if(date && !String(date.value||"").trim()){
+      try{date.value=typeof todayString==="function"?todayString():new Date().toISOString().slice(0,10);}catch(e){}
+    }
+
+    var shell=card.parentElement;
+    if(shell && shell.parentElement) shell.parentElement.classList.add("voip-only-device-shell");
+
+    var finalName="";
+    try{finalName=typeof getFinalStaffName==="function"?String(getFinalStaffName()||"").trim():"";}catch(e){}
+    if(input && !String(input.value||"").trim() && finalName) input.value=finalName;
+  }
+
+  function restoreNormalForm(){
+    document.body.classList.remove("voip-only-mode");
+    var shell=document.querySelector("#formPage .voip-only-device-shell");
+    if(shell) shell.classList.remove("voip-only-device-shell");
+  }
+
+  window.updateVoipOnlyMode=function(){
+    var active=voipIsOnlySelected() && !!getVoipCard();
+    if(!active){restoreNormalForm();return false;}
+    document.body.classList.add("voip-only-mode");
+    prepareVoipOnlyCard();
+
+    var title=document.querySelector("#formPage .form-modal-header .page-title");
+    var editing=document.getElementById("editingRow");
+    if(title) title.textContent=(editing&&String(editing.value||"").trim()?"Kemaskini":"Tambah")+" Telefon VOIP";
+    var saveTextEl=document.getElementById("saveText");
+    if(saveTextEl) saveTextEl.textContent=(editing&&String(editing.value||"").trim())?"Kemaskini Telefon VOIP":"Simpan Telefon VOIP";
+    return true;
+  };
+
+  var baseSelect=window.selectInventoryType;
+  if(typeof baseSelect==="function"){
+    window.selectInventoryType=function(jenis){
+      var out=baseSelect.apply(this,arguments);
+      setTimeout(function(){
+        if(jenis==="Telefon VOIP") window.updateVoipOnlyMode();
+        else restoreNormalForm();
+      },0);
+      return out;
+    };
+  }
+
+  if(typeof window.syncDeviceSections==="function"){
+    var baseSync=window.syncDeviceSections;
+    window.syncDeviceSections=function(){
+      var out=baseSync.apply(this,arguments);
+      setTimeout(window.updateVoipOnlyMode,0);
+      return out;
+    };
+  }
+
+  if(typeof window.clearForm==="function"){
+    var baseClear=window.clearForm;
+    window.clearForm=function(){
+      restoreNormalForm();
+      return baseClear.apply(this,arguments);
+    };
+  }
+
+  if(typeof editData==="function"){
+    var baseEditV13=editData;
+    editData=function(row){
+      var out=baseEditV13.apply(this,arguments);
+      setTimeout(window.updateVoipOnlyMode,80);
+      return out;
+    };
+  }
+
+  var observer=new MutationObserver(function(){
+    if(getVoipCard()) window.updateVoipOnlyMode();
+  });
+  var sections=document.getElementById("deviceSections");
+  if(sections) observer.observe(sections,{childList:true});
+
+  setTimeout(window.updateVoipOnlyMode,0);
+})();
+</script>
+
+
+<script id="pkpjMobileFormScrollTopV14">
+(function(){
+  "use strict";
+
+  function isPhoneView(){
+    return !!(window.matchMedia && window.matchMedia("(max-width:760px)").matches);
+  }
+
+  function resetInventoryFormScrollTop(){
+    if(!isPhoneView()) return;
+    var page=document.getElementById("formPage");
+    if(!page) return;
+
+    /* Popup formPage sendiri ialah scroll container pada mobile. */
+    try{ page.scrollTop=0; }catch(e){}
+    try{ page.scrollLeft=0; }catch(e){}
+    try{ page.scrollTo({top:0,left:0,behavior:"auto"}); }catch(e){
+      try{ page.scrollTo(0,0); }catch(ignore){}
+    }
+
+    /* Ulang selepas browser siap render/hide medan VOIP supaya posisi lama tidak dipulihkan. */
+    requestAnimationFrame(function(){
+      try{ page.scrollTop=0; page.scrollLeft=0; }catch(e){}
+      requestAnimationFrame(function(){
+        try{ page.scrollTop=0; page.scrollLeft=0; }catch(e){}
+      });
+    });
+
+    window.setTimeout(function(){
+      try{ page.scrollTop=0; page.scrollLeft=0; }catch(e){}
+    },80);
+    window.setTimeout(function(){
+      try{ page.scrollTop=0; page.scrollLeft=0; }catch(e){}
+    },180);
+  }
+
+  window.resetInventoryFormScrollTop=resetInventoryFormScrollTop;
+
+  /* Pilih jenis baru: sentiasa buka borang dari bahagian atas pada telefon. */
+  var previousSelectInventoryType=window.selectInventoryType;
+  if(typeof previousSelectInventoryType==="function"){
+    window.selectInventoryType=function(jenis){
+      var out=previousSelectInventoryType.apply(this,arguments);
+      if(isPhoneView()){
+        window.setTimeout(resetInventoryFormScrollTop,0);
+        window.setTimeout(resetInventoryFormScrollTop,130);
+      }
+      return out;
+    };
+  }
+
+  /* Set Komputer pun tidak mewarisi posisi scroll lama. */
+  var previousSelectComputerSet=window.selectComputerSet;
+  if(typeof previousSelectComputerSet==="function"){
+    window.selectComputerSet=function(){
+      var out=previousSelectComputerSet.apply(this,arguments);
+      if(isPhoneView()){
+        window.setTimeout(resetInventoryFormScrollTop,0);
+        window.setTimeout(resetInventoryFormScrollTop,130);
+      }
+      return out;
+    };
+  }
+
+  /* Jika buka semula popup terus atau edit aset, mula dari atas juga. */
+  var previousOpenInventoryFormModal=window.openInventoryFormModal;
+  if(typeof previousOpenInventoryFormModal==="function"){
+    window.openInventoryFormModal=function(){
+      var out=previousOpenInventoryFormModal.apply(this,arguments);
+      if(isPhoneView()) window.setTimeout(resetInventoryFormScrollTop,60);
+      return out;
+    };
+  }
+
+  if(typeof window.editData==="function"){
+    var previousEditData=window.editData;
+    window.editData=function(){
+      var out=previousEditData.apply(this,arguments);
+      if(isPhoneView()) window.setTimeout(resetInventoryFormScrollTop,140);
+      return out;
+    };
   }
 })();
 </script>
