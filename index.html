@@ -4450,14 +4450,19 @@ function createDeviceCard(jenis){
           <div class="field full-width voip-staff-field">
             <label>Nama Staff / Pemegang <span class="req">*</span></label>
             <div class="voip-linked-staff"><i class="fa-solid fa-user"></i><input id="voipStaffDisplay_${id}" value="${escapeAttr(currentStaff)}" autocomplete="off" placeholder="Taip atau pilih nama staff"></div>
-            <div class="note">Nama ini ialah pemegang semasa Telefon VOIP dan akan digunakan sebagai Nama Paparan di Skrin VOIP.</div>
+            <div class="note">Pilih pemegang semasa Telefon VOIP. Maklumat ini berasingan daripada nama yang dipaparkan pada skrin VOIP.</div>
           </div>
 
           <div class="field">
             <label>No. Extension <span class="req">*</span></label>
             <input id="noExt_${id}" inputmode="numeric" autocomplete="off" placeholder="Contoh: 1234">
           </div>
-          <input type="hidden" id="namaPaparanVoip_${id}" value="">
+
+          <div class="field voip-display-name-field">
+            <label>Nama Paparan di Skrin VOIP <span class="req">*</span></label>
+            <div class="voip-linked-display"><i class="fa-solid fa-id-badge"></i><input id="namaPaparanVoip_${id}" autocomplete="off" placeholder="Taip atau pilih nama daripada senarai staff"><button type="button" class="voip-display-dropdown-toggle" title="Pilih nama paparan" aria-label="Pilih nama paparan"><i class="fa-solid fa-chevron-down"></i></button></div>
+            <div class="note">Nama paparan boleh berbeza daripada pemegang. Contoh: Pemegang Iskandar, paparan skrin Azroi.</div>
+          </div>
           <div class="field full-width">
             <label>Keadaan VOIP <span class="req">*</span></label>
             <select id="status_${id}">
@@ -4947,8 +4952,8 @@ function collectDevicePayloads(validateOnly){
     const noExtValue = getValue("noExt_" + id);
     const voipStaffValue = getValue("voipStaffDisplay_" + id);
     const recordStaff = jenisCheckbox === "Telefon VOIP" ? voipStaffValue : globalStaff;
-    /* Untuk VOIP, Nama Pemegang dan Nama Paparan Skrin adalah nilai yang sama. */
-    const namaPaparanVoipValue = jenisCheckbox === "Telefon VOIP" ? voipStaffValue : getValue("namaPaparanVoip_" + id);
+    /* VOIP: Pemegang dan Nama Paparan Skrin ialah dua nilai berasingan. */
+    const namaPaparanVoipValue = getValue("namaPaparanVoip_" + id);
 
     if(!recordStaff){
       if(jenisCheckbox === "Telefon VOIP"){
@@ -4972,7 +4977,11 @@ function collectDevicePayloads(validateOnly){
         focusEl("noExt_" + id);
         return null;
       }
-      /* Nama Paparan VOIP sama dengan Nama Staff / Pemegang; tiada medan kedua diperlukan. */
+      if(!namaPaparanVoipValue){
+        alert("Sila pilih atau masukkan Nama Paparan di Skrin VOIP.");
+        focusEl("namaPaparanVoip_" + id);
+        return null;
+      }
     }
     if(!kategoriValue){
       alert("Sila pilih Kategori untuk " + jenisCheckbox + ". Pilih Tidak Berkaitan jika tiada maklumat aset.");
@@ -5742,10 +5751,10 @@ function editData(row){
   setValue("catatan_" + id, data.catatan || "");
   setValue("noExt_" + id, data.noExt || "");
   if(jenisForCheckbox === "Telefon VOIP"){
-    /* Edit VOIP: ambil pemegang daripada rekod VOIP itu sendiri, bukan medan umum di atas. */
-    const voipHolder = String(data.namaStaff || data.namaPemegang || data.nama || data.namaPaparanVoip || "").trim();
+    /* Edit VOIP: pulihkan pemegang dan nama paparan secara berasingan. */
+    const voipHolder = String(data.namaStaff || data.namaPemegang || data.nama || "").trim();
     setValue("voipStaffDisplay_" + id, voipHolder);
-    setValue("namaPaparanVoip_" + id, voipHolder);
+    setValue("namaPaparanVoip_" + id, data.namaPaparanVoip || "");
   }else{
     setValue("namaPaparanVoip_" + id, data.namaPaparanVoip || "");
   }
@@ -9349,9 +9358,7 @@ body.voip-only-mode #formPage .voip-linked-staff input{cursor:text!important;}
     var shell=card.parentElement;
     if(shell && shell.parentElement) shell.parentElement.classList.add("voip-only-device-shell");
 
-    var finalName="";
-    try{finalName=typeof getFinalStaffName==="function"?String(getFinalStaffName()||"").trim():"";}catch(e){}
-    if(input && !String(input.value||"").trim() && finalName) input.value=finalName;
+    /* VOIP baru tidak mewarisi Nama Staff umum di bahagian atas. */
   }
 
   function restoreNormalForm(){
@@ -9829,6 +9836,8 @@ body.voip-only-mode #formPage .voip-linked-staff input{min-width:0!important;fle
   }
 
   function autoFromStaffInput(staffInput,forceSelected){
+    /* V23: Nama Paparan VOIP berasingan, jangan auto ikut pemegang. */
+    return;
     if(!staffInput) return;
     var display=getVoipDisplayInput(staffInput); if(!display) return;
     addAutoNote(display);
@@ -10170,6 +10179,8 @@ body.voip-only-mode #formPage .voip-staff-toggle{display:none!important;}
   }
 
   function syncDisplayNameFromSelectedStaff(input,name){
+    /* V23: dua medan berasingan. */
+    return;
     if(!input) return;
     var card=input.closest('.device-card-voip');
     var display=card?q('[id^="namaPaparanVoip_"]',card):null;
@@ -10296,36 +10307,87 @@ body.voip-only-mode #formPage .voip-staff-toggle{display:none!important;}
 </script>
 
 
-<style id="pkpjVoipOneNameV22Style">
-/* ===== V22: SATU NAMA VOIP, BEBAS DARIPADA NAMA UMUM ===== */
+<style id="pkpjVoipSeparateNamesV23BaseStyle">
+/* ===== V23: PEMEGANG & NAMA PAPARAN VOIP BERASINGAN ===== */
 body.voip-only-mode #formPage .voip-staff-field{grid-column:1/-1!important;}
+.voip-display-auto-note{display:none!important;}
 </style>
-<script id="pkpjVoipOneNameV22Logic">
+<script id="pkpjVoipSeparateNamesV23BaseLogic">
 (function(){
   "use strict";
-  function isVoipStaff(el){return !!(el&&el.matches&&el.matches('[id^="voipStaffDisplay_"]'));}
-  function keepSame(input){
-    if(!input) return;
-    var card=input.closest?input.closest('.device-card-voip'):null;
-    if(!card) return;
-    var hidden=card.querySelector('[id^="namaPaparanVoip_"]');
-    if(hidden) hidden.value=String(input.value||'').trim();
-  }
-
   /* Putuskan warisan Nama Staff umum -> VOIP daripada versi lama. */
   window.syncVoipStaffDisplay=function(){};
-
-  document.addEventListener('input',function(ev){if(isVoipStaff(ev.target)) keepSame(ev.target);});
-  document.addEventListener('change',function(ev){if(isVoipStaff(ev.target)) keepSame(ev.target);});
-  document.addEventListener('click',function(ev){
-    var opt=ev.target&&ev.target.closest?ev.target.closest('.voip-staff-always-option'):null;
-    if(!opt) return;
-    var field=opt.closest('.voip-staff-field');
-    var input=field?field.querySelector('[id^="voipStaffDisplay_"]'):null;
-    if(input) window.setTimeout(function(){keepSame(input);},0);
-  });
 })();
 </script>
 
+
+
+<style id="pkpjVoipDisplayDropdownV23Style">
+/* ===== V23: DROPDOWN NAMA PAPARAN VOIP - SENARAI SAMA, NILAI BERASINGAN ===== */
+.voip-display-name-field{position:relative!important;}
+.voip-linked-display{display:flex;align-items:center;gap:9px;border:1px solid #d7e2f0;border-radius:10px;background:#fff;padding:0 6px 0 11px;min-height:44px;}
+.voip-linked-display>i{color:#2563eb;width:18px;text-align:center;}
+.voip-linked-display input{border:0!important;box-shadow:none!important;outline:none!important;flex:1 1 auto!important;min-width:0!important;padding-left:0!important;}
+.voip-display-dropdown-toggle{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;border-radius:8px!important;background:#eff6ff!important;color:#1d4ed8!important;border:1px solid #bfdbfe!important;display:grid!important;place-items:center!important;}
+.voip-display-dropdown-panel{display:none;margin-top:6px;background:#fff;border:1px solid #bfdbfe;border-radius:11px;box-shadow:0 12px 30px rgba(15,23,42,.16);overflow:hidden;position:absolute;left:0;right:0;z-index:1200;}
+.voip-display-dropdown-panel.open{display:block;}
+.voip-display-dropdown-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#eff6ff;border-bottom:1px solid #dbeafe;color:#1e3a8a;font-size:11px;font-weight:900;}
+.voip-display-dropdown-list{max-height:230px;overflow:auto;overscroll-behavior:contain;padding:5px;}
+.voip-display-option{width:100%!important;min-height:42px!important;display:flex!important;align-items:center!important;gap:9px!important;background:#fff!important;color:#0f172a!important;border:0!important;border-radius:8px!important;padding:9px 10px!important;text-align:left!important;font-size:12.5px!important;font-weight:800!important;}
+.voip-display-option i{width:20px;text-align:center;color:#2563eb;}
+.voip-display-option:hover,.voip-display-option:focus{background:#eff6ff!important;color:#1d4ed8!important;outline:none!important;}
+.voip-display-empty{padding:13px 11px;color:#64748b;font-size:12px;font-weight:700;line-height:1.4;text-align:center;}
+@media(max-width:760px){
+  .voip-display-dropdown-panel{position:relative;left:auto;right:auto;}
+  .voip-display-dropdown-list{max-height:220px;}
+  .voip-display-option{min-height:46px!important;font-size:13px!important;padding:10px 11px!important;}
+  .voip-display-dropdown-toggle{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;}
+}
+</style>
+<script id="pkpjVoipDisplayDropdownV23Logic">
+(function(){
+  "use strict";
+  var loading=false;
+  function esc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");}
+  function add(list,seen,v){var n=String(v||"").trim();if(!n)return;var k=n.toLowerCase();if(seen[k])return;seen[k]=1;list.push(n);}
+  function names(){
+    var out=[],seen={};
+    try{if(typeof staffRecords!=="undefined"&&Array.isArray(staffRecords))staffRecords.forEach(function(r){add(out,seen,r&&(r.namaStaff||r.nama||r.name));});}catch(e){}
+    try{if(typeof staffList!=="undefined"&&Array.isArray(staffList))staffList.forEach(function(n){add(out,seen,n);});}catch(e){}
+    try{var dl=document.getElementById("staffNameDatalist");if(dl)Array.from(dl.options||[]).forEach(function(o){add(out,seen,o.value);});}catch(e){}
+    out.sort(function(a,b){return a.localeCompare(b,"ms",{sensitivity:"base"});});
+    return out;
+  }
+  function isInput(el){return !!(el&&el.matches&&el.matches('[id^="namaPaparanVoip_"]'));}
+  function field(input){return input&&input.closest?input.closest('.voip-display-name-field'):null;}
+  function panel(input){
+    var f=field(input);if(!f)return null;
+    var p=f.querySelector('.voip-display-dropdown-panel');
+    if(!p){p=document.createElement('div');p.className='voip-display-dropdown-panel';p.innerHTML='<div class="voip-display-dropdown-head"><span><i class="fa-solid fa-users"></i> Pilih Nama Paparan</span><span class="voip-display-count"></span></div><div class="voip-display-dropdown-list"></div>';f.appendChild(p);}
+    return p;
+  }
+  function request(input){if(loading||typeof loadStaffList!=="function")return;loading=true;Promise.resolve(loadStaffList()).then(function(){loading=false;render(input,true);}).catch(function(){loading=false;render(input,true);});}
+  function render(input,open){
+    if(!input)return;var p=panel(input);if(!p)return;var list=p.querySelector('.voip-display-dropdown-list');var count=p.querySelector('.voip-display-count');
+    var all=names(),q=String(input.value||"").trim().toLowerCase();var filtered=q?all.filter(function(n){return n.toLowerCase().indexOf(q)>-1;}):all;var shown=filtered.slice(0,50);
+    if(count)count.textContent=filtered.length?filtered.length+' nama':'';
+    if(!all.length){list.innerHTML='<div class="voip-display-empty"><i class="fa-solid fa-circle-notch fa-spin"></i> Memuatkan senarai staff...</div>';if(open)p.classList.add('open');request(input);return;}
+    if(!shown.length){list.innerHTML='<div class="voip-display-empty">Tiada nama sepadan dengan <b>'+esc(input.value)+'</b>.<br>Nama manual masih boleh ditaip.</div>';}else{list.innerHTML=shown.map(function(n){return '<button type="button" class="voip-display-option" data-display-name="'+esc(n)+'"><i class="fa-solid fa-user-tag"></i><span>'+esc(n)+'</span></button>';}).join('');}
+    if(open)p.classList.add('open');
+  }
+  function close(input){var p=panel(input);if(p)p.classList.remove('open');}
+  function closeAll(){document.querySelectorAll('.voip-display-dropdown-panel.open').forEach(function(p){p.classList.remove('open');});}
+  document.addEventListener('focusin',function(ev){if(isInput(ev.target))render(ev.target,true);});
+  document.addEventListener('input',function(ev){if(isInput(ev.target))render(ev.target,true);});
+  document.addEventListener('click',function(ev){
+    var toggle=ev.target&&ev.target.closest?ev.target.closest('.voip-display-dropdown-toggle'):null;
+    if(toggle){ev.preventDefault();ev.stopPropagation();var f=toggle.closest('.voip-display-name-field');var input=f?f.querySelector('[id^="namaPaparanVoip_"]'):null;if(!input)return;var p=panel(input);if(p&&p.classList.contains('open'))close(input);else{render(input,true);input.focus({preventScroll:true});}return;}
+    var opt=ev.target&&ev.target.closest?ev.target.closest('.voip-display-option'):null;
+    if(opt){var f2=opt.closest('.voip-display-name-field');var input2=f2?f2.querySelector('[id^="namaPaparanVoip_"]'):null;if(input2){input2.value=opt.getAttribute('data-display-name')||'';input2.dispatchEvent(new Event('change',{bubbles:true}));close(input2);input2.focus({preventScroll:true});}return;}
+    if(!(ev.target&&ev.target.closest&&ev.target.closest('.voip-display-name-field')))closeAll();
+  });
+  document.addEventListener('keydown',function(ev){if(ev.key==='Escape')closeAll();});
+})();
+</script>
 </body>
 </html>
