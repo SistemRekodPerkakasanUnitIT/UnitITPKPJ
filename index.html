@@ -2591,6 +2591,37 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
 }
 </style>
 
+
+<style id="pkpjManualGroupV18Style">
+/* ===== V18: KLASIFIKASI MANUAL KUMPULAN INVENTORI ===== */
+.master-group-empty-note{
+  padding:12px 16px 13px 46px;
+  font-size:9.5px;
+  font-weight:700;
+  color:#8a96a8;
+  background:#fbfcfe;
+  border-top:1px solid #eef2f7;
+}
+.master-group-empty-note i{margin-right:6px;color:#f97316;}
+.master-classify-other{
+  background:#fff7ed!important;
+  color:#c2410c!important;
+  border:1px solid #fed7aa!important;
+}
+.master-classify-auto{
+  background:#eff6ff!important;
+  color:#1d4ed8!important;
+  border:1px solid #bfdbfe!important;
+}
+.asset-floating-menu .menu-lainlain{background:#fff7ed!important;color:#c2410c!important;}
+.asset-floating-menu .menu-auto-group{background:#eff6ff!important;color:#1d4ed8!important;}
+@media(max-width:760px){
+  .master-detail-actions .master-classify-other,
+  .master-detail-actions .master-classify-auto{width:100%!important;min-height:42px!important;}
+  .master-group-empty-note{padding-left:45px;font-size:10px;}
+}
+</style>
+
 </head>
 
 <body>
@@ -5203,7 +5234,13 @@ function renderAssetActions(v){
 
 function buildAssetMenuHtml(row){
   row = Number(row || 0);
+  const asset = typeof findAssetByRow === "function" ? findAssetByRow(row) : null;
+  const manualGroup = String(asset && asset.kumpulanPaparan || "").trim().toLowerCase();
+  const groupAction = manualGroup === "lain-lain"
+    ? `<button type="button" class="menu-action menu-auto-group" title="Kembali kepada klasifikasi automatik" onclick="closeAllAssetMenus();masterResetAutoGroup(${row})"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Kembali Klasifikasi Auto</span></button>`
+    : `<button type="button" class="menu-action menu-lainlain" title="Pindahkan aset ke kumpulan Lain-lain" onclick="closeAllAssetMenus();masterMoveToOther(${row})"><i class="fa-solid fa-arrow-right-to-bracket"></i><span>Pindah ke Lain-lain</span></button>`;
   return `
+    ${groupAction}
     <button type="button" class="menu-action menu-sejarah" title="Sejarah Pergerakan Aset" onclick="closeAllAssetMenus();openAssetHistory(${row})"><i class="fa-solid fa-clock-rotate-left"></i><span>Sejarah</span></button>
     <button type="button" class="menu-action menu-edit" title="Kemaskini Maklumat" onclick="closeAllAssetMenus();editData(${row})"><i class="fa-solid fa-pen-to-square"></i><span>Kemaskini</span></button>
     <button type="button" class="menu-action menu-padam" title="Padam Rekod" onclick="closeAllAssetMenus();del(${row})"><i class="fa-solid fa-trash"></i><span>Padam</span></button>
@@ -5793,8 +5830,8 @@ function makeUpdatePayloadFromAsset(v, updates){
     namaStaff:v.namaStaff || v.namaPemegang || v.nama || NOT_APPLICABLE,
     namaPemegang:v.namaStaff || v.namaPemegang || v.nama || NOT_APPLICABLE,
     nama:v.namaStaff || v.namaPemegang || v.nama || NOT_APPLICABLE,
-    jenisPerkakasan:v.jenisPerkakasan || NOT_APPLICABLE,
-    jenisPerkakasanLain:v.jenisPerkakasanLain || "",
+    jenisPerkakasan:updates.jenisPerkakasan != null ? updates.jenisPerkakasan : (v.jenisPerkakasan || NOT_APPLICABLE),
+    jenisPerkakasanLain:updates.jenisPerkakasanLain != null ? updates.jenisPerkakasanLain : (v.jenisPerkakasanLain || ""),
     kategori:v.kategori || NOT_APPLICABLE,
     kategoriLain:v.kategoriLain || "",
     jenama:v.jenama || NOT_APPLICABLE,
@@ -5808,7 +5845,10 @@ function makeUpdatePayloadFromAsset(v, updates){
     noInventori:v.noInventori || "",
     kuantiti:v.kuantiti || "1",
     gambar:v.gambar || "",
-    catatan:updates.catatan != null ? updates.catatan : (v.catatan || "")
+    catatan:updates.catatan != null ? updates.catatan : (v.catatan || ""),
+    noExt:v.noExt || "",
+    namaPaparanVoip:v.namaPaparanVoip || "",
+    kumpulanPaparan:updates.kumpulanPaparan != null ? updates.kumpulanPaparan : (v.kumpulanPaparan || "")
   };
 }
 
@@ -7497,6 +7537,8 @@ if(oldRefreshAllSelesai){
   }
 
   function masterGroupName(item){
+    const manualGroup = String(item && item.kumpulanPaparan || "").trim();
+    if(manualGroup.toLowerCase() === "lain-lain") return "Lain-lain";
     const raw = [item && item.jenisPerkakasan, item && item.jenisPerkakasanLain, item && item.catatan, item && item.jenama, item && item.model]
       .map(v => String(v || "").toLowerCase()).join(" ");
     if(/laptop|notebook|komputer riba/.test(raw)) return "Laptop";
@@ -7566,7 +7608,7 @@ if(oldRefreshAllSelesai){
       data = data.filter(item => [
         item.row,item.tahun,item.namaStaff,item.namaPemegang,item.nama,item.jenisPerkakasan,item.jenisPerkakasanLain,
         item.kategori,item.kategoriLain,item.jenama,item.model,item.noSiri,item.tagAset,item.noInventori,
-        item.lokasi,item.status,item.tarikh,item.pembekal,item.catatan,item.noExt,item.namaPaparanVoip
+        item.lokasi,item.status,item.tarikh,item.pembekal,item.catatan,item.noExt,item.namaPaparanVoip,item.kumpulanPaparan
       ].join(" ").toLowerCase().includes(search));
     }
     if(status){data = data.filter(item => String(item.status || "").toLowerCase().trim() === status);}
@@ -7598,6 +7640,8 @@ if(oldRefreshAllSelesai){
       if(!map.has(group)) map.set(group, []);
       map.get(group).push(item);
     });
+    /* Lain-lain sentiasa kelihatan supaya aset boleh dipindahkan ke sini secara manual. */
+    if(!map.has("Lain-lain")) map.set("Lain-lain", []);
     return [...map.entries()].sort((a,b) => {
       const diff = masterGroupOrder(a[0]) - masterGroupOrder(b[0]);
       return diff || a[0].localeCompare(b[0],"ms");
@@ -7632,12 +7676,13 @@ if(oldRefreshAllSelesai){
           <span class="master-list-status ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span>
         </button>`;
       }).join("");
+      const itemsHtml = items || '<div class="master-group-empty-note"><i class="fa-solid fa-circle-info"></i>Belum ada aset dalam kumpulan ini.</div>';
       return `<section class="master-group${expanded ? " expanded" : ""}">
         <button type="button" class="master-group-header" onclick="masterToggleGroup(${index})">
           <i class="fa-solid ${masterGroupIcon(group.name)}"></i><strong>${escapeHtml(group.name)}</strong>
           <span class="master-group-count">${group.items.length}</span><i class="fa-solid fa-chevron-down master-group-chevron"></i>
         </button>
-        <div class="master-group-items">${items}</div>
+        <div class="master-group-items">${itemsHtml}</div>
       </section>`;
     }).join("");
   }
@@ -7710,6 +7755,9 @@ if(oldRefreshAllSelesai){
       <div class="master-detail-actions">
         <button type="button" class="master-profile-button" onclick="openAssetProfile(${Number(item.row)})"><i class="fa-regular fa-eye"></i> Profil</button>
         <button type="button" class="master-edit-button" onclick="editData(${Number(item.row)})"><i class="fa-solid fa-pen"></i> Edit Aset</button>
+        ${String(item.kumpulanPaparan || "").trim().toLowerCase() === "lain-lain"
+          ? `<button type="button" class="master-action-button master-classify-auto" onclick="masterResetAutoGroup(${Number(item.row)})"><i class="fa-solid fa-wand-magic-sparkles"></i> Kembali Auto</button>`
+          : `<button type="button" class="master-action-button master-classify-other" onclick="masterMoveToOther(${Number(item.row)})"><i class="fa-solid fa-arrow-right-to-bracket"></i> Ke Lain-lain</button>`}
         <button type="button" class="master-action-button" onclick="event.stopPropagation();toggleAssetMenu(event,${Number(item.row)})"><i class="fa-solid fa-ellipsis-vertical"></i> Tindakan <i class="fa-solid fa-chevron-down"></i></button>
       </div>
     </div>
@@ -7761,6 +7809,33 @@ if(oldRefreshAllSelesai){
       ${masterRenderTimeline(item)}
     </section>`;
   }
+
+  window.masterMoveToOther = async function(row){
+    const item = typeof findAssetByRow === "function" ? findAssetByRow(row) : null;
+    if(!item){alert("Rekod aset tidak dijumpai.");return;}
+    if(!confirm("Pindahkan aset ini ke kumpulan Lain-lain?\n\nMaklumat asal aset tidak akan dipadam.")) return;
+    try{
+      await quickUpdateAsset(Number(row), {kumpulanPaparan:"Lain-lain"}, "Aset berjaya dipindahkan ke kumpulan Lain-lain");
+      masterSelectedRow = Number(row);
+      masterExpandedGroups.add("Lain-lain");
+      if(typeof renderMasterInventory === "function") renderMasterInventory();
+    }catch(err){
+      alert("Gagal pindahkan aset ke Lain-lain: " + (err && err.message ? err.message : err));
+    }
+  };
+
+  window.masterResetAutoGroup = async function(row){
+    const item = typeof findAssetByRow === "function" ? findAssetByRow(row) : null;
+    if(!item){alert("Rekod aset tidak dijumpai.");return;}
+    if(!confirm("Kembalikan aset ini kepada klasifikasi automatik?")) return;
+    try{
+      await quickUpdateAsset(Number(row), {kumpulanPaparan:""}, "Klasifikasi automatik dipulihkan");
+      masterSelectedRow = Number(row);
+      if(typeof renderMasterInventory === "function") renderMasterInventory();
+    }catch(err){
+      alert("Gagal pulihkan klasifikasi automatik: " + (err && err.message ? err.message : err));
+    }
+  };
 
   window.renderMasterInventory = function(){
     const workspace = document.getElementById("masterInventoryWorkspace");
