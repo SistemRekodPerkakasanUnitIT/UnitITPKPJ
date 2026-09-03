@@ -6434,6 +6434,165 @@ body.inventory-form-open #formPage.form-modal-page.active .section-box{
 </head><body>${htmlContent}<script>window.onload=function(){setTimeout(function(){window.print();},400)}<\/script>
 
 
+
+
+<style id="pkpjVoipStaffListV17Style">
+/* ===== V17: SENARAI STAFF VOIP SENTIASA KELIHATAN ===== */
+body.voip-only-mode #formPage .voip-staff-toggle{display:none!important;}
+body.voip-only-mode #formPage .voip-staff-suggestion-box{display:none!important;}
+.voip-staff-always-panel{
+  margin-top:7px;background:#ffffff;border:1px solid #bfdbfe;border-radius:11px;
+  box-shadow:0 8px 22px rgba(15,23,42,.09);overflow:hidden;
+}
+.voip-staff-always-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;
+  background:#eff6ff;border-bottom:1px solid #dbeafe;color:#1e3a8a;font-size:11px;font-weight:900;
+}
+.voip-staff-always-head .voip-staff-always-count{color:#2563eb;white-space:nowrap;}
+.voip-staff-always-list{max-height:210px;overflow-y:auto;overscroll-behavior:contain;padding:5px;background:#fff;}
+.voip-staff-always-option{
+  width:100%!important;min-height:40px!important;display:flex!important;align-items:center!important;gap:9px!important;
+  border:0!important;border-radius:8px!important;background:#fff!important;color:#0f172a!important;
+  padding:9px 10px!important;text-align:left!important;font-size:12.5px!important;font-weight:800!important;
+}
+.voip-staff-always-option i{width:19px;text-align:center;color:#2563eb;}
+.voip-staff-always-option:hover,.voip-staff-always-option:focus{background:#eff6ff!important;color:#1d4ed8!important;outline:none!important;}
+.voip-staff-always-option.selected{background:#dcfce7!important;color:#166534!important;}
+.voip-staff-always-empty{padding:12px 10px;text-align:center;color:#64748b;font-size:12px;font-weight:700;line-height:1.4;}
+.voip-staff-always-hint{padding:7px 10px;border-top:1px solid #eef2f7;background:#f8fafc;color:#64748b;font-size:10.5px;font-weight:700;}
+@media(max-width:760px){
+  .voip-staff-always-list{max-height:230px;}
+  .voip-staff-always-option{min-height:46px!important;font-size:13px!important;padding:10px 11px!important;}
+  .voip-staff-always-head{font-size:12px;padding:9px 10px;}
+  .voip-staff-always-hint{font-size:11px;}
+}
+</style>
+<script id="pkpjVoipStaffListV17Logic">
+(function(){
+  "use strict";
+  var loadingStaff=false;
+
+  function html(value){
+    return String(value==null?"":value)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+
+  function addUnique(list,seen,value){
+    var name=String(value||"").trim();
+    if(!name) return;
+    var key=name.toLowerCase();
+    if(seen[key]) return;
+    seen[key]=true;
+    list.push(name);
+  }
+
+  function getNames(){
+    var list=[],seen={};
+    try{
+      if(typeof staffRecords!=="undefined" && Array.isArray(staffRecords)){
+        staffRecords.forEach(function(r){addUnique(list,seen,r&&(r.namaStaff||r.nama||r.name));});
+      }
+    }catch(e){}
+    try{
+      if(typeof staffList!=="undefined" && Array.isArray(staffList)){
+        staffList.forEach(function(n){addUnique(list,seen,n);});
+      }
+    }catch(e){}
+    try{
+      var dl=document.getElementById("staffNameDatalist");
+      if(dl) Array.from(dl.options||[]).forEach(function(o){addUnique(list,seen,o.value);});
+    }catch(e){}
+    list.sort(function(a,b){return a.localeCompare(b,"ms",{sensitivity:"base"});});
+    return list;
+  }
+
+  function getPanel(input){
+    var field=input&&input.closest?input.closest(".voip-staff-field"):null;
+    if(!field) return null;
+    var panel=field.querySelector(".voip-staff-always-panel");
+    if(!panel){
+      panel=document.createElement("div");
+      panel.className="voip-staff-always-panel";
+      panel.innerHTML='<div class="voip-staff-always-head"><span><i class="fa-solid fa-users"></i> Pilih Nama Staff</span><span class="voip-staff-always-count"></span></div><div class="voip-staff-always-list"></div><div class="voip-staff-always-hint">Taip beberapa huruf untuk tapis nama. Nama manual masih dibenarkan jika tiada dalam senarai.</div>';
+      var wrap=field.querySelector(".voip-linked-staff");
+      if(wrap&&wrap.nextSibling) field.insertBefore(panel,wrap.nextSibling); else field.appendChild(panel);
+    }
+    return panel;
+  }
+
+  function requestStaff(input){
+    if(loadingStaff || typeof loadStaffList!=="function") return;
+    loadingStaff=true;
+    Promise.resolve(loadStaffList()).then(function(){
+      loadingStaff=false;
+      render(input);
+    }).catch(function(){loadingStaff=false;render(input);});
+  }
+
+  function render(input){
+    if(!input) return;
+    input.removeAttribute("list");
+    var panel=getPanel(input); if(!panel) return;
+    var listBox=panel.querySelector(".voip-staff-always-list");
+    var count=panel.querySelector(".voip-staff-always-count");
+    var names=getNames();
+    var q=String(input.value||"").trim().toLowerCase();
+    var filtered=q?names.filter(function(n){return n.toLowerCase().indexOf(q)>-1;}):names;
+    if(count) count.textContent=filtered.length+" / "+names.length+" nama";
+
+    if(!names.length){
+      listBox.innerHTML='<div class="voip-staff-always-empty"><i class="fa-solid fa-circle-notch fa-spin"></i> Memuatkan senarai staff...</div>';
+      requestStaff(input);
+      return;
+    }
+    if(!filtered.length){
+      listBox.innerHTML='<div class="voip-staff-always-empty">Tiada nama sepadan dengan <b>'+html(input.value)+'</b>.<br>Teruskan menaip jika mahu guna nama manual.</div>';
+      return;
+    }
+
+    var current=String(input.value||"").trim().toLowerCase();
+    listBox.innerHTML=filtered.map(function(name){
+      var selected=name.toLowerCase()===current?" selected":"";
+      return '<button type="button" class="voip-staff-always-option'+selected+'" data-v17-staff="'+html(name)+'"><i class="fa-solid fa-user"></i><span>'+html(name)+'</span></button>';
+    }).join("");
+  }
+
+  function enhance(){
+    var input=document.querySelector('#deviceCard_telefon_voip [id^="voipStaffDisplay_"]');
+    if(!input) return;
+    getPanel(input);
+    render(input);
+  }
+
+  document.addEventListener("input",function(ev){
+    if(ev.target&&ev.target.matches&&ev.target.matches('[id^="voipStaffDisplay_"]')) render(ev.target);
+  });
+  document.addEventListener("focusin",function(ev){
+    if(ev.target&&ev.target.matches&&ev.target.matches('[id^="voipStaffDisplay_"]')) render(ev.target);
+  });
+  document.addEventListener("click",function(ev){
+    var option=ev.target&&ev.target.closest?ev.target.closest(".voip-staff-always-option"):null;
+    if(!option) return;
+    var field=option.closest(".voip-staff-field");
+    var input=field?field.querySelector('[id^="voipStaffDisplay_"]'):null;
+    if(!input) return;
+    var name=option.getAttribute("data-v17-staff")||"";
+    input.value=name;
+    try{if(typeof window.syncVoipStaffToPrimary==="function") window.syncVoipStaffToPrimary(name);}catch(e){}
+    input.dispatchEvent(new Event("input",{bubbles:true}));
+    input.dispatchEvent(new Event("change",{bubbles:true}));
+    render(input);
+  });
+
+  var obs=new MutationObserver(function(){enhance();});
+  var sections=document.getElementById("deviceSections");
+  if(sections) obs.observe(sections,{childList:true,subtree:true});
+  window.addEventListener("pageshow",function(){window.setTimeout(enhance,30);});
+  window.setTimeout(enhance,50);
+})();
+</script>
+
 </body></html>`);
   printWindow.document.close();
 }
