@@ -2644,6 +2644,11 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
         <span class="inventory-type-copy"><b>Printer</b><small>Pencetak pejabat</small></span>
       </button>
 
+      <button type="button" class="inventory-type-card inventory-type-card-voip" onclick="selectInventoryType('Telefon VOIP')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-phone-volume"></i></span>
+        <span class="inventory-type-copy"><b>Telefon VOIP</b><small>Telefon meja / sambungan dalaman</small></span>
+      </button>
+
       <button type="button" class="inventory-type-card" onclick="selectInventoryType('Lain-lain')">
         <span class="inventory-type-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
         <span class="inventory-type-copy"><b>Lain-lain</b><small>Projector, scanner, UPS dan lain-lain</small></span>
@@ -2885,6 +2890,7 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Keyboard" onchange="syncDeviceSections()"> Keyboard</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Mouse" onchange="syncDeviceSections()"> Mouse</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Printer" onchange="syncDeviceSections()"> Printer</label>
+                <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Telefon VOIP" onchange="syncDeviceSections()"> Telefon VOIP</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Lain-lain" onchange="syncDeviceSections()"> Lain-lain</label>
               </div>
               <div class="note">Set Komputer akan membuka PC/CPU, Monitor, Keyboard dan Mouse serentak. Setiap item masih direkodkan secara berasingan di bawah nama/lokasi yang sama.</div>
@@ -3066,6 +3072,7 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
               <option value="Keyboard">Keyboard</option>
               <option value="Mouse">Mouse</option>
               <option value="Printer">Printer</option>
+              <option value="Telefon VOIP">Telefon VOIP</option>
               <option value="Lain-lain">Lain-lain</option>
               <option value="TIADA">TIADA</option>
             </select>
@@ -3396,7 +3403,7 @@ const NOT_APPLICABLE = "Tidak Berkaitan";
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const LAPTOP_IMAGE_URL = "Laptop.png";
 const LAPTOP_IMAGE_FALLBACK_URL = "https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/Laptop.png";
-const PRESET_JENIS = ["Laptop", "CPU", "Monitor", "Keyboard", "Mouse", "Printer"];
+const PRESET_JENIS = ["Laptop", "CPU", "Monitor", "Keyboard", "Mouse", "Printer", "Telefon VOIP"];
 const KATEGORI_ASAS = ["ICT", "Sewaan", "PKPJ", "Dalam Proses Pemulangan ke ICT", "Tidak Berkaitan"];
 const STATUS_OPTIONS = ["Baik", "Rosak", "Dalam Baik Pulih", "Dipinjam", "Dipulangkan", "Pelupusan", "Hilang", "Selesai", "Tidak Berkaitan"];
 
@@ -4378,6 +4385,95 @@ function createDeviceCard(jenis){
   card.setAttribute("data-id", id);
   card.setAttribute("data-jenis", jenis);
 
+  if(jenis === "Telefon VOIP"){
+    const currentStaff = (typeof getFinalStaffName === "function" ? getFinalStaffName() : "") || "";
+    card.classList.add("device-card-voip");
+    card.innerHTML = `
+      <div class="device-card-header voip-card-header">
+        <span><i class="fa-solid fa-phone-volume"></i> Telefon VOIP</span>
+        <span class="note" style="color:#dbeafe">Maklumat sambungan telefon staff</span>
+      </div>
+      <div class="device-card-body">
+        <div class="voip-form-intro"><i class="fa-solid fa-circle-info"></i><span>Nama Staff disambungkan terus dengan medan pemegang di bahagian atas. Isi maklumat VOIP di bawah.</span></div>
+        <div class="device-card-grid voip-device-grid">
+          <input type="hidden" id="jenisLain_${id}" value="">
+          <input type="hidden" id="kategori_${id}" value="ICT">
+          <input type="hidden" id="kategoriLain_${id}" value="">
+          <input type="hidden" id="jenama_${id}" value="Tidak Berkaitan">
+          <input type="hidden" id="model_${id}" value="Tidak Berkaitan">
+          <input type="hidden" id="noSiri_${id}" value="Tidak Berkaitan">
+          <input type="hidden" id="tagAset_${id}" value="Tidak Berkaitan">
+          <select id="lokasi_${id}" style="display:none" aria-hidden="true">
+            <option value="">Pilih lokasi</option>
+            <option value="Stor PKPJ">Stor PKPJ</option>
+            <option value="Pejabat PKPJ">Pejabat PKPJ</option>
+            <option value="Tidak Berkaitan">Tidak Berkaitan</option>
+            <option value="Lain-lain">Lain-lain</option>
+          </select>
+          <input type="hidden" id="lokasiLain_${id}" value="">
+          <input type="hidden" id="tarikh_${id}" value="${todayString()}">
+          <input type="hidden" id="pembekal_${id}" value="Tidak Berkaitan">
+          <input type="hidden" id="noInventori_${id}" value="">
+
+          <div class="field full-width voip-staff-field">
+            <label>Nama Staff / Pemegang <span class="req">*</span></label>
+            <div class="voip-linked-staff"><i class="fa-solid fa-user"></i><input id="voipStaffDisplay_${id}" value="${escapeAttr(currentStaff)}" readonly placeholder="Pilih nama staff di bahagian atas"></div>
+            <div class="note">Nama ini diambil daripada medan Nama Staff / Pemegang di bahagian atas borang.</div>
+          </div>
+
+          <div class="field">
+            <label>No. Extension <span class="req">*</span></label>
+            <input id="noExt_${id}" inputmode="numeric" autocomplete="off" placeholder="Contoh: 1234">
+          </div>
+          <div class="field">
+            <label>Nama Paparan di Skrin VOIP <span class="req">*</span></label>
+            <input id="namaPaparanVoip_${id}" autocomplete="off" placeholder="Contoh: UNIT IT / AHMAD">
+          </div>
+          <div class="field full-width">
+            <label>Keadaan VOIP <span class="req">*</span></label>
+            <select id="status_${id}">
+              <option value="">Pilih keadaan VOIP</option>
+              <option value="Baik">Baik / Berfungsi</option>
+              <option value="Rosak">Rosak / Tidak Berfungsi</option>
+              <option value="Dalam Baik Pulih">Dalam Baik Pulih</option>
+              <option value="Dipinjam">Dipinjam</option>
+              <option value="Dipulangkan">Dipulangkan</option>
+              <option value="Pelupusan">Pelupusan</option>
+              <option value="Hilang">Hilang</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Tidak Berkaitan">Tidak Berkaitan</option>
+            </select>
+          </div>
+
+          <div class="field full-width voip-photo-field">
+            <label>Gambar Telefon VOIP</label>
+            <input type="file" id="file_${id}" accept="image/*" multiple style="display:none" onchange="addDeviceFiles('${id}', this.files); this.value='';">
+            <input type="file" id="camera_${id}" accept="image/*" capture="environment" style="display:none" onchange="addDeviceFiles('${id}', this.files); this.value='';">
+            <div class="upload-row">
+              <button type="button" class="btn-add-upload" onclick="chooseDeviceImages('${id}')"><i class="fa-solid fa-images"></i> Pilih Gambar HP</button>
+              <button type="button" class="btn-camera" onclick="takeDevicePhoto('${id}')"><i class="fa-solid fa-camera"></i> Kamera</button>
+              <button type="button" class="btn-upload" id="uploadBtn_${id}" onclick="uploadDeviceImages('${id}', true)"><i class="fa-solid fa-upload"></i> Upload</button>
+              <button type="button" class="btn-clear-img" onclick="clearDeviceImages('${id}')"><i class="fa-solid fa-trash"></i> Buang</button>
+            </div>
+            <div class="note">Di Chrome telefon, tekan <b>Pilih Gambar HP</b> untuk galeri atau <b>Kamera</b> untuk ambil gambar terus.</div>
+            <div id="namaFail_${id}" class="upload-file-name">Tiada gambar dipilih</div>
+            <textarea id="gambar_${id}" style="display:none;"></textarea>
+            <input type="hidden" id="gambarClear_${id}" value="0">
+            <div id="gambarPreview_${id}" class="gambar-preview"></div>
+          </div>
+
+          <div class="field full-width">
+            <label>Catatan</label>
+            <textarea id="catatan_${id}" placeholder="Contoh: Telefon di meja staff / Tukar extension / Handset bermasalah"></textarea>
+          </div>
+        </div>
+      </div>`;
+    deviceSectionsEl.appendChild(card);
+    if(typeof window.syncPrimaryLocationToDevices === "function") window.syncPrimaryLocationToDevices(false);
+    if(typeof window.syncVoipStaffDisplay === "function") window.syncVoipStaffDisplay();
+    return;
+  }
+
   const jenisLainHtml = jenis === "Lain-lain" ? `
     <div class="field full-width">
       <label>Nyatakan Jenis Perkakasan Lain-lain <span class="req">*</span></label>
@@ -4824,11 +4920,25 @@ function collectDevicePayloads(validateOnly){
     const lokasiLainValue = getValue("lokasiLain_" + id);
     const statusValue = getValue("status_" + id);
     const tarikhValue = getValue("tarikh_" + id);
+    const noExtValue = getValue("noExt_" + id);
+    const namaPaparanVoipValue = getValue("namaPaparanVoip_" + id);
 
     if(jenisCheckbox === "Lain-lain" && !jenisLainValue){
       alert("Sila masukkan Jenis Perkakasan Lain-lain.");
       focusEl("jenisLain_" + id);
       return null;
+    }
+    if(jenisCheckbox === "Telefon VOIP"){
+      if(!noExtValue){
+        alert("Sila masukkan No. Extension untuk Telefon VOIP.");
+        focusEl("noExt_" + id);
+        return null;
+      }
+      if(!namaPaparanVoipValue){
+        alert("Sila masukkan Nama Paparan di Skrin VOIP.");
+        focusEl("namaPaparanVoip_" + id);
+        return null;
+      }
     }
     if(!kategoriValue){
       alert("Sila pilih Kategori untuk " + jenisCheckbox + ". Pilih Tidak Berkaitan jika tiada maklumat aset.");
@@ -4887,7 +4997,9 @@ function collectDevicePayloads(validateOnly){
       gambar:getValue("gambar_" + id),
       clearGambar:getValue("gambarClear_" + id),
       deleteGambar:getValue("gambarClear_" + id),
-      catatan:getValue("catatan_" + id)
+      catatan:getValue("catatan_" + id),
+      noExt:noExtValue,
+      namaPaparanVoip:namaPaparanVoipValue
     });
   }
   return records;
@@ -5588,6 +5700,9 @@ function editData(row){
   setValue("gambar_" + id, data.gambar || "");
   setValue("gambarClear_" + id, "0");
   setValue("catatan_" + id, data.catatan || "");
+  setValue("noExt_" + id, data.noExt || "");
+  setValue("namaPaparanVoip_" + id, data.namaPaparanVoip || "");
+  if(typeof window.syncVoipStaffDisplay === "function") window.syncVoipStaffDisplay();
   updateDeviceGambarPreview(id);
 
   saveBtn.classList.remove("btn-save");
@@ -5908,6 +6023,7 @@ function buildAssetProfileHTML(row, printMode){
       <div class="profile-grid">
         ${field("Nama Staff", asset.namaStaff || asset.namaPemegang || asset.nama)}
         ${field("Jenis Perkakasan", asset.jenisPerkakasan)}
+        ${String(asset.jenisPerkakasan || "").toLowerCase().trim() === "telefon voip" ? field("No. Extension", asset.noExt) + field("Nama Paparan VOIP", asset.namaPaparanVoip) : ""}
         ${field("Kategori", asset.kategori)}
         ${field("Jenama", asset.jenama)}
         ${field("Model", asset.model)}
@@ -6383,6 +6499,8 @@ function applyTableView(){
       String(v.tarikh || "").toLowerCase().includes(keyword) ||
       String(v.pembekal || "").toLowerCase().includes(keyword) ||
       String(v.noInventori || "").toLowerCase().includes(keyword) ||
+      String(v.noExt || "").toLowerCase().includes(keyword) ||
+      String(v.namaPaparanVoip || "").toLowerCase().includes(keyword) ||
       String(v.catatan || "").toLowerCase().includes(keyword)
     );
   }
@@ -7098,7 +7216,7 @@ function renderCompletedAssets(){
   if(q){
     rows = rows.filter(item => [
       item.namaStaff, item.namaPemegang, item.nama, item.jenisPerkakasan, item.jenama,
-      item.model, item.noSiri, item.tagAset, item.status, item.catatan, item.lokasi
+      item.model, item.noSiri, item.tagAset, item.status, item.catatan, item.lokasi, item.noExt, item.namaPaparanVoip
     ].join(" ").toLowerCase().includes(q));
   }
   if(countEl){countEl.innerText = rows.length;}
@@ -7225,6 +7343,7 @@ if(oldRefreshAllSelesai){
     if(/laptop|notebook|komputer riba/.test(raw)) return "Laptop";
     if(/monitor|paparan|screen|skrin/.test(raw)) return "Monitor";
     if(/printer|pencetak|laserjet|deskjet|ricoh|canon|epson lq/.test(raw)) return "Printer";
+    if(/telefon voip|voip|extension|ext\b|ip phone|telefon ip/.test(raw)) return "Telefon VOIP";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|pole|tiang|johor wifi|unifi|ruckus|mikrotik/.test(raw)) return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server/.test(raw)) return "CPU / Desktop";
     if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw)) return "Aksesori";
@@ -7237,6 +7356,7 @@ if(oldRefreshAllSelesai){
     if(group === "Laptop") return "fa-laptop";
     if(group === "Monitor") return "fa-desktop";
     if(group === "Printer") return "fa-print";
+    if(group === "Telefon VOIP") return "fa-phone-volume";
     if(group === "Rangkaian / WiFi") return "fa-wifi";
     if(group === "CPU / Desktop") return "fa-computer";
     if(group === "Aksesori") return "fa-keyboard";
@@ -7245,13 +7365,18 @@ if(oldRefreshAllSelesai){
   }
 
   function masterGroupOrder(group){
-    const order = ["Laptop","CPU / Desktop","Monitor","Printer","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];
+    const order = ["Laptop","CPU / Desktop","Monitor","Printer","Telefon VOIP","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];
     const index = order.indexOf(group);
     return index < 0 ? 999 : index;
   }
 
   function masterAssetTitle(item){
     const jenis = masterMeaningful(item && item.jenisPerkakasan) || masterGroupName(item);
+    if(String(item && item.jenisPerkakasan || "").toLowerCase().trim() === "telefon voip"){
+      const voipName = masterMeaningful(item && item.namaPaparanVoip);
+      const ext = masterMeaningful(item && item.noExt);
+      return ["Telefon VOIP", voipName || (ext ? "Ext " + ext : "")].filter(Boolean).join(" · ");
+    }
     const jenama = masterMeaningful(item && item.jenama);
     const model = masterMeaningful(item && item.model);
     const parts = [jenis, jenama, model].filter(Boolean);
@@ -7282,7 +7407,7 @@ if(oldRefreshAllSelesai){
       data = data.filter(item => [
         item.row,item.tahun,item.namaStaff,item.namaPemegang,item.nama,item.jenisPerkakasan,item.jenisPerkakasanLain,
         item.kategori,item.kategoriLain,item.jenama,item.model,item.noSiri,item.tagAset,item.noInventori,
-        item.lokasi,item.status,item.tarikh,item.pembekal,item.catatan
+        item.lokasi,item.status,item.tarikh,item.pembekal,item.catatan,item.noExt,item.namaPaparanVoip
       ].join(" ").toLowerCase().includes(search));
     }
     if(status){data = data.filter(item => String(item.status || "").toLowerCase().trim() === status);}
@@ -7337,10 +7462,14 @@ if(oldRefreshAllSelesai){
         const statusKey = masterStatusKey(item.status);
         const selectedClass = String(item.row) === String(masterSelectedRow) ? " selected" : "";
         const staffName = masterMeaningful(item && (item.namaStaff || item.namaPemegang || item.nama)) || "Tiada Nama Staff";
-        const serialText = masterMeaningful(item && item.noSiri) || masterMeaningful(item && item.tagAset) || masterMeaningful(item && item.noInventori) || ("Row " + masterValue(item && item.row,"-"));
+        const isVoip = String(item && item.jenisPerkakasan || "").toLowerCase().trim() === "telefon voip";
+        const serialText = isVoip
+          ? ([masterMeaningful(item && item.noExt) ? "Ext: " + masterMeaningful(item && item.noExt) : "", masterMeaningful(item && item.namaPaparanVoip) ? "Paparan: " + masterMeaningful(item && item.namaPaparanVoip) : ""].filter(Boolean).join(" · ") || ("Row " + masterValue(item && item.row,"-")))
+          : (masterMeaningful(item && item.noSiri) || masterMeaningful(item && item.tagAset) || masterMeaningful(item && item.noInventori) || ("Row " + masterValue(item && item.row,"-")));
+        const serialLabel = isVoip ? "VOIP: " : "No Siri: ";
         return `<button type="button" class="master-asset-list-item${selectedClass}" onclick="masterSelectAsset(${Number(item.row)})">
           <span class="master-status-dot ${statusKey}"></span>
-          <span class="master-list-copy"><strong>${escapeHtml(masterAssetTitle(item))}</strong><small class="master-list-staff"><i class="fa-regular fa-user"></i> ${escapeHtml(staffName)}</small><small class="master-list-serial">No Siri: ${escapeHtml(serialText)}</small></span>
+          <span class="master-list-copy"><strong>${escapeHtml(masterAssetTitle(item))}</strong><small class="master-list-staff"><i class="fa-regular fa-user"></i> ${escapeHtml(staffName)}</small><small class="master-list-serial">${serialLabel}${escapeHtml(serialText)}</small></span>
           <span class="master-list-status ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span>
         </button>`;
       }).join("");
@@ -7415,7 +7544,9 @@ if(oldRefreshAllSelesai){
       <div class="master-detail-title">
         <div class="master-detail-title-row"><h3>${escapeHtml(masterAssetTitle(item))}</h3><span class="master-status-badge ${statusKey}">${escapeHtml(masterValue(item.status,"Tiada Status"))}</span></div>
         <div class="master-primary-holder"><i class="fa-solid fa-user-check"></i><span><small>Nama Staff / Pemegang</small><b>${escapeHtml(masterValue(item.namaStaff || item.namaPemegang || item.nama,"Tiada Nama Staff"))}</b></span></div>
-        <div class="master-detail-meta"><span>No Siri: <b>${escapeHtml(masterValue(item.noSiri))}</b></span><span>•</span><span>Tag Aset: <b>${escapeHtml(masterValue(item.tagAset || item.noInventori))}</b></span><span>•</span><span>ID Paparan: <b>ITPKPJ-${String(item.row || "").padStart(4,"0")}</b></span></div>
+        <div class="master-detail-meta">${String(item.jenisPerkakasan || "").toLowerCase().trim() === "telefon voip"
+          ? `<span>No. Ext: <b>${escapeHtml(masterValue(item.noExt))}</b></span><span>•</span><span>Nama Paparan: <b>${escapeHtml(masterValue(item.namaPaparanVoip))}</b></span><span>•</span>`
+          : `<span>No Siri: <b>${escapeHtml(masterValue(item.noSiri))}</b></span><span>•</span><span>Tag Aset: <b>${escapeHtml(masterValue(item.tagAset || item.noInventori))}</b></span><span>•</span>`}<span>ID Paparan: <b>ITPKPJ-${String(item.row || "").padStart(4,"0")}</b></span></div>
       </div>
       <div class="master-detail-actions">
         <button type="button" class="master-profile-button" onclick="openAssetProfile(${Number(item.row)})"><i class="fa-regular fa-eye"></i> Profil</button>
@@ -7428,6 +7559,7 @@ if(oldRefreshAllSelesai){
       <div class="master-detail-column">
         <section class="master-detail-card"><h4><i class="fa-regular fa-circle-info"></i> Maklumat Aset</h4><div class="master-field-list">
           ${masterField("Jenis",item.jenisPerkakasan || item.jenisPerkakasanLain)}
+          ${String(item.jenisPerkakasan || "").toLowerCase().trim() === "telefon voip" ? masterField("No. Extension",item.noExt) + masterField("Nama Paparan VOIP",item.namaPaparanVoip) : ""}
           ${masterField("Jenama",item.jenama)}
           ${masterField("Model",item.model)}
           ${masterField("Kategori",item.kategori || item.kategoriLain)}
@@ -8029,7 +8161,7 @@ window.saveDisplaySettings=async function(){
 async function fastBootstrapLoad(options){
   options=options||{};
   if(!options.silent)setStatus("Memuatkan data...");
-  const res=await jsonp({action:"bootstrap",v:"5"});
+  const res=await jsonp({action:"bootstrap",v:"12"});
   if(!res || res.status!=="OK" || !Array.isArray(res.data)) throw new Error((res&&res.message)||"Bootstrap API belum tersedia");
   allData=res.data;
   tableBaseData=allData.slice();
@@ -8295,7 +8427,7 @@ renderSelectedDeviceSummary();
 (function(){
   "use strict";
 
-  var CACHE_KEY = "pkpjInventoryBootstrapV8";
+  var CACHE_KEY = "pkpjInventoryBootstrapV12";
   var CACHE_MAX_AGE = 10 * 60 * 1000;
   var HISTORY_FRESH_MS = 60 * 1000;
   var lastHistoryNetworkAt = 0;
@@ -8481,7 +8613,7 @@ renderSelectedDeviceSummary();
   fastBootstrapLoad=async function(options){
     options=options||{};
     if(!options.silent && typeof setStatus==="function") setStatus("Memuatkan data...");
-    var params={action:"bootstrap",v:"8"};
+    var params={action:"bootstrap",v:"12"};
     if(options.fresh) params.fresh="1";
     var res=await jsonp(params);
     if(!res || res.status!=="OK" || !Array.isArray(res.data)) throw new Error((res&&res.message)||"Bootstrap API belum tersedia");
@@ -8991,5 +9123,51 @@ renderSelectedDeviceSummary();
   window.addEventListener("pageshow",setupHeaderBack);
 })();
 </script>
+
+<style id="pkpjVoipV12Style">
+/* ===== V12 TELEFON VOIP ===== */
+.inventory-type-card-voip{background:linear-gradient(145deg,#eff6ff,#ecfeff)!important;border-color:#93c5fd!important;}
+.inventory-type-card-voip .inventory-type-icon{background:linear-gradient(145deg,#0284c7,#2563eb)!important;color:#fff!important;box-shadow:0 8px 18px rgba(37,99,235,.22)!important;}
+.device-card-voip{border-color:#bae6fd!important;background:linear-gradient(180deg,#f8fdff,#fff)!important;}
+#formPage .device-card-voip .voip-card-header{background:linear-gradient(90deg,#0369a1,#2563eb)!important;}
+.voip-form-intro{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;margin-bottom:12px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:11.5px;font-weight:750;line-height:1.45;}
+.voip-form-intro i{margin-top:2px;color:#2563eb;}
+.voip-linked-staff{display:flex;align-items:center;gap:8px;border:1px solid #bfdbfe;background:#f8fbff;border-radius:8px;padding:0 10px;}
+.voip-linked-staff i{color:#2563eb;}
+.voip-linked-staff input{border:0!important;background:transparent!important;box-shadow:none!important;padding-left:0!important;font-weight:900!important;color:#0f172a!important;}
+.voip-photo-field{border-top:1px dashed #dbeafe;padding-top:12px;}
+@media(max-width:760px){
+  .inventory-type-card-voip{min-height:132px!important;}
+  .voip-form-intro{font-size:12px;}
+  .voip-device-grid{grid-template-columns:minmax(0,1fr)!important;}
+  .voip-linked-staff{min-height:46px;}
+  .voip-linked-staff input{font-size:16px!important;min-width:0!important;}
+  .device-card-voip input,.device-card-voip select,.device-card-voip textarea{font-size:16px!important;max-width:100%!important;}
+}
+</style>
+<script id="pkpjVoipV12Logic">
+(function(){
+  "use strict";
+  window.syncVoipStaffDisplay = function(){
+    var value = "";
+    try{ value = typeof getFinalStaffName === "function" ? String(getFinalStaffName() || "") : ""; }catch(e){}
+    document.querySelectorAll('[id^="voipStaffDisplay_"]').forEach(function(el){el.value = value;});
+  };
+  ["namaStaffSearch","namaStaffSelect","namaStaffManual"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    ["input","change"].forEach(function(evt){el.addEventListener(evt,function(){setTimeout(window.syncVoipStaffDisplay,0);});});
+  });
+  var baseSetStaffValue = window.setStaffValue;
+  if(typeof baseSetStaffValue === "function"){
+    window.setStaffValue = function(name){var out=baseSetStaffValue(name);setTimeout(window.syncVoipStaffDisplay,0);return out;};
+  }
+  var baseSelectInventoryType = window.selectInventoryType;
+  if(typeof baseSelectInventoryType === "function"){
+    window.selectInventoryType = function(jenis){var out=baseSelectInventoryType(jenis);if(jenis === "Telefon VOIP") setTimeout(window.syncVoipStaffDisplay,60);return out;};
+  }
+})();
+</script>
+
 </body>
 </html>
