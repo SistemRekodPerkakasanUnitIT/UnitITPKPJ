@@ -10535,5 +10535,136 @@ body.voip-only-mode #formPage .voip-display-dropdown-panel.v24-open{display:bloc
 })();
 </script>
 
+
+
+<style id="pkpjStaffAuthoritativeV25Style">
+/* ===== V25: STAFF LIST SATU SUMBER (SERVER/SHEET) ===== */
+.staff-sync-status-v25{font-size:11px;font-weight:800;color:#475569;margin-left:6px;}
+</style>
+<script id="pkpjStaffAuthoritativeV25Logic">
+(function(){
+  "use strict";
+  var STAFF_SYNC_VERSION="V25";
+  var BOOTSTRAP_CACHE_KEY="pkpjInventoryBootstrapV8";
+  var lastLiveStaffSyncAt=0;
+  var liveStaffSyncPromise=null;
+
+  function safeName(v){return String(v==null?"":v).trim();}
+
+  function buildServerOnlyRecords(records,names){
+    var map=Object.create(null), out=[];
+    function addRecord(r){
+      if(!r) return;
+      var name=safeName(r.namaStaff||r.nama||r.name);
+      if(!name) return;
+      var key=name.toLowerCase();
+      if(map[key]) return;
+      var normalized={
+        namaStaff:name,
+        nama:name,
+        noIC:safeName(r.noIC||r.ic||r.noIc||r["No IC"]),
+        tarikhLahir:safeName(r.tarikhLahir||r.birthDate||r.dob||r["Tarikh Lahir"]),
+        status:safeName(r.status)||"Aktif",
+        catatan:safeName(r.catatan),
+        row:r.row||""
+      };
+      map[key]=normalized;
+      out.push(normalized);
+    }
+    (Array.isArray(records)?records:[]).forEach(addRecord);
+    (Array.isArray(names)?names:[]).forEach(function(n){addRecord({namaStaff:n,status:"Aktif"});});
+    out.sort(function(a,b){return a.namaStaff.localeCompare(b.namaStaff,"ms",{sensitivity:"base"});});
+    return out;
+  }
+
+  function replaceBrowserStaffCaches(serverResponse,records){
+    try{if(typeof saveStaffRecordsCache==="function") saveStaffRecordsCache(records);}catch(e){}
+    try{if(typeof saveStaffRecordsCacheFix2==="function") saveStaffRecordsCacheFix2(records);}catch(e){}
+    try{
+      var raw=localStorage.getItem(BOOTSTRAP_CACHE_KEY);
+      if(raw){
+        var item=JSON.parse(raw);
+        if(item&&item.payload){
+          item.payload.staff=serverResponse;
+          item.savedAt=Date.now();
+          localStorage.setItem(BOOTSTRAP_CACHE_KEY,JSON.stringify(item));
+        }
+      }
+    }catch(e){}
+  }
+
+  async function loadStaffListLiveV25(force){
+    var now=Date.now();
+    if(!force && now-lastLiveStaffSyncAt<30000 && Array.isArray(staffList) && staffList.length){
+      return {status:"OK",count:staffList.length,staff:staffList.slice(),records:Array.isArray(staffRecords)?staffRecords.slice():[]};
+    }
+    if(liveStaffSyncPromise) return liveStaffSyncPromise;
+
+    liveStaffSyncPromise=(async function(){
+      try{
+        var res=await jsonp({action:"staffList",sync:STAFF_SYNC_VERSION,_ts:Date.now()});
+        if(!res || (res.status && res.status!=="OK")) throw new Error((res&&res.message)||"Senarai staff gagal dimuatkan");
+        var parsed=typeof normalizeStaffResponse==="function" ? normalizeStaffResponse(res) : {records:res.records||res.staffRecords||[],names:res.staff||res.data||res.names||[]};
+        var serverRecords=buildServerOnlyRecords(parsed.records,parsed.names);
+        var serverNames=serverRecords.map(function(r){return r.namaStaff;});
+
+        /* PENTING: replace, bukan merge dengan cache device. */
+        staffRecords=serverRecords;
+        staffList=serverNames;
+        lastLiveStaffSyncAt=Date.now();
+        replaceBrowserStaffCaches(res,serverRecords);
+
+        try{if(typeof updateStaffSelectOptions==="function") updateStaffSelectOptions();}catch(e){}
+        try{if(typeof renderStaffDirectory==="function") renderStaffDirectory();}catch(e){}
+        try{if(typeof renderBirthdayStaff==="function") renderBirthdayStaff();}catch(e){}
+
+        document.dispatchEvent(new CustomEvent("pkpj:staff-live-synced",{detail:{count:serverNames.length}}));
+        return {status:"OK",count:serverNames.length,staff:serverNames,records:serverRecords,raw:res};
+      }finally{
+        liveStaffSyncPromise=null;
+      }
+    })();
+    return liveStaffSyncPromise;
+  }
+
+  /* Override loader lama: server ialah sumber muktamad. */
+  loadStaffList=async function(){
+    try{return await loadStaffListLiveV25(true);}catch(err){
+      console.error("Staff sync V25 gagal:",err);
+      /* Jika network gagal, jangan padam data semasa. */
+      return {status:"ERROR",message:err&&err.message?err.message:String(err),count:Array.isArray(staffList)?staffList.length:0};
+    }
+  };
+  window.loadStaffList=loadStaffList;
+  window.loadStaffListLiveV25=loadStaffListLiveV25;
+
+  /* Fungsi directory/dropdown tidak lagi mencampur cache lama PC/HP. */
+  mergeStaffRecordsFix2=function(){
+    return buildServerOnlyRecords(Array.isArray(staffRecords)?staffRecords:[],Array.isArray(staffList)?staffList:[]);
+  };
+  window.mergeStaffRecordsFix2=mergeStaffRecordsFix2;
+
+  /* Setiap bootstrap berjaya diikuti sync staff live. */
+  if(typeof fastBootstrapLoad==="function"){
+    var baseFastBootstrapV25=fastBootstrapLoad;
+    fastBootstrapLoad=async function(options){
+      var result=await baseFastBootstrapV25.apply(this,arguments);
+      try{await loadStaffListLiveV25(true);}catch(err){console.warn("Staff live sync selepas bootstrap gagal:",err);}
+      return result;
+    };
+    window.fastBootstrapLoad=fastBootstrapLoad;
+  }
+
+  /* Browser restore/back-forward juga semak server sekali. */
+  window.addEventListener("pageshow",function(){
+    if(navigator.onLine===false) return;
+    window.setTimeout(function(){loadStaffListLiveV25(false).catch(function(){});},450);
+  });
+  window.addEventListener("online",function(){
+    window.setTimeout(function(){loadStaffListLiveV25(true).catch(function(){});},250);
+  });
+})();
+</script>
+
 </body>
 </html>
