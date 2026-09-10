@@ -11354,8 +11354,8 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
 </script>
 
 
-<!-- ===== V33: COLOURFUL HUB + FILTER ABJAD + COMPACT POPUP ===== -->
-<style id="pkpjColourAlphaV33Style">
+<!-- ===== V34: COLOURFUL HUB + COMPACT POPUP TANPA FILTER A-Z ===== -->
+<style id="pkpjColourCompactV34Style">
 /* ===== HUB SENARAI INVENTORI LEBIH COLOURFUL ===== */
 #assetCategoryHubV32{gap:16px!important}
 .asset-category-card-v32{
@@ -11389,16 +11389,6 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
 #assetGroupOverviewOverlayV31 .asset-group-tools-v31{display:none!important}
 #assetGroupOverviewOverlayV31 .asset-group-table-wrap-v31{margin:0 14px 14px!important}
 
-/* ===== FILTER ABJAD COMPACT ===== */
-.pkpj-alpha-bar-v33{display:flex;align-items:center;gap:5px;padding:9px 14px;background:#fff;border-bottom:1px solid #e2e8f0;flex:0 0 auto;min-height:48px;overflow-x:auto;scrollbar-width:thin}
-.pkpj-alpha-label-v33{display:inline-flex;align-items:center;gap:6px;margin-right:4px;color:#475569;font-size:10.5px;font-weight:800;white-space:nowrap}
-.pkpj-alpha-btn-v33{width:31px!important;height:31px!important;min-width:31px!important;min-height:31px!important;padding:0!important;border-radius:8px!important;border:1px solid #dbe3ee!important;background:#f8fafc!important;color:#475569!important;display:grid!important;place-items:center!important;font-size:10.5px!important;font-weight:800!important;box-shadow:none!important;transition:.14s ease!important}
-.pkpj-alpha-btn-v33:hover{background:#eef4ff!important;border-color:#b8d0f4!important;color:#155bc9!important;transform:translateY(-1px)}
-.pkpj-alpha-btn-v33.active{background:linear-gradient(135deg,#2563eb,#7c3aed)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 5px 12px rgba(37,99,235,.2)!important}
-.pkpj-alpha-btn-v33.all{width:auto!important;min-width:55px!important;padding:0 10px!important}
-.pkpj-alpha-count-v33{margin-left:auto;padding-left:8px;color:#64748b;font-size:10.5px;font-weight:800;white-space:nowrap}
-.pkpj-alpha-empty-v33 td{text-align:center!important;padding:34px 15px!important;color:#64748b!important;font-weight:700!important}
-
 /* Header VOIP sedikit lebih premium selepas panel statistik dibuang */
 #voipOverviewOverlayV26 .voip-overview-head-v26{box-shadow:0 5px 18px rgba(15,23,42,.14)}
 #assetGroupOverviewOverlayV31 .asset-group-head-v31{box-shadow:0 5px 18px rgba(15,23,42,.12)}
@@ -11406,104 +11396,10 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
 @media(max-width:760px){
   #assetCategoryHubV32{gap:10px!important}
   .asset-category-card-v32{min-height:132px!important}
-  .pkpj-alpha-bar-v33{padding:7px 8px;gap:4px;min-height:45px}
-  .pkpj-alpha-label-v33{display:none}
-  .pkpj-alpha-btn-v33{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;border-radius:7px!important;font-size:10px!important}
-  .pkpj-alpha-btn-v33.all{min-width:52px!important}
-  .pkpj-alpha-count-v33{display:none}
   #voipOverviewOverlayV26 .voip-overview-table-wrap-v26,
   #assetGroupOverviewOverlayV31 .asset-group-table-wrap-v31{margin:0 8px 8px!important}
 }
 </style>
-
-<script id="pkpjColourAlphaV33Logic">
-(function(){
-  "use strict";
-  var alphaState={asset:"",voip:""};
-  var letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-  function n(v){return String(v==null?"":v).trim();}
-  function e(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");}
-  function normalizeInitial(v){
-    var s=n(v).normalize?n(v).normalize("NFD").replace(/[\u0300-\u036f]/g,""):n(v);
-    var m=s.toUpperCase().match(/[A-Z]/);
-    return m?m[0]:"#";
-  }
-  function buildButtons(scope){
-    return '<span class="pkpj-alpha-label-v33"><i class="fa-solid fa-arrow-down-a-z"></i> Nama</span>'+
-      '<button type="button" class="pkpj-alpha-btn-v33 all active" data-alpha="" onclick="setAlphaFilterV33(\''+scope+'\',\'\',this)">Semua</button>'+
-      letters.map(function(l){return '<button type="button" class="pkpj-alpha-btn-v33" data-alpha="'+l+'" onclick="setAlphaFilterV33(\''+scope+'\',\''+l+'\',this)">'+l+'</button>';}).join("")+
-      '<button type="button" class="pkpj-alpha-btn-v33" data-alpha="#" onclick="setAlphaFilterV33(\''+scope+'\',\'#\',this)">#</button>'+
-      '<span class="pkpj-alpha-count-v33" id="pkpjAlphaCount_'+scope+'_V33"></span>';
-  }
-  function ensureBar(scope){
-    var isVoip=scope==="voip";
-    var overlay=document.getElementById(isVoip?"voipOverviewOverlayV26":"assetGroupOverviewOverlayV31");
-    if(!overlay)return null;
-    var id=isVoip?"pkpjVoipAlphaBarV33":"pkpjAssetAlphaBarV33";
-    var bar=document.getElementById(id);
-    if(!bar){
-      bar=document.createElement("div");bar.id=id;bar.className="pkpj-alpha-bar-v33";bar.setAttribute("aria-label","Filter nama mengikut abjad");bar.innerHTML=buildButtons(scope);
-      var head=overlay.querySelector(isVoip?".voip-overview-head-v26":".asset-group-head-v31");
-      if(head&&head.parentNode)head.parentNode.insertBefore(bar,head.nextSibling);
-    }
-    return bar;
-  }
-  function tbodyFor(scope){return document.getElementById(scope==="voip"?"voipOverviewBodyV26":"assetGroupBodyV31");}
-  function applyAlpha(scope){
-    var body=tbodyFor(scope);if(!body)return;
-    var alpha=alphaState[scope]||"";
-    var oldEmpty=body.querySelector("tr.pkpj-alpha-empty-v33");if(oldEmpty)oldEmpty.remove();
-    var rows=Array.prototype.slice.call(body.querySelectorAll("tr")).filter(function(tr){return !tr.classList.contains("pkpj-alpha-empty-v33");});
-    var visible=0,total=0;
-    rows.forEach(function(tr){
-      var cells=tr.children;if(!cells||cells.length<3)return;
-      /* Baris mesej kosong asal jangan dipaksa menjadi rekod. */
-      if(tr.querySelector(".voip-overview-empty-v26,.asset-group-empty-v31")){tr.style.display="";return;}
-      total++;
-      var holder=n(cells[2]&&cells[2].textContent);
-      var initial=normalizeInitial(holder);
-      var show=!alpha||initial===alpha;
-      tr.style.display=show?"":"none";
-      if(show){visible++;if(cells[0])cells[0].textContent=String(visible);}
-    });
-    if(total&&visible===0){
-      var colSpan=scope==="voip"?8:9;
-      var tr=document.createElement("tr");tr.className="pkpj-alpha-empty-v33";tr.innerHTML='<td colspan="'+colSpan+'"><i class="fa-regular fa-folder-open"></i><br><br>Tiada nama bermula dengan abjad <b>'+e(alpha||"")+'</b>.</td>';body.appendChild(tr);
-    }
-    var count=document.getElementById("pkpjAlphaCount_"+scope+"_V33");if(count)count.textContent=(alpha?visible+" rekod · "+alpha:total+" rekod");
-  }
-  function resetBar(scope){
-    alphaState[scope]="";var bar=ensureBar(scope);if(!bar)return;
-    Array.prototype.forEach.call(bar.querySelectorAll(".pkpj-alpha-btn-v33"),function(b){b.classList.toggle("active",b.getAttribute("data-alpha")==="");});
-    window.setTimeout(function(){applyAlpha(scope);},0);
-  }
-  window.setAlphaFilterV33=function(scope,letter,btn){
-    if(scope!=="asset"&&scope!=="voip")return;
-    alphaState[scope]=n(letter).toUpperCase();var bar=ensureBar(scope);
-    if(bar)Array.prototype.forEach.call(bar.querySelectorAll(".pkpj-alpha-btn-v33"),function(b){b.classList.toggle("active",b===btn);});
-    applyAlpha(scope);
-  };
-
-  ensureBar("asset");ensureBar("voip");
-
-  /* Re-apply filter selepas table dirender semula. */
-  var oldAssetRender=typeof window.renderAssetGroupOverviewV31==="function"?window.renderAssetGroupOverviewV31:null;
-  if(oldAssetRender){window.renderAssetGroupOverviewV31=function(){var r=oldAssetRender.apply(this,arguments);window.setTimeout(function(){applyAlpha("asset");},0);return r;};}
-  var oldVoipRender=typeof window.renderVoipOverviewV26==="function"?window.renderVoipOverviewV26:null;
-  if(oldVoipRender){window.renderVoipOverviewV26=function(){var r=oldVoipRender.apply(this,arguments);window.setTimeout(function(){applyAlpha("voip");},0);return r;};}
-
-  /* Setiap kali popup dibuka, bermula dengan SEMUA. */
-  var oldAssetOpen=typeof window.openAssetGroupOverviewV31==="function"?window.openAssetGroupOverviewV31:null;
-  if(oldAssetOpen){window.openAssetGroupOverviewV31=function(){resetBar("asset");var r=oldAssetOpen.apply(this,arguments);window.setTimeout(function(){applyAlpha("asset");},20);return r;};}
-  var oldVoipOpen=typeof window.openVoipOverviewModal==="function"?window.openVoipOverviewModal:null;
-  if(oldVoipOpen){window.openVoipOverviewModal=function(){resetBar("voip");var r=oldVoipOpen.apply(this,arguments);window.setTimeout(function(){applyAlpha("voip");},20);return r;};}
-
-  /* Hub akan dapat warna walaupun render semula. */
-  function refreshBars(){ensureBar("asset");ensureBar("voip");}
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshBars);else refreshBars();
-})();
-</script>
 
 </body>
 </html>
