@@ -7536,7 +7536,7 @@ if(oldRefreshAllSelesai){
       }).join("");
       const itemsHtml = items || '<div class="master-group-empty-note"><i class="fa-solid fa-circle-info"></i>Belum ada aset dalam kumpulan ini.</div>';
       return `<section class="master-group${expanded ? " expanded" : ""}">
-        <button type="button" class="master-group-header" onclick="masterToggleGroup(${index})">
+        <button type="button" class="master-group-header" onclick="masterGroupHeaderAction(this,${index})">
           <i class="fa-solid ${masterGroupIcon(group.name)}"></i><strong>${escapeHtml(group.name)}</strong>
           <span class="master-group-count">${group.items.length}</span><i class="fa-solid fa-chevron-down master-group-chevron"></i>
         </button>
@@ -10663,6 +10663,184 @@ body.voip-only-mode #formPage .voip-display-dropdown-panel.v24-open{display:bloc
   window.addEventListener("online",function(){
     window.setTimeout(function(){loadStaffListLiveV25(true).catch(function(){});},250);
   });
+})();
+</script>
+
+
+<!-- ===== V26: PAPARAN KESELURUHAN TELEFON VOIP ===== -->
+<div id="voipOverviewOverlayV26" class="voip-overview-overlay-v26" aria-hidden="true">
+  <section id="voipOverviewModalV26" class="voip-overview-modal-v26" role="dialog" aria-modal="true" aria-labelledby="voipOverviewTitleV26">
+    <header class="voip-overview-head-v26">
+      <div class="voip-overview-heading-v26">
+        <span class="voip-overview-icon-v26"><i class="fa-solid fa-phone-volume"></i></span>
+        <div>
+          <h2 id="voipOverviewTitleV26">Paparan Keseluruhan Telefon VOIP</h2>
+          <p>Senarai pemegang, nama paparan dan nombor extension Telefon VOIP PKPJ</p>
+        </div>
+      </div>
+      <div class="voip-overview-head-actions-v26">
+        <button type="button" class="voip-overview-btn-v26" onclick="toggleVoipOverviewFullV26()" title="Paparan penuh"><i class="fa-solid fa-expand"></i><span>Paparan Penuh</span></button>
+        <button type="button" class="voip-overview-btn-v26 primary" onclick="printVoipOverviewV26()"><i class="fa-solid fa-print"></i><span>Cetak / Save PDF</span></button>
+        <button type="button" class="voip-overview-close-v26" onclick="closeVoipOverviewModal()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </header>
+
+    <div class="voip-overview-summary-v26">
+      <div class="voip-overview-stat-v26"><span>Jumlah VOIP</span><strong id="voipOverviewTotalV26">0</strong></div>
+      <div class="voip-overview-stat-v26"><span>Baik</span><strong id="voipOverviewGoodV26">0</strong></div>
+      <div class="voip-overview-stat-v26"><span>Rosak</span><strong id="voipOverviewBadV26">0</strong></div>
+      <div class="voip-overview-stat-v26"><span>Baik Pulih</span><strong id="voipOverviewRepairV26">0</strong></div>
+    </div>
+
+    <div class="voip-overview-tools-v26">
+      <label class="voip-overview-search-v26"><i class="fa-solid fa-magnifying-glass"></i><input id="voipOverviewSearchV26" type="search" placeholder="Cari nama staff, nama paparan atau extension..." oninput="renderVoipOverviewV26()"></label>
+      <select id="voipOverviewStatusV26" onchange="renderVoipOverviewV26()">
+        <option value="">Semua Keadaan</option>
+        <option value="Baik">Baik</option>
+        <option value="Rosak">Rosak</option>
+        <option value="Dalam Baik Pulih">Dalam Baik Pulih</option>
+        <option value="Dipinjam">Dipinjam</option>
+        <option value="Dipulangkan">Dipulangkan</option>
+        <option value="Pelupusan">Pelupusan</option>
+        <option value="Hilang">Hilang</option>
+        <option value="Tidak Berkaitan">Tidak Berkaitan</option>
+      </select>
+      <button type="button" class="voip-overview-reset-v26" onclick="resetVoipOverviewFilterV26()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      <span id="voipOverviewShownV26" class="voip-overview-shown-v26">0 rekod dipaparkan</span>
+    </div>
+
+    <div class="voip-overview-table-wrap-v26">
+      <table class="voip-overview-table-v26">
+        <thead>
+          <tr>
+            <th class="voip-no-v26">No. Bil</th>
+            <th>Nama Staff / Pemegang</th>
+            <th>Nama Paparan di Skrin VOIP</th>
+            <th class="voip-ext-v26">No. Extension</th>
+            <th class="voip-status-v26">Keadaan</th>
+            <th>Catatan</th>
+            <th class="voip-action-v26">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody id="voipOverviewBodyV26"><tr><td colspan="7" class="voip-overview-empty-v26">Memuatkan rekod Telefon VOIP...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<style id="pkpjVoipOverviewV26Style">
+.voip-overview-overlay-v26{display:none;position:fixed;inset:0;z-index:250000;background:rgba(2,6,23,.72);backdrop-filter:blur(5px);padding:12px;align-items:center;justify-content:center}
+.voip-overview-overlay-v26.show{display:flex}
+.voip-overview-modal-v26{width:min(1540px,calc(100vw - 24px));height:min(920px,calc(100vh - 24px));background:#f8fafc;border-radius:18px;box-shadow:0 34px 100px rgba(2,6,23,.42);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(255,255,255,.28)}
+.voip-overview-modal-v26.is-full{width:100vw;height:100vh;max-width:none;max-height:none;border-radius:0;border:0}
+.voip-overview-head-v26{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;background:linear-gradient(110deg,#0f3a78,#1555a5 55%,#2563eb);color:#fff;flex:0 0 auto}
+.voip-overview-heading-v26{display:flex;align-items:center;gap:12px;min-width:0}.voip-overview-icon-v26{width:46px;height:46px;display:grid;place-items:center;border-radius:13px;background:rgba(255,255,255,.15);font-size:21px;flex:0 0 auto}.voip-overview-heading-v26 h2{margin:0;font-size:20px;font-weight:900}.voip-overview-heading-v26 p{margin:3px 0 0;color:#dbeafe;font-size:11px;font-weight:700}
+.voip-overview-head-actions-v26{display:flex;align-items:center;gap:7px}.voip-overview-btn-v26,.voip-overview-close-v26{border:1px solid rgba(255,255,255,.28)!important;background:rgba(255,255,255,.12)!important;color:#fff!important;border-radius:10px!important;height:40px!important;min-height:40px!important;padding:0 12px!important;font-weight:800!important;display:inline-flex!important;align-items:center!important;gap:7px!important}.voip-overview-btn-v26.primary{background:#fff!important;color:#174ea6!important;border-color:#fff!important}.voip-overview-close-v26{width:40px!important;min-width:40px!important;padding:0!important;justify-content:center!important;font-size:17px!important}
+.voip-overview-summary-v26{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:12px 16px 4px;flex:0 0 auto}.voip-overview-stat-v26{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 13px;box-shadow:0 5px 18px rgba(15,23,42,.04)}.voip-overview-stat-v26 span{display:block;font-size:10px;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.voip-overview-stat-v26 strong{display:block;margin-top:3px;font-size:24px;color:#0f2d58;font-weight:950}
+.voip-overview-tools-v26{display:flex;align-items:center;gap:8px;padding:10px 16px;flex:0 0 auto}.voip-overview-search-v26{height:42px;flex:1 1 460px;display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;color:#64748b}.voip-overview-search-v26 input{width:100%;height:100%;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;font-size:13px!important}.voip-overview-tools-v26 select{height:42px;min-width:180px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;padding:0 10px;font-weight:700;color:#334155}.voip-overview-reset-v26{height:42px!important;min-height:42px!important;border-radius:10px!important;padding:0 12px!important;background:#fff!important;color:#334155!important;border:1px solid #cbd5e1!important;font-weight:800!important}.voip-overview-shown-v26{font-size:11px;color:#64748b;font-weight:800;white-space:nowrap}
+.voip-overview-table-wrap-v26{margin:0 16px 16px;background:#fff;border:1px solid #dbe3ed;border-radius:13px;overflow:auto;flex:1 1 auto;min-height:0}.voip-overview-table-v26{width:100%;border-collapse:separate;border-spacing:0;min-width:1050px;font-size:12.5px}.voip-overview-table-v26 thead th{position:sticky;top:0;z-index:3;background:#eaf2ff;color:#173b70;padding:11px 12px;border-bottom:1px solid #cbdcf4;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.025em}.voip-overview-table-v26 tbody td{padding:11px 12px;border-bottom:1px solid #eef2f7;vertical-align:middle;color:#26364d}.voip-overview-table-v26 tbody tr:hover{background:#f8fbff}.voip-overview-table-v26 tbody tr:last-child td{border-bottom:0}.voip-no-v26{width:72px;text-align:center!important}.voip-ext-v26{width:125px}.voip-status-v26{width:150px}.voip-action-v26{width:135px}.voip-bil-cell-v26{text-align:center;font-weight:950;color:#1d4ed8!important}.voip-holder-v26{font-size:13px;font-weight:900;color:#0f172a}.voip-display-v26{font-size:13px;font-weight:850;color:#1e40af}.voip-ext-pill-v26{display:inline-flex;align-items:center;justify-content:center;min-width:72px;padding:6px 9px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:8px;font-weight:950;letter-spacing:.02em}.voip-state-pill-v26{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#f1f5f9;color:#334155;font-size:11px;font-weight:900}.voip-state-pill-v26.baik{background:#dcfce7;color:#166534}.voip-state-pill-v26.rosak{background:#fee2e2;color:#991b1b}.voip-state-pill-v26.dalam-baik-pulih{background:#ffedd5;color:#9a3412}.voip-row-actions-v26{display:flex;gap:6px}.voip-row-actions-v26 button{height:34px!important;min-height:34px!important;border-radius:8px!important;padding:0 9px!important;font-size:11px!important;font-weight:850!important}.voip-profile-v26{background:#eff6ff!important;color:#1d4ed8!important;border:1px solid #bfdbfe!important}.voip-edit-v26{background:#fff7ed!important;color:#9a3412!important;border:1px solid #fed7aa!important}.voip-overview-empty-v26{text-align:center!important;padding:35px!important;color:#64748b!important;font-weight:800!important}
+body.voip-overview-open-v26{overflow:hidden!important}
+@media(max-width:760px){.voip-overview-overlay-v26{padding:0}.voip-overview-modal-v26{width:100vw;height:100vh;border-radius:0}.voip-overview-head-v26{padding:11px 10px}.voip-overview-icon-v26{width:38px;height:38px;border-radius:10px;font-size:17px}.voip-overview-heading-v26 h2{font-size:15px}.voip-overview-heading-v26 p{display:none}.voip-overview-btn-v26{width:40px!important;min-width:40px!important;padding:0!important;justify-content:center!important}.voip-overview-btn-v26 span{display:none}.voip-overview-summary-v26{grid-template-columns:repeat(2,minmax(0,1fr));padding:9px 9px 2px;gap:7px}.voip-overview-stat-v26{padding:8px 10px}.voip-overview-stat-v26 strong{font-size:20px}.voip-overview-tools-v26{display:grid;grid-template-columns:1fr auto;padding:8px 9px;gap:7px}.voip-overview-search-v26{grid-column:1/-1;min-width:0;flex:none}.voip-overview-tools-v26 select{min-width:0;width:100%}.voip-overview-shown-v26{display:none}.voip-overview-table-wrap-v26{margin:0 9px 9px}.voip-overview-table-v26{min-width:920px;font-size:12px}.voip-overview-table-v26 thead th,.voip-overview-table-v26 tbody td{padding:9px 9px}}
+@media print{#voipOverviewOverlayV26{display:none!important}}
+</style>
+
+<script id="pkpjVoipOverviewV26Logic">
+(function(){
+  "use strict";
+  var currentVoipRowsV26=[];
+  function e(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");}
+  function n(v){return String(v==null?"":v).trim();}
+  function statusClass(v){return n(v).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+  function isVoipActive(item){
+    if(!item) return false;
+    if(n(item.jenisPerkakasan).toLowerCase()!=="telefon voip") return false;
+    if(n(item.kumpulanPaparan).toLowerCase()==="lain-lain") return false;
+    try{if(typeof isCompletedAsset==="function" && isCompletedAsset(item)) return false;}catch(err){}
+    return n(item.status).toLowerCase()!=="selesai";
+  }
+  function allVoip(){
+    var data=Array.isArray(allData)?allData.filter(isVoipActive):[];
+    return data.slice().sort(function(a,b){
+      var an=n(a.namaStaff||a.namaPemegang||a.nama),bn=n(b.namaStaff||b.namaPemegang||b.nama);
+      var c=an.localeCompare(bn,"ms",{sensitivity:"base"});
+      if(c) return c;
+      return n(a.noExt).localeCompare(n(b.noExt),"ms",{numeric:true,sensitivity:"base"});
+    });
+  }
+  function filteredVoip(){
+    var q=n(document.getElementById("voipOverviewSearchV26")&&document.getElementById("voipOverviewSearchV26").value).toLowerCase();
+    var st=n(document.getElementById("voipOverviewStatusV26")&&document.getElementById("voipOverviewStatusV26").value).toLowerCase();
+    return allVoip().filter(function(item){
+      if(st && n(item.status).toLowerCase()!==st) return false;
+      if(!q) return true;
+      return [item.namaStaff,item.namaPemegang,item.nama,item.namaPaparanVoip,item.noExt,item.status,item.catatan]
+        .some(function(v){return n(v).toLowerCase().indexOf(q)>-1;});
+    });
+  }
+  function updateSummary(){
+    var all=allVoip();
+    var count=function(label){return all.filter(function(x){return n(x.status).toLowerCase()===label;}).length;};
+    var set=function(id,val){var el=document.getElementById(id);if(el)el.textContent=String(val);};
+    set("voipOverviewTotalV26",all.length);
+    set("voipOverviewGoodV26",count("baik"));
+    set("voipOverviewBadV26",count("rosak"));
+    set("voipOverviewRepairV26",count("dalam baik pulih"));
+  }
+  window.renderVoipOverviewV26=function(){
+    var body=document.getElementById("voipOverviewBodyV26");if(!body)return;
+    updateSummary();
+    currentVoipRowsV26=filteredVoip();
+    var shown=document.getElementById("voipOverviewShownV26");if(shown)shown.textContent=currentVoipRowsV26.length+" rekod dipaparkan";
+    if(!currentVoipRowsV26.length){body.innerHTML='<tr><td colspan="7" class="voip-overview-empty-v26"><i class="fa-regular fa-folder-open"></i><br><br>Tiada rekod Telefon VOIP sepadan.</td></tr>';return;}
+    body.innerHTML=currentVoipRowsV26.map(function(item,index){
+      var holder=n(item.namaStaff||item.namaPemegang||item.nama)||"-";
+      var display=n(item.namaPaparanVoip)||"-";
+      var ext=n(item.noExt)||"-";
+      var state=n(item.status)||"-";
+      return '<tr>'+
+        '<td class="voip-bil-cell-v26">'+(index+1)+'</td>'+
+        '<td><div class="voip-holder-v26">'+e(holder)+'</div></td>'+
+        '<td><div class="voip-display-v26">'+e(display)+'</div></td>'+
+        '<td><span class="voip-ext-pill-v26">'+e(ext)+'</span></td>'+
+        '<td><span class="voip-state-pill-v26 '+e(statusClass(state))+'">'+e(state)+'</span></td>'+
+        '<td>'+e(n(item.catatan)||"-")+'</td>'+
+        '<td><div class="voip-row-actions-v26"><button type="button" class="voip-profile-v26" onclick="closeVoipOverviewModal();openAssetProfile('+Number(item.row||0)+')"><i class="fa-regular fa-eye"></i> Profil</button><button type="button" class="voip-edit-v26" onclick="closeVoipOverviewModal();editData('+Number(item.row||0)+')"><i class="fa-solid fa-pen"></i></button></div></td>'+
+      '</tr>';
+    }).join('');
+  };
+  window.openVoipOverviewModal=function(){
+    var overlay=document.getElementById("voipOverviewOverlayV26");if(!overlay)return;
+    var search=document.getElementById("voipOverviewSearchV26"),status=document.getElementById("voipOverviewStatusV26");
+    if(search)search.value="";if(status)status.value="";
+    overlay.classList.add("show");overlay.setAttribute("aria-hidden","false");document.body.classList.add("voip-overview-open-v26");
+    renderVoipOverviewV26();
+  };
+  window.closeVoipOverviewModal=function(){
+    var overlay=document.getElementById("voipOverviewOverlayV26"),modal=document.getElementById("voipOverviewModalV26");
+    if(overlay){overlay.classList.remove("show");overlay.setAttribute("aria-hidden","true");}
+    if(modal)modal.classList.remove("is-full");
+    document.body.classList.remove("voip-overview-open-v26");
+  };
+  window.toggleVoipOverviewFullV26=function(){var modal=document.getElementById("voipOverviewModalV26");if(modal)modal.classList.toggle("is-full");};
+  window.resetVoipOverviewFilterV26=function(){var s=document.getElementById("voipOverviewSearchV26"),st=document.getElementById("voipOverviewStatusV26");if(s)s.value="";if(st)st.value="";renderVoipOverviewV26();};
+  window.masterGroupHeaderAction=function(btn,index){
+    var name=n(btn&&btn.querySelector("strong")?btn.querySelector("strong").textContent:"");
+    if(name.toLowerCase()==="telefon voip"){openVoipOverviewModal();return;}
+    if(typeof window.masterToggleGroup==="function")window.masterToggleGroup(index);
+  };
+  window.printVoipOverviewV26=function(){
+    var rows=currentVoipRowsV26.length?currentVoipRowsV26:filteredVoip();
+    if(!rows.length){alert("Tiada rekod Telefon VOIP untuk dicetak.");return;}
+    var w=window.open("","_blank","width=1200,height=850");if(!w){alert("Popup print disekat browser. Sila allow popup untuk cetak.");return;}
+    var now=new Date();
+    var dateText=now.toLocaleString("ms-MY",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    var trs=rows.map(function(item,index){return '<tr><td class="c">'+(index+1)+'</td><td>'+e(n(item.namaStaff||item.namaPemegang||item.nama)||"-")+'</td><td>'+e(n(item.namaPaparanVoip)||"-")+'</td><td class="c">'+e(n(item.noExt)||"-")+'</td><td>'+e(n(item.status)||"-")+'</td><td>'+e(n(item.catatan)||"-")+'</td></tr>';}).join('');
+    w.document.open();
+    w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Senarai Telefon VOIP PKPJ</title><style>@page{size:A4 landscape;margin:10mm}body{font-family:Arial,sans-serif;color:#111827;margin:0}h1{font-size:20px;margin:0 0 4px;color:#143d78}.meta{font-size:10px;color:#64748b;margin-bottom:12px}.summary{font-size:11px;font-weight:700;margin-bottom:8px}table{width:100%;border-collapse:collapse;font-size:10px}th{background:#dbeafe;color:#173b70;text-align:left;padding:7px;border:1px solid #aebfd6}td{padding:7px;border:1px solid #cbd5e1;vertical-align:top}.c{text-align:center}.foot{margin-top:8px;font-size:9px;color:#64748b}@media print{thead{display:table-header-group}tr{break-inside:avoid}}</style></head><body><h1>Senarai Keseluruhan Telefon VOIP PKPJ</h1><div class="meta">Dicetak: '+e(dateText)+'</div><div class="summary">Jumlah rekod dipaparkan: '+rows.length+'</div><table><thead><tr><th style="width:45px">No. Bil</th><th>Nama Staff / Pemegang</th><th>Nama Paparan di Skrin VOIP</th><th style="width:90px">No. Extension</th><th style="width:110px">Keadaan</th><th>Catatan</th></tr></thead><tbody>'+trs+'</tbody></table><div class="foot">Sistem Inventori Unit IT PKPJ</div><script>window.onload=function(){setTimeout(function(){window.print();},300)}<\/script></body></html>');
+    w.document.close();
+  };
+  document.addEventListener("keydown",function(ev){if(ev.key==="Escape"){var o=document.getElementById("voipOverviewOverlayV26");if(o&&o.classList.contains("show"))closeVoipOverviewModal();}});
+  document.addEventListener("click",function(ev){var o=document.getElementById("voipOverviewOverlayV26");if(o&&ev.target===o)closeVoipOverviewModal();});
 })();
 </script>
 
