@@ -2680,6 +2680,15 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
         <span class="inventory-type-copy"><b>Telefon VOIP</b><small>Telefon meja / sambungan dalaman</small></span>
       </button>
 
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('WiFi Pole')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-tower-broadcast"></i></span>
+        <span class="inventory-type-copy"><b>WiFi Pole</b><small>Tiang pemasangan WiFi</small></span>
+      </button>
+      <button type="button" class="inventory-type-card" onclick="selectInventoryType('Aksesori WiFi')">
+        <span class="inventory-type-icon"><i class="fa-solid fa-wifi"></i></span>
+        <span class="inventory-type-copy"><b>Aksesori WiFi</b><small>AP, router dan peralatan WiFi</small></span>
+      </button>
+
       <button type="button" class="inventory-type-card" onclick="selectInventoryType('Lain-lain')">
         <span class="inventory-type-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
         <span class="inventory-type-copy"><b>Lain-lain</b><small>Projector, scanner, UPS dan lain-lain</small></span>
@@ -2922,6 +2931,8 @@ body.api-offline-mode .enterprise-dashboard-footer span:last-child{color:#be123c
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Mouse" onchange="syncDeviceSections()"> Mouse</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Printer" onchange="syncDeviceSections()"> Printer</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Telefon VOIP" onchange="syncDeviceSections()"> Telefon VOIP</label>
+                <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="WiFi Pole" onchange="syncDeviceSections()"> WiFi Pole</label>
+                <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Aksesori WiFi" onchange="syncDeviceSections()"> Aksesori WiFi</label>
                 <label class="checkbox-item"><input type="checkbox" class="jenis-check" value="Lain-lain" onchange="syncDeviceSections()"> Lain-lain</label>
               </div>
               <div class="note">Set Komputer akan membuka PC/CPU, Monitor, Keyboard dan Mouse serentak. Setiap item masih direkodkan secara berasingan di bawah nama/lokasi yang sama.</div>
@@ -3434,7 +3445,7 @@ const NOT_APPLICABLE = "Tidak Berkaitan";
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const LAPTOP_IMAGE_URL = "Laptop.png";
 const LAPTOP_IMAGE_FALLBACK_URL = "https://raw.githubusercontent.com/SistemRekodPerkakasanUnitIT/UnitITPKPJ/main/Laptop.png";
-const PRESET_JENIS = ["Laptop", "CPU", "Monitor", "Keyboard", "Mouse", "Printer", "Telefon VOIP"];
+const PRESET_JENIS = ["Laptop", "CPU", "Monitor", "Keyboard", "Mouse", "Printer", "Telefon VOIP", "WiFi Pole", "Aksesori WiFi"];
 const KATEGORI_ASAS = ["ICT", "Sewaan", "PKPJ", "Dalam Proses Pemulangan ke ICT", "Tidak Berkaitan"];
 const STATUS_OPTIONS = ["Baik", "Rosak", "Dalam Baik Pulih", "Dipinjam", "Dipulangkan", "Pelupusan", "Hilang", "Selesai", "Tidak Berkaitan"];
 
@@ -7403,8 +7414,8 @@ if(oldRefreshAllSelesai){
     if(/monitor|paparan|screen|skrin/.test(raw)) return "Monitor";
     if(/printer|pencetak|laserjet|deskjet|ricoh|canon|epson lq/.test(raw)) return "Printer";
     if(/telefon voip|voip|extension|ext\b|ip phone|telefon ip/.test(raw)) return "Telefon VOIP";
-    if(/johor\s*wifi/.test(raw) && /pole|tiang/.test(raw)) return "Tiang Johor WiFi";
-    if(/johor\s*wifi/.test(raw)) return "Aksesori Johor WiFi";
+    if(/wifi[\s-]*pole|(?:johor\s*wifi|wifi\s*johor)/.test(raw) && /pole|tiang/.test(raw)) return "WiFi Pole";
+    if(/johor\s*wifi|wifi\s*johor|aksesori\s*(?:johor\s*)?wifi/.test(raw)) return "Aksesori WiFi";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw)) return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server/.test(raw)) return "CPU / Desktop";
     if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw)) return "Aksesori";
@@ -7418,8 +7429,8 @@ if(oldRefreshAllSelesai){
     if(group === "Monitor") return "fa-desktop";
     if(group === "Printer") return "fa-print";
     if(group === "Telefon VOIP") return "fa-phone-volume";
-    if(group === "Tiang Johor WiFi") return "fa-tower-broadcast";
-    if(group === "Aksesori Johor WiFi") return "fa-screwdriver-wrench";
+    if(group === "WiFi Pole") return "fa-tower-broadcast";
+    if(group === "Aksesori WiFi") return "fa-screwdriver-wrench";
     if(group === "Rangkaian / WiFi") return "fa-wifi";
     if(group === "CPU / Desktop") return "fa-computer";
     if(group === "Aksesori") return "fa-keyboard";
@@ -7428,7 +7439,7 @@ if(oldRefreshAllSelesai){
   }
 
   function masterGroupOrder(group){
-    const order = ["Laptop","CPU / Desktop","Monitor","Printer","Telefon VOIP","Tiang Johor WiFi","Aksesori Johor WiFi","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];
+    const order = ["Laptop","CPU / Desktop","Monitor","Printer","Telefon VOIP","WiFi Pole","Aksesori WiFi","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];
     const index = order.indexOf(group);
     return index < 0 ? 999 : index;
   }
@@ -8356,7 +8367,7 @@ function prepareInventoryFormLayout(){
   var formGrid = document.querySelector("#formPage .form-grid");
   var nameField = document.querySelector("#formPage .inventory-primary-name");
   var yearField = document.querySelector("#formPage .inventory-primary-year");
-  if(formGrid && nameField && yearField && yearField.previousElementSibling !== nameField){
+  if(formGrid && nameField && yearField && !nameField.closest("#v37BasicCard") && yearField.previousElementSibling !== nameField){
     formGrid.insertBefore(nameField, yearField);
   }
 }
@@ -9187,6 +9198,7 @@ renderSelectedDeviceSummary();
     btn.onclick=window.inventorySmartBack;
     btn.setAttribute("aria-label","Kembali");
     btn.setAttribute("title","Kembali");
+    btn.innerHTML='<i class="fa-solid fa-chevron-left" aria-hidden="true"></i><span>Kembali</span>';
     var icon=btn.querySelector("i");
     if(icon){icon.className="fa-solid fa-chevron-left";}
   }
@@ -11147,8 +11159,8 @@ body.asset-group-overview-open-v31{overflow:hidden!important}
     if(/monitor|paparan|screen|skrin/.test(raw))return "Monitor";
     if(/printer|pencetak|laserjet|deskjet|ricoh|canon|epson lq/.test(raw))return "Printer";
     if(/telefon voip|voip|extension|ext\b|ip phone|telefon ip/.test(raw))return "Telefon VOIP";
-    if(/johor\s*wifi/.test(raw)&&/pole|tiang/.test(raw))return "Tiang Johor WiFi";
-    if(/johor\s*wifi/.test(raw))return "Aksesori Johor WiFi";
+    if(/wifi[\s-]*pole|(?:johor\s*wifi|wifi\s*johor)/.test(raw)&&/pole|tiang/.test(raw))return "WiFi Pole";
+    if(/johor\s*wifi|wifi\s*johor|aksesori\s*(?:johor\s*)?wifi/.test(raw))return "Aksesori WiFi";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw))return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server/.test(raw))return "CPU / Desktop";
     if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
@@ -11156,7 +11168,7 @@ body.asset-group-overview-open-v31{overflow:hidden!important}
     return "Lain-lain";
   }
   function isActive(item){try{if(typeof isCompletedAsset==="function"&&isCompletedAsset(item))return false;}catch(err){}return n(item&&item.status).toLowerCase()!=="selesai";}
-  function iconOf(group){if(group==="Laptop")return "fa-laptop";if(group==="Monitor")return "fa-desktop";if(group==="Printer")return "fa-print";if(group==="Tiang Johor WiFi")return "fa-tower-broadcast";if(group==="Aksesori Johor WiFi")return "fa-screwdriver-wrench";if(group==="Rangkaian / WiFi")return "fa-wifi";if(group==="CPU / Desktop")return "fa-computer";if(group==="Aksesori")return "fa-keyboard";if(group==="Belum Dikelaskan")return "fa-circle-question";return "fa-box";}
+  function iconOf(group){if(group==="Laptop")return "fa-laptop";if(group==="Monitor")return "fa-desktop";if(group==="Printer")return "fa-print";if(group==="WiFi Pole")return "fa-tower-broadcast";if(group==="Aksesori WiFi")return "fa-screwdriver-wrench";if(group==="Rangkaian / WiFi")return "fa-wifi";if(group==="CPU / Desktop")return "fa-computer";if(group==="Aksesori")return "fa-keyboard";if(group==="Belum Dikelaskan")return "fa-circle-question";return "fa-box";}
   function statusClass(v){var s=n(v).toLowerCase();if(s==="baik")return "baik";if(s==="rosak")return "rosak";if(s==="dalam baik pulih")return "baikpulih";if(s==="dipinjam")return "dipinjam";if(s==="dipulangkan")return "dipulangkan";if(s==="pelupusan")return "pelupusan";if(s==="hilang")return "hilang";return "";}
   function allGroupRows(){return (Array.isArray(allData)?allData:[]).filter(function(item){return isActive(item)&&groupOf(item)===currentGroupV31;}).slice().sort(function(a,b){var an=n(a.namaStaff||a.namaPemegang||a.nama),bn=n(b.namaStaff||b.namaPemegang||b.nama);var c=an.localeCompare(bn,"ms",{sensitivity:"base"});if(c)return c;return Number(a.row||0)-Number(b.row||0);});}
   function filteredRows(){
@@ -11294,17 +11306,17 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
     if(/monitor|paparan|screen|skrin/.test(raw))return "Monitor";
     if(/printer|pencetak|laserjet|deskjet|ricoh|canon|epson lq/.test(raw))return "Printer";
     if(/telefon voip|voip|extension|ext\b|ip phone|telefon ip/.test(raw))return "Telefon VOIP";
-    if(/johor\s*wifi/.test(raw)&&/pole|tiang/.test(raw))return "Tiang Johor WiFi";
-    if(/johor\s*wifi/.test(raw))return "Aksesori Johor WiFi";
+    if(/wifi[\s-]*pole|(?:johor\s*wifi|wifi\s*johor)/.test(raw)&&/pole|tiang/.test(raw))return "WiFi Pole";
+    if(/johor\s*wifi|wifi\s*johor|aksesori\s*(?:johor\s*)?wifi/.test(raw))return "Aksesori WiFi";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw))return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server/.test(raw))return "CPU / Desktop";
     if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
     var jenis=n(item&&item.jenisPerkakasan);if(!jenis||jenis.toLowerCase()==="tiada")return "Belum Dikelaskan";return "Lain-lain";
   }
   function iconOf(group){
-    if(group==="Laptop")return "fa-laptop";if(group==="CPU / Desktop")return "fa-computer";if(group==="Monitor")return "fa-desktop";if(group==="Printer")return "fa-print";if(group==="Telefon VOIP")return "fa-phone-volume";if(group==="Tiang Johor WiFi")return "fa-tower-broadcast";if(group==="Aksesori Johor WiFi")return "fa-screwdriver-wrench";if(group==="Rangkaian / WiFi")return "fa-wifi";if(group==="Aksesori")return "fa-keyboard";if(group==="Belum Dikelaskan")return "fa-circle-question";return "fa-box-open";
+    if(group==="Laptop")return "fa-laptop";if(group==="CPU / Desktop")return "fa-computer";if(group==="Monitor")return "fa-desktop";if(group==="Printer")return "fa-print";if(group==="Telefon VOIP")return "fa-phone-volume";if(group==="WiFi Pole")return "fa-tower-broadcast";if(group==="Aksesori WiFi")return "fa-screwdriver-wrench";if(group==="Rangkaian / WiFi")return "fa-wifi";if(group==="Aksesori")return "fa-keyboard";if(group==="Belum Dikelaskan")return "fa-circle-question";return "fa-box-open";
   }
-  function groupOrder(){return ["Laptop","CPU / Desktop","Monitor","Printer","Telefon VOIP","Tiang Johor WiFi","Aksesori Johor WiFi","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];}
+  function groupOrder(){return ["Laptop","CPU / Desktop","Monitor","Printer","Telefon VOIP","WiFi Pole","Aksesori WiFi","Rangkaian / WiFi","Aksesori","Lain-lain","Belum Dikelaskan"];}
   function ensureHub(){
     var workspace=document.getElementById("masterInventoryWorkspace");if(!workspace)return null;
     var hub=document.getElementById("assetCategoryHubV32");if(!hub){hub=document.createElement("div");hub.id="assetCategoryHubV32";hub.setAttribute("aria-label","Jenis perkakasan inventori");workspace.appendChild(hub);}return hub;
@@ -11384,8 +11396,8 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
 .asset-category-card-v32[data-group="Printer"]{--hub-accent:#ea580c;--hub-bg1:#fff7ed;--hub-bg2:#ffedd5;--hub-border:#fed7aa}
 .asset-category-card-v32[data-group="Telefon VOIP"]{--hub-accent:#db2777;--hub-bg1:#fdf2f8;--hub-bg2:#fce7f3;--hub-border:#fbcfe8}
 .asset-category-card-v32[data-group="Rangkaian / WiFi"]{--hub-accent:#059669;--hub-bg1:#ecfdf5;--hub-bg2:#d1fae5;--hub-border:#a7f3d0}
-.asset-category-card-v32[data-group="Tiang Johor WiFi"]{--hub-accent:#e11d48;--hub-bg1:#fff1f2;--hub-bg2:#ffe4e6;--hub-border:#fecdd3}
-.asset-category-card-v32[data-group="Aksesori Johor WiFi"]{--hub-accent:#f97316;--hub-bg1:#fff7ed;--hub-bg2:#ffedd5;--hub-border:#fed7aa}
+.asset-category-card-v32[data-group="WiFi Pole"]{--hub-accent:#e11d48;--hub-bg1:#fff1f2;--hub-bg2:#ffe4e6;--hub-border:#fecdd3}
+.asset-category-card-v32[data-group="Aksesori WiFi"]{--hub-accent:#f97316;--hub-bg1:#fff7ed;--hub-bg2:#ffedd5;--hub-border:#fed7aa}
 .asset-category-card-v32[data-group="Aksesori"]{--hub-accent:#ca8a04;--hub-bg1:#fefce8;--hub-bg2:#fef9c3;--hub-border:#fde68a}
 .asset-category-card-v32[data-group="Lain-lain"]{--hub-accent:#9333ea;--hub-bg1:#faf5ff;--hub-bg2:#f3e8ff;--hub-border:#e9d5ff}
 .asset-category-card-v32[data-group="Belum Dikelaskan"]{--hub-accent:#64748b;--hub-bg1:#f8fafc;--hub-bg2:#e2e8f0;--hub-border:#cbd5e1}
@@ -11682,8 +11694,8 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
 #formPage #saveBtn{min-width:190px!important;background:linear-gradient(100deg,#1d5fe4,#2547d8)!important;color:#fff!important}
 
 /* Dedicated colours for the Johor WiFi categories in the inventory hub. */
-.asset-category-card-v32[data-group="Tiang Johor WiFi"] .asset-category-icon-v32{background:#e11d48!important;color:#fff!important}
-.asset-category-card-v32[data-group="Aksesori Johor WiFi"] .asset-category-icon-v32{background:#f97316!important;color:#fff!important}
+.asset-category-card-v32[data-group="WiFi Pole"] .asset-category-icon-v32{background:#e11d48!important;color:#fff!important}
+.asset-category-card-v32[data-group="Aksesori WiFi"] .asset-category-icon-v32{background:#f97316!important;color:#fff!important}
 
 @media(max-width:900px){.v37-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){
@@ -11709,7 +11721,8 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
 
   function setupTop(){
     var grid=q("#formPage .form-grid"),name=q("#formPage .inventory-primary-name");
-    if(!grid||!name||q("#v37BasicCard"))return;
+    if(!grid||!name)return;
+    var existing=q("#v37BasicCard .v37-basic-body");if(existing){if(name.parentNode!==existing)existing.appendChild(name);return;}
     var card=document.createElement("section");card.id="v37BasicCard";card.className="v37-basic-card";card.appendChild(makeHead("1","Maklumat Asas"));
     var body=document.createElement("div");body.className="v37-basic-body";card.appendChild(body);grid.insertBefore(card,grid.firstChild);body.appendChild(name);
   }
@@ -11728,7 +11741,7 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
     sel.addEventListener("change",function(){syncYearFromProxy(sel.value);});wrap.appendChild(sel);return wrap;
   }
   function section(title,icon){var s=document.createElement("section");s.className="v37-card-section";var h=document.createElement("div");h.className="v37-card-section-title";h.innerHTML='<i class="fa-solid '+icon+'"></i><span>'+title+'</span>';var g=document.createElement("div");g.className="v37-card-grid";s.appendChild(h);s.appendChild(g);return {section:s,grid:g};}
-  function fieldById(id){var el=document.getElementById(id);return el?el.closest(".field"):null;}
+  function fieldById(id){var el=document.getElementById(id);if(!el)return null;var field=el.closest(".field"),card=el.closest(".device-card");return field&&card&&card.contains(field)?field:null;}
   function appendIf(grid,node){if(node&&node.parentNode)grid.appendChild(node);}
 
   function enhanceNormal(card,id){
@@ -11771,6 +11784,50 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){window.setTimeout(enhanceAll,40);});else window.setTimeout(enhanceAll,40);
 })();
 </script>
+
+
+<!-- V38: WiFi Pole + Aksesori WiFi + susunan borang HP -->
+<style id="pkpjInventoryMobileCleanV38">
+@media(max-width:760px){
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header{padding:10px 12px!important;min-height:60px!important;gap:12px!important;flex-direction:row!important;justify-content:flex-start!important;background:#fff!important}
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header>.btn-back-main{position:static!important;order:-1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;width:auto!important;height:40px!important;min-height:40px!important;min-width:90px!important;padding:0 12px!important;border-radius:10px!important;font-size:13px!important;flex-shrink:0!important;white-space:nowrap!important}
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .page-title{display:block!important;margin:0!important;padding:0!important;color:#173b70!important;font-size:16px!important;line-height:1.3!important;flex:1!important}
+  body.inventory-form-open #formPage.form-modal-page.active .form-modal-header .page-title:after{display:none!important}
+  #formPage .form-area{padding:12px 12px 0!important}
+  #formPage .v37-basic-body{padding:12px!important}
+  #formPage .v37-basic-body .inventory-primary-name{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}
+  #formPage .v37-basic-body .inventory-primary-name>label{font-size:12px!important;margin-bottom:7px!important}
+  #formPage .v37-basic-body .staff-search-row{display:grid!important;grid-template-columns:minmax(0,1fr) 44px!important;gap:8px!important}
+  #formPage .v37-basic-body .staff-search-row input{width:100%!important;min-width:0!important;min-height:44px!important;font-size:16px!important;border:1px solid #cbd5e1!important;border-radius:9px!important;padding:9px 10px!important;outline:none}
+  #formPage .v37-basic-body .staff-search-row button{width:44px!important;min-width:44px!important;min-height:44px!important;border-radius:9px!important;font-size:0!important;padding:0!important}
+  #formPage .v37-basic-body .staff-search-row button i{font-size:16px!important}
+  #formPage .v37-basic-body .staff-quick-buttons{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:8px 0 0!important}
+  #formPage .v37-basic-body .staff-quick-buttons button{width:100%!important;min-width:0!important;min-height:40px!important;padding:7px!important;font-size:11px!important;border-radius:9px!important}
+  #formPage .v37-basic-body .inventory-primary-name>.note{display:none!important}
+  #formPage #staffFilterNote:empty,#formPage #staffSuggestionList:empty{display:none!important}
+  #formPage .v37-basic-card,#formPage .inventory-selected-type-box{margin-bottom:12px!important;border-radius:12px!important;box-shadow:none!important}
+  #formPage .v37-section-head,#formPage .inventory-selected-type-box>label{padding:10px 12px!important;font-size:13px!important}
+  #formPage .v37-card-section{border:0!important;border-radius:0!important;box-shadow:none!important;margin:0 0 12px!important;background:transparent!important}
+  #formPage .v37-card-section-title{padding:9px 2px!important;background:transparent!important;border-bottom:1px solid #e2e8f0!important;font-size:12px!important}
+  #formPage .v37-card-grid{padding:10px 0 0!important;gap:12px!important}
+  #formPage .v37-card-grid>.field{padding:0!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+  #formPage .v37-card-grid label{font-size:12px!important;margin-bottom:5px!important}
+  #formPage .v37-card-grid input,#formPage .v37-card-grid select,#formPage .v37-card-grid textarea{font-size:16px!important;min-height:44px!important}
+  #formPage .device-card-body{padding:12px!important;background:#fff!important}
+  #formPage .form-buttons{margin:12px -12px 0!important;padding:10px 12px max(10px,env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:minmax(0,1fr) 80px!important;gap:8px!important}
+  #formPage #saveBtn{grid-column:1!important;order:0!important;min-width:0!important;min-height:46px!important;font-size:13px!important}
+  #formPage .form-buttons .btn-reset{grid-column:2!important;min-height:46px!important;font-size:12px!important}
+  #formPage .form-buttons .btn-cancel{grid-column:1/-1!important}
+  .inventory-type-picker-head{padding:15px 14px!important;gap:10px!important}
+  .inventory-type-picker-head h2{font-size:20px!important;margin:6px 0!important}
+  .inventory-type-picker-head p{font-size:12px!important;line-height:1.45!important}
+  .inventory-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:12px!important;gap:10px!important}
+  .inventory-type-card{min-height:122px!important;padding:12px 8px!important;border-radius:13px!important;gap:7px!important;box-shadow:none!important}
+  .inventory-type-icon{width:44px!important;height:44px!important;min-width:44px!important;border-radius:12px!important;font-size:22px!important}
+  .inventory-type-copy b{font-size:13px!important;line-height:1.3!important}
+  .inventory-type-copy small{font-size:10px!important;line-height:1.35!important}
+}
+</style>
 
 </body>
 </html>
