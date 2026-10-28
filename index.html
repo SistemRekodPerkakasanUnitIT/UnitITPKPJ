@@ -12087,5 +12087,208 @@ body.computer-v38-open{overflow:hidden!important}
 })();
 </script>
 
+
+<!-- ===== V39: TAMBAH INVENTORI - MANUAL / IMPORT EXCEL ===== -->
+<style id="pkpjInventoryImportV39Style">
+body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!important}
+.inventory-entry-v39-overlay,.inventory-import-v39-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:100020;padding:20px;overflow:auto}
+.inventory-entry-v39-overlay.show,.inventory-import-v39-overlay.show{display:flex;align-items:flex-start;justify-content:center}
+.inventory-entry-v39-card{width:min(760px,96vw);margin:auto;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.35);overflow:hidden}
+.inventory-entry-v39-head,.inventory-import-v39-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px;background:linear-gradient(135deg,#073b9b,#1467ea);color:#fff}
+.inventory-entry-v39-head h2,.inventory-import-v39-head h2{margin:0;font-size:19px}.inventory-entry-v39-head p,.inventory-import-v39-head p{margin:4px 0 0;font-size:11px;color:#dbeafe;font-weight:700}
+.inventory-entry-v39-close{width:38px;height:38px;padding:0;border-radius:10px;background:rgba(255,255,255,.16);color:#fff;font-size:17px}
+.inventory-entry-v39-body{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;background:#f7f9fd}
+.inventory-entry-v39-option{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr) 24px;gap:13px;align-items:center;text-align:left;padding:18px;border:1px solid #dce5f2;border-radius:15px;background:#fff;color:#17233b;box-shadow:0 6px 20px rgba(15,23,42,.06);min-height:112px}
+.inventory-entry-v39-option:hover{transform:translateY(-1px);border-color:#93b4ed;box-shadow:0 10px 24px rgba(37,99,235,.12)}
+.inventory-entry-v39-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:#eaf2ff;color:#1456c8}.inventory-entry-v39-option.excel .inventory-entry-v39-icon{background:#eafaf1;color:#16834a}
+.inventory-entry-v39-option b{display:block;font-size:15px;margin-bottom:5px}.inventory-entry-v39-option small{display:block;color:#64748b;font-size:11px;line-height:1.45}.inventory-entry-v39-arrow{color:#9aa8bc;font-size:14px}
+.inventory-entry-v39-foot{padding:12px 20px 16px;background:#fff;color:#64748b;font-size:11px;font-weight:700;border-top:1px solid #edf1f6}
+.inventory-import-v39-card{width:min(1380px,97vw);max-height:94vh;margin:auto;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.38);overflow:hidden;display:flex;flex-direction:column}
+.inventory-import-v39-head{flex:0 0 auto}.inventory-import-v39-body{padding:16px 18px 18px;overflow:auto;background:#f7f9fd}
+.inventory-import-v39-upload{display:grid;grid-template-columns:minmax(260px,1.25fr) repeat(4,minmax(140px,.65fr));gap:10px;align-items:end;background:#fff;border:1px solid #e1e8f2;border-radius:13px;padding:14px;margin-bottom:12px}
+.inventory-import-v39-upload .field{gap:5px}.inventory-import-v39-upload label{font-size:10px;color:#516079}.inventory-import-v39-upload input,.inventory-import-v39-upload select{min-height:38px;border-radius:8px}
+.inventory-import-v39-filebox{display:flex;gap:8px;align-items:center}.inventory-import-v39-filebox input{flex:1;min-width:0}
+.inventory-import-v39-actions{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.inventory-import-v39-actions button{min-height:38px;border-radius:9px}.inventory-import-v39-template{background:#eaf2ff;color:#174ea6}.inventory-import-v39-read{background:#0f766e;color:#fff}.inventory-import-v39-save{background:#16a34a;color:#fff}.inventory-import-v39-save:disabled{opacity:.45}
+.inventory-import-v39-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.inventory-import-v39-pill{display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border-radius:999px;background:#fff;border:1px solid #dbe3ef;font-size:11px;font-weight:900;color:#334155}.inventory-import-v39-pill.ok{background:#ecfdf5;border-color:#bbf7d0;color:#166534}.inventory-import-v39-pill.bad{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+.inventory-import-v39-note{padding:10px 12px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;font-size:11px;font-weight:700;line-height:1.5;margin-bottom:10px}
+.inventory-import-v39-progress{display:none;padding:10px 12px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:11px;font-weight:900;margin-bottom:10px}.inventory-import-v39-progress.show{display:block}
+.inventory-import-v39-tablewrap{overflow:auto;max-height:52vh;border:1px solid #dbe3ef;border-radius:12px;background:#fff}.inventory-import-v39-table{width:100%;border-collapse:collapse;min-width:1120px;font-size:10.5px}.inventory-import-v39-table th{position:sticky;top:0;z-index:2;background:#214596;color:#fff;padding:8px 7px;border:1px solid #3159a7;white-space:nowrap}.inventory-import-v39-table td{padding:7px;border:1px solid #e1e7ef;vertical-align:top}.inventory-import-v39-table tr.invalid{background:#fff7f7}.inventory-import-v39-table .badcell{color:#b91c1c;font-weight:900}.inventory-import-v39-sub{display:block;margin-top:2px;color:#7a8798;font-size:9px}.inventory-import-v39-empty{text-align:center;padding:28px;color:#64748b;font-weight:800}
+@media(max-width:900px){.inventory-import-v39-upload{grid-template-columns:1fr 1fr}.inventory-import-v39-upload .file-main{grid-column:1/-1}}
+@media(max-width:760px){.inventory-entry-v39-overlay,.inventory-import-v39-overlay{padding:9px}.inventory-entry-v39-body{grid-template-columns:1fr;padding:12px}.inventory-entry-v39-option{min-height:92px;padding:14px}.inventory-import-v39-card{max-height:97vh}.inventory-import-v39-head{padding:13px 14px}.inventory-import-v39-head h2{font-size:16px}.inventory-import-v39-body{padding:10px}.inventory-import-v39-upload{grid-template-columns:1fr;padding:10px}.inventory-import-v39-upload .file-main{grid-column:auto}.inventory-import-v39-actions{display:grid;grid-template-columns:1fr}.inventory-import-v39-actions button{width:100%}.inventory-import-v39-tablewrap{max-height:48vh}.inventory-import-v39-summary{gap:5px}}
+</style>
+
+<div id="inventoryEntryV39" class="inventory-entry-v39-overlay" aria-hidden="true">
+  <div class="inventory-entry-v39-card" role="dialog" aria-modal="true" aria-labelledby="inventoryEntryTitleV39">
+    <div class="inventory-entry-v39-head">
+      <div><h2 id="inventoryEntryTitleV39">Tambah Inventori</h2><p>Pilih cara maklumat inventori hendak dimasukkan.</p></div>
+      <button type="button" class="inventory-entry-v39-close" onclick="closeInventoryEntryV39()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="inventory-entry-v39-body">
+      <button type="button" class="inventory-entry-v39-option" onclick="startManualInventoryV39()">
+        <span class="inventory-entry-v39-icon"><i class="fa-solid fa-keyboard"></i></span><span><b>Masuk Secara Manual</b><small>Pilih jenis perkakasan dan isi maklumat aset satu persatu seperti borang sedia ada.</small></span><i class="fa-solid fa-chevron-right inventory-entry-v39-arrow"></i>
+      </button>
+      <button type="button" class="inventory-entry-v39-option excel" onclick="openInventoryExcelV39()">
+        <span class="inventory-entry-v39-icon"><i class="fa-solid fa-file-excel"></i></span><span><b>Masukkan Melalui Excel</b><small>Import data inventori sedia ada, semak preview dan simpan secara pukal.</small></span><i class="fa-solid fa-chevron-right inventory-entry-v39-arrow"></i>
+      </button>
+    </div>
+    <div class="inventory-entry-v39-foot"><i class="fa-solid fa-circle-info"></i> Import Excel tidak mengubah rekod lama. Ia menambah rekod baharu selepas semakan preview.</div>
+  </div>
+</div>
+
+<div id="inventoryImportV39" class="inventory-import-v39-overlay" aria-hidden="true">
+  <div class="inventory-import-v39-card" role="dialog" aria-modal="true" aria-labelledby="inventoryImportTitleV39">
+    <div class="inventory-import-v39-head">
+      <div><h2 id="inventoryImportTitleV39"><i class="fa-solid fa-file-excel"></i> Import Excel Inventori</h2><p>Format preview disusun mengikut Senarai Inventori. Kolum tambahan seperti kategori dan nama staff digunakan untuk simpanan.</p></div>
+      <button type="button" class="inventory-entry-v39-close" onclick="closeInventoryExcelV39()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="inventory-import-v39-body">
+      <div class="inventory-import-v39-upload">
+        <div class="field file-main"><label>Fail Excel / CSV</label><div class="inventory-import-v39-filebox"><input id="inventoryExcelFileV39" type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"></div></div>
+        <div class="field"><label>Tahun jika Excel kosong</label><input id="inventoryImportYearV39" type="number" min="2000" max="2100"></div>
+        <div class="field"><label>Kategori jika Excel kosong</label><select id="inventoryImportCategoryV39"><option value="">Guna data Excel</option><option>ICT</option><option>Sewaan</option><option>PKPJ</option><option>Dalam Proses Pemulangan ke ICT</option><option>Tidak Berkaitan</option></select></div>
+        <div class="field"><label>Status jika Excel kosong</label><select id="inventoryImportStatusV39"><option value="">Guna data Excel</option><option>Baik</option><option>Rosak</option><option>Dalam Baik Pulih</option><option>Dipinjam</option><option>Dipulangkan</option><option>Pelupusan</option><option>Hilang</option><option>Tidak Berkaitan</option></select></div>
+        <div class="field"><label>Tarikh jika Excel kosong</label><input id="inventoryImportDateV39" type="date"></div>
+        <div class="field" style="grid-column:1/-1"><label>Lokasi jika Excel kosong</label><input id="inventoryImportLocationV39" placeholder="Contoh: Pejabat PKPJ / Unit IT / Bahagian Kewangan"></div>
+      </div>
+      <div class="inventory-import-v39-actions">
+        <button type="button" class="inventory-import-v39-template" onclick="downloadInventoryTemplateV39()"><i class="fa-solid fa-download"></i> Muat Turun Template Excel</button>
+        <button type="button" class="inventory-import-v39-read" onclick="readInventoryExcelV39()"><i class="fa-solid fa-magnifying-glass"></i> Baca & Preview Excel</button>
+        <button type="button" class="inventory-import-v39-save" id="saveInventoryImportV39" onclick="saveInventoryExcelV39()" disabled><i class="fa-solid fa-floppy-disk"></i> Simpan Semua Rekod Sah</button>
+      </div>
+      <div class="inventory-import-v39-note"><b>Kolum yang boleh dibaca:</b> Tahun, Nama Staff / Pemegang, Jenis / Jenis Perkakasan, Kategori, Jenama, Model, No Siri / Serial No, Tag Aset, Lokasi, Status, Tarikh, Pembekal, No Inventori dan Catatan. <b>Emel</b> serta <b>Unit / Bahagian</b> juga boleh dimasukkan sebagai maklumat staff. Header tak semestinya tepat 100% kerana sistem cuba padankan nama kolum yang hampir sama.</div>
+      <div id="inventoryImportSummaryV39" class="inventory-import-v39-summary"><span class="inventory-import-v39-pill">Belum ada fail dibaca.</span></div>
+      <div id="inventoryImportProgressV39" class="inventory-import-v39-progress"></div>
+      <div class="inventory-import-v39-tablewrap"><table class="inventory-import-v39-table"><thead><tr><th>BIL</th><th>NAMA STAFF / PEMEGANG</th><th>JENIS</th><th>JENAMA</th><th>MODEL</th><th>NO SIRI</th><th>STATUS</th><th>CATATAN</th><th>TARIKH</th><th>LOKASI</th><th>SEMAKAN</th></tr></thead><tbody id="inventoryImportRowsV39"><tr><td colspan="11" class="inventory-import-v39-empty">Pilih fail Excel kemudian tekan <b>Baca & Preview Excel</b>.</td></tr></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<script id="pkpjInventoryImportV39Logic">
+(function(){
+  "use strict";
+  var VERSION="V39";
+  var parsedRowsV39=[];
+  var sourceFileV39="";
+  var baseOpenInventoryManualV39=window.openInventoryFormModal;
+
+  function s(v){return String(v==null?"":v).trim();}
+  function low(v){return s(v).toLowerCase();}
+  function h(v){return s(v).toLowerCase().replace(/[._/\\-]+/g," ").replace(/[^a-z0-9\u00c0-\u024f\s]/g," ").replace(/\s+/g," ").trim();}
+  function e(v){return s(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+  function todayIso(){var d=new Date(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return d.getFullYear()+"-"+m+"-"+day;}
+  function currentYear(){return String(new Date().getFullYear());}
+  function ui(id){return document.getElementById(id);}
+  function setProgress(msg,show){var p=ui("inventoryImportProgressV39");if(!p)return;p.textContent=msg||"";p.classList.toggle("show",show!==false&&!!msg);}
+
+  function openEntry(){var o=ui("inventoryEntryV39");if(!o)return;o.classList.add("show");o.setAttribute("aria-hidden","false");document.body.classList.add("inventory-entry-v39-open");}
+  function closeEntry(){var o=ui("inventoryEntryV39");if(o){o.classList.remove("show");o.setAttribute("aria-hidden","true");}document.body.classList.remove("inventory-entry-v39-open");}
+  window.closeInventoryEntryV39=closeEntry;
+  window.startManualInventoryV39=function(){closeEntry();if(typeof baseOpenInventoryManualV39==="function")baseOpenInventoryManualV39();};
+
+  window.openInventoryExcelV39=function(){
+    closeEntry();var o=ui("inventoryImportV39");if(!o)return;o.classList.add("show");o.setAttribute("aria-hidden","false");document.body.classList.add("inventory-import-v39-open");
+    if(ui("inventoryImportYearV39")&&!ui("inventoryImportYearV39").value)ui("inventoryImportYearV39").value=currentYear();
+    if(ui("inventoryImportDateV39")&&!ui("inventoryImportDateV39").value)ui("inventoryImportDateV39").value=todayIso();
+  };
+  window.closeInventoryExcelV39=function(){var o=ui("inventoryImportV39");if(o){o.classList.remove("show");o.setAttribute("aria-hidden","true");}document.body.classList.remove("inventory-import-v39-open");setProgress("",false);};
+
+  window.openInventoryFormModal=function(){
+    var edit=ui("editingRow");
+    if(edit&&s(edit.value)){return typeof baseOpenInventoryManualV39==="function"?baseOpenInventoryManualV39.apply(this,arguments):undefined;}
+    openEntry();
+  };
+
+  var alias={
+    tahun:["tahun","year"],
+    nama:["nama staff","nama pemegang","nama","staff","pemegang","user","pengguna"],
+    email:["emel","email","e mail","email staff","emel staff"],
+    unit:["unit bahagian","unit","bahagian","jabatan","department","division"],
+    staffStatus:["status staff","status pekerja","staff status"],
+    jenis:["jenis perkakasan","jenis","perkakasan","asset type","jenis aset","type"],
+    kategori:["kategori","category","kategori aset"],
+    jenama:["jenama","brand","manufacturer","pengeluar"],
+    model:["model","model aset"],
+    noSiri:["no siri","nombor siri","serial no","serial number","serial","s n","sn"],
+    tagAset:["tag aset","asset tag","tag","no tag","nombor tag"],
+    lokasi:["lokasi","location","unit lokasi","penempatan"],
+    status:["status","status aset","keadaan","condition"],
+    tarikh:["tarikh","date","tarikh daftar","tarikh aset"],
+    pembekal:["pembekal","supplier","vendor"],
+    noInventori:["no inventori","nombor inventori","inventory no","inventory number","no asset","no aset"],
+    catatan:["catatan","nota","notes","note","remark","remarks"],
+    noExt:["no ext","extension","no extension","ext"],
+    namaPaparanVoip:["nama paparan voip","paparan voip","voip display name"],
+    kumpulanPaparan:["kumpulan paparan","display group"]
+  };
+  function matchAlias(header,key){var x=h(header);return (alias[key]||[]).some(function(a){return x===h(a)||x.indexOf(h(a))>-1;});}
+  function detectHeaderRow(rows){var best=-1,bestScore=0;for(var i=0;i<Math.min(rows.length,20);i++){var r=rows[i]||[],score=0;r.forEach(function(v){var hv=h(v);if(!hv)return;Object.keys(alias).some(function(k){if(matchAlias(hv,k)){score++;return true;}return false;});});if(score>bestScore){bestScore=score;best=i;}}return bestScore>=2?best:-1;}
+  function columnMap(headers){var map={};Object.keys(alias).forEach(function(k){map[k]=-1;});(headers||[]).forEach(function(v,i){Object.keys(alias).some(function(k){if(map[k]<0&&matchAlias(v,k)){map[k]=i;return true;}return false;});});return map;}
+  function cell(row,idx){return idx>=0?s(row[idx]):"";}
+  function excelDate(v){
+    if(v===null||v===undefined||v==="")return "";
+    if(Object.prototype.toString.call(v)==="[object Date]"){var d=v;return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+    if(typeof v==="number"&&window.XLSX&&XLSX.SSF&&XLSX.SSF.parse_date_code){var p=XLSX.SSF.parse_date_code(v);if(p&&p.y)return p.y+"-"+String(p.m).padStart(2,"0")+"-"+String(p.d).padStart(2,"0");}
+    var raw=s(v),m=raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);if(m){var y=Number(m[3]);if(y<100)y+=y<70?2000:1900;return y+"-"+String(Number(m[2])).padStart(2,"0")+"-"+String(Number(m[1])).padStart(2,"0");}
+    var m2=raw.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})$/);if(m2)return m2[1]+"-"+String(Number(m2[2])).padStart(2,"0")+"-"+String(Number(m2[3])).padStart(2,"0");
+    return raw;
+  }
+  function normJenis(v){var x=low(v);if(!x)return "";if(/^(pc|desktop|pc \/ cpu|cpu \/ desktop|system unit|unit sistem)$/.test(x))return "CPU";if(/laptop|notebook/.test(x))return "Laptop";if(/monitor|display/.test(x))return "Monitor";if(/keyboard|papan kekunci/.test(x))return "Keyboard";if(/mouse|tetikus/.test(x))return "Mouse";if(/printer|pencetak/.test(x))return "Printer";if(/voip|telefon/.test(x))return "Telefon VOIP";if(/wifi.*pole|pole.*wifi|tiang.*wifi/.test(x))return "WiFi Pole";if(/aksesori.*wifi|wifi.*aksesori|access point|router/.test(x))return "Aksesori WiFi";return s(v);}
+  function normKategori(v){var x=low(v);if(!x)return "";if(/sewa|rental/.test(x))return "Sewaan";if(x==="ict")return "ICT";if(x==="pkpj")return "PKPJ";if(/pemulangan.*ict|proses.*ict/.test(x))return "Dalam Proses Pemulangan ke ICT";if(/tidak berkaitan|n\/a|not applicable/.test(x))return "Tidak Berkaitan";return s(v);}
+  function defaultValue(id){return s(ui(id)&&ui(id).value);}
+  function buildRecord(raw){
+    var r=Object.assign({},raw);
+    r.tahun=r.tahun||defaultValue("inventoryImportYearV39")||currentYear();
+    r.kategori=normKategori(r.kategori||defaultValue("inventoryImportCategoryV39"));
+    r.status=r.status||defaultValue("inventoryImportStatusV39");
+    r.lokasi=r.lokasi||defaultValue("inventoryImportLocationV39");
+    r.tarikh=r.tarikh||defaultValue("inventoryImportDateV39")||todayIso();
+    r.jenisPerkakasan=normJenis(r.jenisPerkakasan);
+    r.namaPemegang=r.namaStaff;r.nama=r.namaStaff;
+    r.jenisPerkakasanLain="";r.kategoriLain="";
+    r.jenama=r.jenama||"TIADA";r.model=r.model||"TIADA";r.noSiri=r.noSiri||"TIADA";r.tagAset=r.tagAset||"TIADA";r.pembekal=r.pembekal||"TIADA";r.noInventori=r.noInventori||"";r.kuantiti="1";r.gambar="";r.noExt=r.noExt||"";r.namaPaparanVoip=r.namaPaparanVoip||"";r.kumpulanPaparan=r.kumpulanPaparan||"";r.catatan=r.catatan||("Import Excel Inventori - "+(r.sheet||sourceFileV39||"Excel"));r.sumberImport=sourceFileV39;
+    var missing=[];if(!r.namaStaff)missing.push("Nama Staff");if(!r.jenisPerkakasan)missing.push("Jenis");if(!r.kategori)missing.push("Kategori");if(!r.lokasi)missing.push("Lokasi");if(!r.status)missing.push("Status");if(!r.tarikh)missing.push("Tarikh");r._missing=missing;r._valid=!missing.length;return r;
+  }
+  function parseSheet(ws,sheetName){
+    var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:true}),hr=detectHeaderRow(rows);if(hr<0)return[];var map=columnMap(rows[hr]||[]),out=[];
+    for(var i=hr+1;i<rows.length;i++){var row=rows[i]||[],name=cell(row,map.nama),jenis=cell(row,map.jenis),serial=cell(row,map.noSiri),model=cell(row,map.model);if(!name&&!jenis&&!serial&&!model)continue;out.push({sheet:sheetName,excelRow:i+1,tahun:cell(row,map.tahun),namaStaff:name,email:cell(row,map.email),unitBahagian:cell(row,map.unit),staffStatus:cell(row,map.staffStatus),jenisPerkakasan:jenis,kategori:cell(row,map.kategori),jenama:cell(row,map.jenama),model:model,noSiri:serial,tagAset:cell(row,map.tagAset),lokasi:cell(row,map.lokasi),status:cell(row,map.status),tarikh:excelDate(map.tarikh>=0?row[map.tarikh]:""),pembekal:cell(row,map.pembekal),noInventori:cell(row,map.noInventori),catatan:cell(row,map.catatan),noExt:cell(row,map.noExt),namaPaparanVoip:cell(row,map.namaPaparanVoip),kumpulanPaparan:cell(row,map.kumpulanPaparan)});}
+    return out;
+  }
+  function rebuilt(){return parsedRowsV39.map(buildRecord);}
+  function renderPreview(){
+    var data=rebuilt(),valid=data.filter(function(x){return x._valid;}),bad=data.filter(function(x){return !x._valid;}),sum=ui("inventoryImportSummaryV39"),tbody=ui("inventoryImportRowsV39"),save=ui("saveInventoryImportV39");
+    if(sum)sum.innerHTML='<span class="inventory-import-v39-pill">Jumlah: '+data.length+'</span><span class="inventory-import-v39-pill ok">Sah: '+valid.length+'</span><span class="inventory-import-v39-pill bad">Perlu Semak: '+bad.length+'</span><span class="inventory-import-v39-pill">Fail: '+e(sourceFileV39||'-')+'</span>';
+    if(save)save.disabled=!valid.length;
+    if(!tbody)return;if(!data.length){tbody.innerHTML='<tr><td colspan="11" class="inventory-import-v39-empty">Tiada rekod inventori dapat dibaca daripada fail.</td></tr>';return;}
+    tbody.innerHTML=data.map(function(x,i){return '<tr class="'+(x._valid?'':'invalid')+'"><td>'+(i+1)+'</td><td><b>'+e(x.namaStaff||'-')+'</b>'+(x.email?'<span class="inventory-import-v39-sub">'+e(x.email)+'</span>':'')+(x.unitBahagian?'<span class="inventory-import-v39-sub">'+e(x.unitBahagian)+'</span>':'')+'</td><td>'+e(x.jenisPerkakasan||'-')+'<span class="inventory-import-v39-sub">'+e(x.kategori||'-')+'</span></td><td>'+e(x.jenama||'-')+'</td><td>'+e(x.model||'-')+'</td><td>'+e(x.noSiri||'-')+'</td><td>'+e(x.status||'-')+'</td><td>'+e(x.catatan||'-')+'</td><td>'+e(x.tarikh||'-')+'</td><td>'+e(x.lokasi||'-')+'</td><td class="'+(x._valid?'':'badcell')+'">'+(x._valid?'✓ Sah':'Perlu: '+e(x._missing.join(', ')))+'<span class="inventory-import-v39-sub">'+e(x.sheet||'')+(x.excelRow?' · baris '+x.excelRow:'')+'</span></td></tr>';}).join('');
+  }
+  ["inventoryImportYearV39","inventoryImportCategoryV39","inventoryImportStatusV39","inventoryImportDateV39","inventoryImportLocationV39"].forEach(function(id){document.addEventListener("input",function(ev){if(ev.target&&ev.target.id===id&&parsedRowsV39.length)renderPreview();});document.addEventListener("change",function(ev){if(ev.target&&ev.target.id===id&&parsedRowsV39.length)renderPreview();});});
+
+  window.readInventoryExcelV39=async function(){
+    var file=ui("inventoryExcelFileV39")&&ui("inventoryExcelFileV39").files&&ui("inventoryExcelFileV39").files[0];if(!file){alert("Pilih fail Excel / CSV dahulu.");return;}if(!window.XLSX){alert("Library Excel belum dimuatkan.");return;}
+    try{setProgress("Membaca fail "+file.name+"...",true);var buffer=await file.arrayBuffer(),wb=XLSX.read(buffer,{type:"array",cellDates:true});sourceFileV39=file.name;parsedRowsV39=[];wb.SheetNames.forEach(function(name){parsedRowsV39=parsedRowsV39.concat(parseSheet(wb.Sheets[name],name));});renderPreview();setProgress(parsedRowsV39.length?"Preview siap. Semak rekod merah sebelum simpan.":"Tiada rekod yang dapat dibaca.",true);}catch(err){console.error(err);setProgress("Gagal membaca Excel: "+(err.message||err),true);alert("Gagal membaca fail Excel: "+(err.message||err));}
+  };
+
+  function staffRows(data){var map={},out=[];data.forEach(function(x){if(!x.namaStaff||(!x.email&&!x.unitBahagian&&!x.staffStatus))return;var key=low(x.email)||low(x.namaStaff);if(map[key])return;map[key]=true;out.push({namaStaff:x.namaStaff,email:x.email||"",unitBahagian:x.unitBahagian||"",status:x.staffStatus||"Aktif",catatan:"Import Excel Inventori - "+sourceFileV39});});return out;}
+  async function saveStaffMeta(list){if(!list.length)return;for(var i=0;i<list.length;i+=25){var chunk=list.slice(i,i+25),res=await jsonp({action:"saveStaffRecords",staffRecordsJson:JSON.stringify(chunk),resetStaff:"NO",replaceStaff:"NO",catatan:"Import Excel Inventori - "+sourceFileV39,_ts:Date.now()});if(res&&res.status==="ERROR")throw new Error(res.message||"Gagal simpan maklumat staff");}}
+  async function saveAssets(list){for(var i=0;i<list.length;i+=35){var chunk=list.slice(i,i+35),requestId="inv39_"+Date.now()+"_"+i+"_"+Math.floor(Math.random()*99999);setProgress("Menyimpan rekod "+(i+1)+" hingga "+Math.min(i+chunk.length,list.length)+" daripada "+list.length+"...",true);submitHiddenForm({action:"simpan",recordsJson:JSON.stringify(chunk),requestId:requestId});var result=await waitSaveResultFast(requestId);if(!result||result.status!=="OK")throw new Error((result&&result.message)||"Gagal simpan inventori");}}
+  window.saveInventoryExcelV39=async function(){
+    var data=rebuilt(),valid=data.filter(function(x){return x._valid;}),bad=data.length-valid.length;if(!valid.length){alert("Tiada rekod sah untuk disimpan.");return;}var msg="Simpan "+valid.length+" rekod inventori?"+(bad?"\n\n"+bad+" rekod tidak lengkap akan DILANGKAU.":"");if(!confirm(msg))return;var btn=ui("saveInventoryImportV39");if(btn)btn.disabled=true;
+    try{if(typeof showSaveMotionV29==="function")showSaveMotionV29("Import Excel Inventori","Menyemak maklumat staff...");await saveStaffMeta(staffRows(valid));if(typeof updateSaveMotionV29==="function")updateSaveMotionV29(null,"Menyimpan inventori...");await saveAssets(valid);setProgress("Import berjaya. Memuat semula Senarai Inventori...",true);try{if(typeof fastBootstrapLoad==="function")await fastBootstrapLoad({silent:true,fresh:true});else if(typeof refreshAll==="function")await refreshAll({clearForm:false,silent:true});}catch(refreshErr){console.warn(refreshErr);}if(typeof finishSaveMotionV29==="function")await finishSaveMotionV29("Import Excel berjaya");if(typeof applyTableView==="function")applyTableView();if(typeof stats==="function")stats();setProgress("Selesai: "+valid.length+" rekod disimpan"+(bad?", "+bad+" rekod dilangkau.":"."),true);if(typeof showToast==="function")showToast("Import inventori berjaya: "+valid.length+" rekod");}catch(err){console.error(err);if(typeof failSaveMotionV29==="function")failSaveMotionV29(err.message||String(err));setProgress("Import gagal: "+(err.message||err),true);alert("Import gagal: "+(err.message||err));}finally{if(btn)btn.disabled=false;}
+  };
+
+  window.downloadInventoryTemplateV39=function(){
+    if(!window.XLSX){alert("Library Excel belum dimuatkan.");return;}
+    var headers=["Tahun","Nama Staff","Emel","Unit / Bahagian","Status Staff","Jenis Perkakasan","Kategori","Jenama","Model","No Siri","Tag Aset","Lokasi","Status","Tarikh","Pembekal","No Inventori","Catatan"];
+    var sample=[currentYear(),"CONTOH NAMA STAFF","nama@pkpj.gov.my","Unit IT","Aktif","Laptop","ICT","Dell","Latitude 5450","ABC123","IT.PKPJ-001","Pejabat PKPJ","Baik",todayIso(),"TIADA","","Contoh rekod - padam baris ini sebelum import"];
+    var ws=XLSX.utils.aoa_to_sheet([headers,sample]);ws['!cols']=headers.map(function(x){return {wch:Math.max(12,Math.min(24,x.length+4))};});var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Inventori");XLSX.writeFile(wb,"Template_Import_Inventori_PKPJ.xlsx",{compression:true});
+  };
+
+  document.addEventListener("click",function(ev){var a=ui("inventoryEntryV39"),b=ui("inventoryImportV39");if(a&&ev.target===a)closeEntry();if(b&&ev.target===b)window.closeInventoryExcelV39();});
+  document.addEventListener("keydown",function(ev){if(ev.key!=="Escape")return;var b=ui("inventoryImportV39"),a=ui("inventoryEntryV39");if(b&&b.classList.contains("show")){window.closeInventoryExcelV39();return;}if(a&&a.classList.contains("show"))closeEntry();});
+  function boot(){if(ui("inventoryImportYearV39"))ui("inventoryImportYearV39").value=currentYear();if(ui("inventoryImportDateV39"))ui("inventoryImportDateV39").value=todayIso();}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+
 </body>
 </html>
