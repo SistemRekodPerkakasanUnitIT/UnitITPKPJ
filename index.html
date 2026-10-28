@@ -7710,11 +7710,28 @@ if(oldRefreshAllSelesai){
     }
   };
 
+  function masterUniqueRowsV44(rows){
+    const map = new Map();
+    (Array.isArray(rows)?rows:[]).forEach(item => {
+      const jenis = String(item && item.jenisPerkakasan || "").toLowerCase().trim() || "aset";
+      const serial = masterMeaningful(item && item.noSiri);
+      const tag = masterMeaningful(item && (item.tagAset || item.noInventori));
+      const identityRaw = serial || tag;
+      const identity = identityRaw ? identityRaw.toUpperCase().replace(/[^A-Z0-9]/g,"") : "ROW"+String(item && item.row || "");
+      const key = jenis + "|" + identity;
+      const oldItem = map.get(key);
+      const rank = Number(String(item && item.tahun || "").replace(/[^0-9]/g,"")) * 100000000 + Number(item && item.row || 0);
+      const oldRank = oldItem ? Number(String(oldItem.tahun || "").replace(/[^0-9]/g,"")) * 100000000 + Number(oldItem.row || 0) : -1;
+      if(!oldItem || rank >= oldRank) map.set(key,item);
+    });
+    return Array.from(map.values());
+  }
+
   window.renderMasterInventory = function(){
     const workspace = document.getElementById("masterInventoryWorkspace");
     if(!workspace || masterInventoryMode !== "detail") return;
     masterPopulateLocationFilter();
-    const data = masterFilteredData();
+    const data = masterUniqueRowsV44(masterFilteredData());
     const count = document.getElementById("masterInventoryCount");
     if(count) count.textContent = String(data.length);
     if(masterSelectedRow !== null && !data.some(item => String(item.row) === String(masterSelectedRow))){
@@ -11170,7 +11187,20 @@ body.asset-group-overview-open-v31{overflow:hidden!important}
   function isActive(item){try{if(typeof isCompletedAsset==="function"&&isCompletedAsset(item))return false;}catch(err){}return n(item&&item.status).toLowerCase()!=="selesai";}
   function iconOf(group){if(group==="Laptop")return "fa-laptop";if(group==="Monitor")return "fa-desktop";if(group==="Printer")return "fa-print";if(group==="WiFi Pole")return "fa-tower-broadcast";if(group==="Aksesori WiFi")return "fa-screwdriver-wrench";if(group==="Rangkaian / WiFi")return "fa-wifi";if(group==="CPU / Desktop")return "fa-computer";if(group==="Aksesori")return "fa-keyboard";if(group==="Belum Dikelaskan")return "fa-circle-question";return "fa-box";}
   function statusClass(v){var s=n(v).toLowerCase();if(s==="baik")return "baik";if(s==="rosak")return "rosak";if(s==="dalam baik pulih")return "baikpulih";if(s==="dipinjam")return "dipinjam";if(s==="dipulangkan")return "dipulangkan";if(s==="pelupusan")return "pelupusan";if(s==="hilang")return "hilang";return "";}
-  function allGroupRows(){return (Array.isArray(allData)?allData:[]).filter(function(item){return isActive(item)&&groupOf(item)===currentGroupV31;}).slice().sort(function(a,b){var an=n(a.namaStaff||a.namaPemegang||a.nama),bn=n(b.namaStaff||b.namaPemegang||b.nama);var c=an.localeCompare(bn,"ms",{sensitivity:"base"});if(c)return c;return Number(a.row||0)-Number(b.row||0);});}
+  function allGroupRows(){
+    var rows=(Array.isArray(allData)?allData:[]).filter(function(item){return isActive(item)&&groupOf(item)===currentGroupV31;});
+    var map={};
+    rows.forEach(function(item){
+      var serial=meaningful(item&&item.noSiri),tag=meaningful(item&&(item.tagAset||item.noInventori));
+      var identity=(serial||tag);
+      var key=identity?(groupOf(item)+"|"+identity.toUpperCase().replace(/[^A-Z0-9]/g,"")):("ROW|"+Number(item.row||0));
+      var old=map[key];
+      var rank=(Number(String(item.tahun||"").replace(/[^0-9]/g,""))||0)*100000000+Number(item.row||0);
+      var oldRank=old?((Number(String(old.tahun||"").replace(/[^0-9]/g,""))||0)*100000000+Number(old.row||0)):-1;
+      if(!old||rank>=oldRank)map[key]=item;
+    });
+    return Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){var an=n(a.namaStaff||a.namaPemegang||a.nama),bn=n(b.namaStaff||b.namaPemegang||b.nama);var c=an.localeCompare(bn,"ms",{sensitivity:"base"});if(c)return c;return Number(a.row||0)-Number(b.row||0);});
+  }
   function filteredRows(){
     var q=n(document.getElementById("assetGroupSearchV31")&&document.getElementById("assetGroupSearchV31").value).toLowerCase();
     var st=n(document.getElementById("assetGroupStatusV31")&&document.getElementById("assetGroupStatusV31").value).toLowerCase();
@@ -11325,10 +11355,10 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
     var page=document.getElementById("tablePage"),workspace=document.getElementById("masterInventoryWorkspace");if(!page||!workspace)return;
     if(page.classList.contains("table-mode")){workspace.classList.remove("asset-hub-mode-v32");var old=document.getElementById("assetCategoryHubV32");if(old)old.style.display="none";return;}
     workspace.classList.add("asset-hub-mode-v32");var hub=ensureHub();if(!hub)return;hub.style.display="grid";
-    var counts={};(Array.isArray(allData)?allData:[]).filter(isActive).forEach(function(item){var g=groupOf(item);counts[g]=(counts[g]||0)+1;});
+    var counts={},seen={};(Array.isArray(allData)?allData:[]).filter(isActive).forEach(function(item){var g=groupOf(item),serial=n(item&&item.noSiri),tag=n(item&&(item.tagAset||item.noInventori)),identity=(serial||tag);var key=identity?(g+"|"+identity.toUpperCase().replace(/[^A-Z0-9]/g,"")):(g+"|ROW|"+Number(item&&item.row||0));if(seen[key])return;seen[key]=1;counts[g]=(counts[g]||0)+1;});
     var groups=groupOrder().filter(function(g){return (counts[g]||0)>0||g==="Lain-lain";});
     hub.innerHTML=groups.map(function(g){return '<button type="button" class="asset-category-card-v32" data-group="'+esc(g)+'" onclick="openInventoryGroupFromHubV32(\''+String(g).replace(/'/g,"\\'")+'\')"><span class="asset-category-icon-v32"><i class="fa-solid '+iconOf(g)+'"></i></span><span class="asset-category-name-v32">'+esc(g)+'</span><span class="asset-category-count-v32">'+(counts[g]||0)+' aset</span></button>';}).join("");
-    var subtitle=document.getElementById("masterInventoryPageSubtitle");if(subtitle)subtitle.textContent="Pilih jenis perkakasan untuk membuka paparan keseluruhan.";
+    var subtitle=document.getElementById("masterInventoryPageSubtitle");if(subtitle)subtitle.textContent="Pilih jenis perkakasan. Kiraan menggunakan No. Siri / No. Daftar Aset unik supaya rekod duplicate tidak dikira dua kali.";
   }
 
   window.openInventoryGroupFromHubV32=function(group){if(n(group).toLowerCase()==="telefon voip"){if(typeof openVoipOverviewModal==="function")openVoipOverviewModal();return;}if(typeof openAssetGroupOverviewV31==="function")openAssetGroupOverviewV31(group);};
@@ -11952,12 +11982,13 @@ body.computer-v38-open{overflow:hidden!important}
     var laptop=document.querySelector('#assetCategoryHubV32 .asset-category-card-v32[data-group="Laptop"]');
     if(!cpu&&!laptop)return;
     if(!cpu&&laptop){cpu=laptop;cpu.dataset.group="CPU / Desktop";}
-    if(laptop&&laptop!==cpu)laptop.style.display="none";
+    if(laptop&&laptop!==cpu)laptop.style.setProperty("display","none","important");
     if(cpu){
-      cpu.style.display="";cpu.setAttribute("onclick","openComputerInventoryV38('sewaan')");
+      cpu.style.setProperty("display","flex","important");cpu.setAttribute("onclick","openComputerInventoryV38('sewaan')");
       var name=cpu.querySelector(".asset-category-name-v32"),count=cpu.querySelector(".asset-category-count-v32"),icon=cpu.querySelector("i");
       if(name)name.textContent="PC / Laptop";if(icon)icon.className="fa-solid fa-computer";
-      var total=(Array.isArray(allData)?allData:[]).filter(function(x){return isActive(x)&&isComputer(x);}).length;if(count)count.textContent=total+" aset";
+      var seen={},total=0;(Array.isArray(allData)?allData:[]).filter(function(x){return isActive(x)&&isComputer(x);}).forEach(function(x){var serial=n(x.noSiri),tag=n(x.tagAset||x.noInventori),identity=serial||tag;var key=identity?identity.toUpperCase().replace(/[^A-Z0-9]/g,""):("ROW"+Number(x.row||0));if(seen[key])return;seen[key]=1;total++;});if(count)count.textContent=total+" aset unik";
+      cpu.title="Kiraan berdasarkan No. Siri / No. Daftar Aset unik. Rekod duplicate tidak dikira dua kali.";
     }
   }
   var oldOpenHub=window.openInventoryGroupFromHubV32;
@@ -11976,10 +12007,21 @@ body.computer-v38-open{overflow:hidden!important}
       if(!map[key])map[key]={key:key,type:type||"pc",name:holder,email:n(item.emailStaff),items:[]};
       map[key].items.push(item);if(!map[key].email&&item.emailStaff)map[key].email=n(item.emailStaff);
     });
-    return Object.keys(map).map(function(k){
+    var sets=Object.keys(map).map(function(k){
       var s=map[k],comp={};s.items.forEach(function(i){comp[low(i.jenisPerkakasan)]=i;});
       var info=staffInfo(s.name,s.email);s.email=s.email||info.email||"";s.unit=info.unitBahagian||"";s.staffStatus=info.status||"Aktif";s.comp=comp;s.history=staffHistory(s.name,s.email);return s;
-    }).sort(function(a,b){return a.name.localeCompare(b.name,"ms",{sensitivity:"base"});});
+    });
+    var unique={},withoutSerial=[];
+    sets.forEach(function(set){
+      var main=set.type==="laptop"?set.comp.laptop:set.comp.cpu;
+      var serial=meaningful(main&&main.noSiri);
+      if(!serial){withoutSerial.push(set);return;}
+      var key=set.type+"|"+serial.toUpperCase().replace(/[^A-Z0-9]/g,"");
+      var rank=Math.max.apply(null,set.items.map(function(x){return Number(x&&x.row||0);}));
+      var old=unique[key],oldRank=old?Math.max.apply(null,old.items.map(function(x){return Number(x&&x.row||0);})):-1;
+      if(!old||rank>=oldRank)unique[key]=set;
+    });
+    return Object.keys(unique).map(function(k){return unique[k];}).concat(withoutSerial).sort(function(a,b){return a.name.localeCompare(b.name,"ms",{sensitivity:"base"});});
   }
 
   function rentalMatches(s){var q=low(computerSearchV38);if(!q)return true;var c=s.comp||{};return [s.name,s.email,s.unit,s.staffStatus,c.cpu&&c.cpu.noSiri,c.cpu&&c.cpu.model,c.monitor&&c.monitor.noSiri,c.monitor&&c.monitor.model,c.keyboard&&c.keyboard.noSiri,c.mouse&&c.mouse.noSiri,c.laptop&&c.laptop.noSiri,c.laptop&&c.laptop.model].join(" ").toLowerCase().indexOf(q)>-1;}
@@ -12001,7 +12043,7 @@ body.computer-v38-open{overflow:hidden!important}
 
   function imageHtml(item){var urls=[];try{urls=typeof parseGambarUrls==="function"?parseGambarUrls(item.gambar||""):[];}catch(e){}if(!urls.length)return '-';var u=urls[0];try{if(typeof getImagePreviewUrl==="function")u=getImagePreviewUrl(u);}catch(e){}return '<img class="computer-v38-img" src="'+esc(u)+'" alt="Aset">';}
   function renderOwned(mode){
-    var target=mode==="ict"?"ict":"pkpj";var rows=(Array.isArray(allData)?allData:[]).filter(function(x){return isActive(x)&&category(x)===target&&isComputer(x);});var q=low(computerSearchV38);if(q)rows=rows.filter(function(x){return [x.namaStaff,x.jenisPerkakasan,x.jenama,x.model,x.noSiri,x.tagAset,x.lokasi,x.status].join(" ").toLowerCase().indexOf(q)>-1;});
+    var target=mode==="ict"?"ict":"pkpj";var source=(Array.isArray(allData)?allData:[]).filter(function(x){return isActive(x)&&category(x)===target&&isComputer(x);});var map={},noSerial=[];source.forEach(function(x){var serial=meaningful(x.noSiri),tag=meaningful(x.tagAset||x.noInventori),identity=serial||tag;if(!identity){noSerial.push(x);return;}var key=identity.toUpperCase().replace(/[^A-Z0-9]/g,"");var old=map[key],rank=(Number(String(x.tahun||"").replace(/[^0-9]/g,""))||0)*100000000+Number(x.row||0),oldRank=old?((Number(String(old.tahun||"").replace(/[^0-9]/g,""))||0)*100000000+Number(old.row||0)):-1;if(!old||rank>=oldRank)map[key]=x;});var rows=Object.keys(map).map(function(k){return map[k];}).concat(noSerial);var q=low(computerSearchV38);if(q)rows=rows.filter(function(x){return [x.namaStaff,x.jenisPerkakasan,x.jenama,x.model,x.noSiri,x.tagAset,x.lokasi,x.status].join(" ").toLowerCase().indexOf(q)>-1;});
     rows.sort(function(a,b){return n(a.namaStaff).localeCompare(n(b.namaStaff),"ms",{sensitivity:"base"});});
     document.getElementById("computerSummaryV38").innerHTML='<span class="computer-v38-chip">Kategori: <strong>'+target.toUpperCase()+'</strong></span><span class="computer-v38-chip">Jumlah PC/Laptop: <strong>'+rows.length+'</strong></span>';
     var c=document.getElementById("computerContentV38");if(!rows.length){c.innerHTML='<div class="computer-v38-empty">Tiada rekod PC / Laptop '+target.toUpperCase()+'.</div>';return;}
@@ -12654,5 +12696,23 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
 })();
 </script>
 
+
+<style id="pkpjDedupeCardFixV44Style">
+#assetCategoryHubV32 .asset-category-card-v32[data-group="Laptop"][data-v44-hidden="1"]{display:none!important}
+.asset-category-card-v32[data-group="CPU / Desktop"] .asset-category-count-v32{white-space:nowrap}
+</style>
+<script id="pkpjDedupeCardFixV44Logic">
+(function(){
+  function enforce(){
+    var hub=document.getElementById("assetCategoryHubV32");if(!hub)return;
+    var cpu=hub.querySelector('.asset-category-card-v32[data-group="CPU / Desktop"]');
+    var lap=hub.querySelector('.asset-category-card-v32[data-group="Laptop"]');
+    if(cpu&&lap&&lap!==cpu){lap.dataset.v44Hidden="1";lap.style.setProperty("display","none","important");}
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",enforce);else enforce();
+  new MutationObserver(function(){setTimeout(enforce,0);}).observe(document.documentElement,{childList:true,subtree:true});
+  setInterval(enforce,1000);
+})();
+</script>
 </body>
 </html>
