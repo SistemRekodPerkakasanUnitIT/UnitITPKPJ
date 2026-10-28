@@ -12783,5 +12783,97 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
 })();
 </script>
 
+
+<style id="pkpjPasteExcelV46Style">
+#computerResetExcelBtnV45,#pkpjCompareBtnV43,#rentalComputerExcelInputV38,#inventoryExcelFileV39,#pkpjPurchaseExcelInputV41{display:none!important}
+.paste-v46-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:100500;padding:16px;overflow:auto}
+.paste-v46-overlay.show{display:flex;align-items:flex-start;justify-content:center}
+.paste-v46-modal{width:min(1500px,99vw);max-height:96vh;background:#fff;border-radius:16px;box-shadow:0 26px 70px rgba(15,23,42,.34);overflow:hidden;display:flex;flex-direction:column}
+.paste-v46-head{background:linear-gradient(90deg,#0b49ad,#245bc5);color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.paste-v46-head h3{margin:0;font-size:17px}.paste-v46-close{background:#fff;color:#164aa8;border-radius:9px;padding:8px 13px}
+.paste-v46-body{padding:14px;background:#f7f9fc;overflow:auto}
+.paste-v46-tabs{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:8px;margin-bottom:10px}
+.paste-v46-tab{background:#fff;color:#334155;border:1px solid #dbe3ef;border-radius:11px;padding:10px;text-align:left;display:flex;gap:9px;align-items:center}
+.paste-v46-tab.active{border-color:#2563eb;background:#eff6ff;color:#174ea6;box-shadow:0 0 0 2px rgba(37,99,235,.08)}
+.paste-v46-tab i{font-size:16px}.paste-v46-tab b{display:block;font-size:12px}.paste-v46-tab small{display:block;font-size:9.5px;color:#64748b;margin-top:2px}
+.paste-v46-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:10px;padding:10px 12px;font-size:11px;line-height:1.5;margin-bottom:10px}
+.paste-v46-actions-top,.paste-v46-actions-bottom{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.paste-v46-btn{border:none;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;gap:6px}
+.paste-v46-add{background:#e2e8f0;color:#334155}.paste-v46-clear{background:#fee2e2;color:#991b1b}.paste-v46-save{background:#16a34a;color:#fff;margin-left:auto}.paste-v46-cancel{background:#64748b;color:#fff}
+.paste-v46-wrap{overflow:auto;border:1px solid #cbd5e1;border-radius:11px;background:#fff;max-height:58vh}
+.paste-v46-table{border-collapse:collapse;width:100%;min-width:950px;font-size:10.5px}
+.paste-v46-table th{position:sticky;top:0;z-index:3;background:#214596;color:#fff;border:1px solid #1d4ed8;padding:7px 6px;white-space:nowrap}
+.paste-v46-table td{border:1px solid #dbe2ea;padding:0;background:#fff;min-width:110px;height:32px}
+.paste-v46-table td:first-child{min-width:48px;width:48px;text-align:center;background:#f8fafc}
+.paste-v46-cell{min-height:31px;padding:7px 8px;outline:none;white-space:pre-wrap;word-break:break-word}
+.paste-v46-cell:focus{box-shadow:inset 0 0 0 2px #2563eb;background:#eff6ff}
+.paste-v46-row-bad td{background:#fff7ed}.paste-v46-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.paste-v46-chip{background:#fff;border:1px solid #dbe3ef;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900;color:#334155}.paste-v46-chip.good{background:#ecfdf5;color:#166534;border-color:#bbf7d0}.paste-v46-chip.warn{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.paste-v46-progress{display:none;background:#eef6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:800;margin-top:8px}.paste-v46-progress.show{display:block}
+@media(max-width:760px){.paste-v46-overlay{padding:0}.paste-v46-modal{width:100%;max-height:100vh;height:100vh;border-radius:0}.paste-v46-tabs{grid-template-columns:1fr 1fr}.paste-v46-body{padding:9px}.paste-v46-save{margin-left:0;width:100%;justify-content:center}.paste-v46-actions-bottom{display:grid;grid-template-columns:1fr 1fr}.paste-v46-actions-bottom .paste-v46-save{grid-column:1 / -1}.paste-v46-table{font-size:10px}}
+</style>
+
+<script id="pkpjPasteExcelV46Logic">
+(function(){
+  "use strict";
+  var activeModeV46="pc";
+  var sourceLabelV46="Tampal Excel V46";
+  var defs={
+    pc:{label:"PC Sewaan",icon:"fa-desktop",cols:["BIL","NAMA","EMEL","SERIAL NO PC","SERIAL NO MONITOR","SERIAL NO KEYBOARD","SERIAL NO MOUSE"]},
+    laptop:{label:"Laptop Sewaan",icon:"fa-laptop",cols:["BIL","NAMA","EMEL","SERIAL NO PC","SERIAL NO MOUSE","MODEL LAPTOP"]},
+    pkpj:{label:"Aset Pembelian PKPJ",icon:"fa-landmark",cols:["BIL","NAMA","NO.K/P BARU","GRED","JAWATAN","MODEL KOMPUTER / LAPTOP","NO. SIRI / NO. DAFTAR ASET","WINDOWS","TAHUN","PROCESSOR","RAM","SYSTEM TYPE","PRODUCT ID","MONITOR - JENAMA","MONITOR - NO. SIRI","PAPAN KEKUNCI / TETIKUS - JENAMA","PAPAN KEKUNCI / TETIKUS - NO. SIRI"]},
+    general:{label:"Inventori Biasa",icon:"fa-boxes-stacked",cols:["TAHUN","NAMA STAFF","JENIS PERKAKASAN","KATEGORI","JENAMA","MODEL","NO SIRI","TAG ASET","LOKASI","STATUS","TARIKH","PEMBEKAL","NO INVENTORI","CATATAN","EMEL"]}
+  };
+  function s(v){return String(v==null?"":v).trim()}
+  function low(v){return s(v).toLowerCase()}
+  function esc(v){return String(v==null?"":v).replace(/[&<>\"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function today(){var d=new Date(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return d.getFullYear()+"-"+m+"-"+day}
+  function year(){return String(new Date().getFullYear())}
+  function meaningful(v){var x=s(v);return x&&!/^(tiada|tidak berkaitan|-)$/i.test(x)?x:""}
+  function ui(id){return document.getElementById(id)}
+
+  function ensureUi(){
+    if(ui("pasteExcelOverlayV46"))return;
+    var o=document.createElement("div");o.id="pasteExcelOverlayV46";o.className="paste-v46-overlay";
+    o.innerHTML='<div class="paste-v46-modal"><div class="paste-v46-head"><h3><i class="fa-solid fa-table-cells"></i> Tampal Data Dari Excel</h3><button type="button" class="paste-v46-close" id="pasteCloseV46">Tutup</button></div><div class="paste-v46-body"><div class="paste-v46-tabs" id="pasteTabsV46"></div><div class="paste-v46-note" id="pasteNoteV46"><b>Cara guna:</b> Di Excel, highlight baris data yang hendak dimasukkan → <b>Ctrl+C</b> → klik sel pertama di bawah → <b>Ctrl+V</b>. Sistem akan pecahkan nilai ikut kolum secara automatik. Tidak perlu upload fail.</div><div class="paste-v46-actions-top"><button type="button" class="paste-v46-btn paste-v46-add" id="pasteAddRowsV46"><i class="fa-solid fa-plus"></i> Tambah 10 Baris</button><button type="button" class="paste-v46-btn paste-v46-clear" id="pasteClearV46"><i class="fa-solid fa-eraser"></i> Kosongkan Grid</button></div><div class="paste-v46-summary" id="pasteSummaryV46"></div><div class="paste-v46-wrap"><table class="paste-v46-table"><thead><tr id="pasteHeadV46"></tr></thead><tbody id="pasteBodyV46"></tbody></table></div><div class="paste-v46-progress" id="pasteProgressV46"></div><div class="paste-v46-actions-bottom"><button type="button" class="paste-v46-btn paste-v46-cancel" id="pasteCancelV46">Batal</button><button type="button" class="paste-v46-btn paste-v46-save" id="pasteSaveV46"><i class="fa-solid fa-floppy-disk"></i> Simpan Data Tampalan</button></div></div></div>';
+    document.body.appendChild(o);
+    var tabs=ui("pasteTabsV46");
+    ["pc","laptop","pkpj","general"].forEach(function(k){var d=defs[k],b=document.createElement("button");b.type="button";b.className="paste-v46-tab";b.dataset.mode=k;b.innerHTML='<i class="fa-solid '+d.icon+'"></i><span><b>'+d.label+'</b><small>'+d.cols.length+' kolum</small></span>';b.onclick=function(){setMode(k)};tabs.appendChild(b)});
+    ui("pasteCloseV46").onclick=closePaste;ui("pasteCancelV46").onclick=closePaste;ui("pasteAddRowsV46").onclick=function(){addRows(10)};ui("pasteClearV46").onclick=function(){if(confirm("Kosongkan semua data dalam grid tampalan?")){renderGrid(20)}};ui("pasteSaveV46").onclick=savePaste;
+    ui("pasteBodyV46").addEventListener("paste",handlePaste);
+    ui("pasteBodyV46").addEventListener("input",updateSummary);
+    o.addEventListener("click",function(ev){if(ev.target===o)closePaste()});
+  }
+  function setMode(mode){activeModeV46=defs[mode]?mode:"pc";ui("pasteTabsV46").querySelectorAll("[data-mode]").forEach(function(x){x.classList.toggle("active",x.dataset.mode===activeModeV46)});renderGrid(20)}
+  function renderGrid(count){var d=defs[activeModeV46],head=ui("pasteHeadV46"),body=ui("pasteBodyV46");head.innerHTML=d.cols.map(function(c){return "<th>"+esc(c)+"</th>"}).join("");body.innerHTML="";addRows(count||20);updateSummary();setTimeout(function(){var c=body.querySelector(".paste-v46-cell");if(c)c.focus()},50)}
+  function addRows(count){var body=ui("pasteBodyV46"),d=defs[activeModeV46];for(var r=0;r<count;r++){var tr=document.createElement("tr");for(var c=0;c<d.cols.length;c++){var td=document.createElement("td");var div=document.createElement("div");div.className="paste-v46-cell";div.contentEditable="true";div.spellcheck=false;div.dataset.col=String(c);td.appendChild(div);tr.appendChild(td)}body.appendChild(tr)}}
+  function closePaste(){var o=ui("pasteExcelOverlayV46");if(o)o.classList.remove("show")}
+  window.openPasteExcelV46=function(mode){ensureUi();setMode(mode||"pc");ui("pasteExcelOverlayV46").classList.add("show")};
+
+  function parseClipboard(text){return String(text||"").replace(/\r/g,"").split("\n").filter(function(line){return line.trim()!==""}).map(function(line){return line.split("\t")})}
+  function looksHeader(row){var j=row.join(" ").toLowerCase();return /\bnama\b/.test(j)&&(/serial|no\.?\s*siri|model|jenis perkakasan/.test(j))}
+  function handlePaste(ev){var cell=ev.target.closest(".paste-v46-cell");if(!cell)return;var txt=(ev.clipboardData||window.clipboardData).getData("text");if(!txt||txt.indexOf("\t")<0&&txt.indexOf("\n")<0)return;ev.preventDefault();var rows=parseClipboard(txt);while(rows.length&&looksHeader(rows[0]))rows.shift();if(!rows.length)return;var tr=cell.closest("tr"),body=ui("pasteBodyV46"),startRow=Array.prototype.indexOf.call(body.children,tr),startCol=Number(cell.dataset.col||0),need=startRow+rows.length-body.children.length;if(need>0)addRows(need+5);rows.forEach(function(vals,ri){var rowEl=body.children[startRow+ri];vals.forEach(function(v,ci){var target=rowEl&&rowEl.children[startCol+ci]&&rowEl.children[startCol+ci].querySelector(".paste-v46-cell");if(target)target.textContent=s(v)})});updateSummary()}
+  function gridRows(){var out=[];ui("pasteBodyV46").querySelectorAll("tr").forEach(function(tr){var vals=Array.from(tr.querySelectorAll(".paste-v46-cell")).map(function(c){return s(c.textContent)});if(vals.some(Boolean))out.push(vals)});return out}
+  function updateSummary(){if(!ui("pasteSummaryV46"))return;var rows=gridRows(),valid=buildRecords(rows,false).records.length;ui("pasteSummaryV46").innerHTML='<span class="paste-v46-chip">Mode: '+esc(defs[activeModeV46].label)+'</span><span class="paste-v46-chip good">Baris berisi: '+rows.length+'</span><span class="paste-v46-chip '+(rows.length&&valid<rows.length?'warn':'')+'">Boleh disimpan: '+valid+'</span>'}
+  function defaultLoc(){var el=ui("rentalDefaultLocationV38");return el&&s(el.value)||"Pejabat PKPJ"}
+  function defaultStatus(){var el=ui("rentalDefaultStatusV38");return el&&s(el.value)||"Baik"}
+  function addAsset(list,common,jenis,serial,model,extra){serial=meaningful(serial);if(!serial)return;list.push(Object.assign({},common,{jenisPerkakasan:jenis,jenisPerkakasanLain:"",jenama:"TIADA",model:meaningful(model)||"TIADA",noSiri:serial,tagAset:"TIADA",pembekal:common.kategori==="Sewaan"?"Sewaan":"TIADA",noInventori:"",kuantiti:"1",gambar:"",catatan:sourceLabelV46},extra||{}))}
+  function buildRecords(rows,strict){var assets=[],skipped=0;rows.forEach(function(v,idx){if(activeModeV46==="pc"){var name=s(v[1]),email=s(v[2]);if(!name||![v[3],v[4],v[5],v[6]].some(meaningful)){skipped++;return}var group="PASTE-PC-"+Date.now()+"-"+idx;var common={tahun:year(),namaStaff:name,namaPemegang:name,nama:name,emailStaff:email,kategori:"Sewaan",lokasi:defaultLoc(),status:defaultStatus(),tarikh:today(),kumpulanSewaan:group,sumberImport:sourceLabelV46,sumberFailTerkini:sourceLabelV46};addAsset(assets,common,"CPU",v[3],"");addAsset(assets,common,"Monitor",v[4],"");addAsset(assets,common,"Keyboard",v[5],"");addAsset(assets,common,"Mouse",v[6],"")}
+      else if(activeModeV46==="laptop"){var lname=s(v[1]),lemail=s(v[2]);if(!lname||!meaningful(v[3])){skipped++;return}var lgroup="PASTE-LAP-"+Date.now()+"-"+idx;var lcommon={tahun:year(),namaStaff:lname,namaPemegang:lname,nama:lname,emailStaff:lemail,kategori:"Sewaan",lokasi:defaultLoc(),status:defaultStatus(),tarikh:today(),kumpulanSewaan:lgroup,sumberImport:sourceLabelV46,sumberFailTerkini:sourceLabelV46};addAsset(assets,lcommon,"Laptop",v[3],v[5]);addAsset(assets,lcommon,"Mouse",v[4],"")}
+      else if(activeModeV46==="pkpj"){var pname=s(v[1]),model=s(v[5]),serial=meaningful(v[6]);if(!pname||!serial){skipped++;return}assets.push({tahun:s(v[8])||year(),namaStaff:pname,namaPemegang:pname,nama:pname,jenisPerkakasan:/laptop|notebook/i.test(model)?"Laptop":"CPU",kategori:"PKPJ",jenama:"TIADA",model:model||"TIADA",noSiri:serial,tagAset:"TIADA",lokasi:"Pejabat PKPJ",status:"Baik",tarikh:today(),pembekal:"TIADA",noInventori:"",kuantiti:"1",gambar:"",catatan:sourceLabelV46,sumberImport:sourceLabelV46,sumberFailTerkini:sourceLabelV46,noKpBaru:s(v[2]),gred:s(v[3]),jawatan:s(v[4]),windows:s(v[7]),processor:s(v[9]),ram:s(v[10]),systemType:s(v[11]),productId:s(v[12]),monitorJenama:s(v[13]),monitorNoSiri:s(v[14]),peripheralJenama:s(v[15]),peripheralNoSiri:s(v[16]),jenisPembelianPkpj:/laptop|notebook/i.test(model)?"Laptop":"CPU"})}
+      else {var nama=s(v[1]),jenis=s(v[2]),kategori=s(v[3]);if(!nama||!jenis||!kategori){skipped++;return}assets.push({tahun:s(v[0])||year(),namaStaff:nama,namaPemegang:nama,nama:nama,jenisPerkakasan:jenis,kategori:kategori,jenama:s(v[4])||"TIADA",model:s(v[5])||"TIADA",noSiri:s(v[6])||"TIADA",tagAset:s(v[7])||"TIADA",lokasi:s(v[8])||"Pejabat PKPJ",status:s(v[9])||"Baik",tarikh:s(v[10])||today(),pembekal:s(v[11])||"TIADA",noInventori:s(v[12]),kuantiti:"1",gambar:"",catatan:s(v[13])||sourceLabelV46,emailStaff:s(v[14]),sumberImport:sourceLabelV46,sumberFailTerkini:sourceLabelV46})}});var map={},nos=[];assets.forEach(function(a){var k=low(a.noSiri).replace(/\s+/g,"");if(k&&k!=="tiada"&&k!=="tidakberkaitan"&&k!=="-")map[k]=a;else nos.push(a)});return {records:Object.keys(map).map(function(k){return map[k]}).concat(nos),skipped:skipped}}
+
+  async function savePaste(){var built=buildRecords(gridRows(),true),records=built.records;if(!records.length){alert("Tiada rekod sah untuk disimpan. Pastikan data ditampal pada kolum yang betul.");return}if(!confirm("Simpan "+records.length+" rekod aset daripada tampalan Excel?\n\nSerial yang sama akan UPDATE rekod sedia ada, bukan tambah duplicate."))return;var btn=ui("pasteSaveV46"),p=ui("pasteProgressV46");btn.disabled=true;p.classList.add("show");var total={updated:0,added:0,duplicateRemoved:0,previousCaptured:0,skipped:0};try{if(typeof showSaveMotionV29==="function")showSaveMotionV29("Tampal Excel","Menyimpan data tanpa duplicate...");for(var i=0;i<records.length;i+=30){var chunk=records.slice(i,i+30),id="paste46_"+Date.now()+"_"+i+"_"+Math.floor(Math.random()*99999);p.textContent="Menyimpan "+(i+1)+" - "+Math.min(i+chunk.length,records.length)+" daripada "+records.length+"...";submitHiddenForm({action:"pasteInventoryV46",recordsJson:JSON.stringify(chunk),requestId:id});var res=await waitSaveResultFast(id);if(!res||res.status!=="OK")throw new Error((res&&res.message)||"Gagal simpan tampalan");["updated","added","duplicateRemoved","previousCaptured","skipped"].forEach(function(k){total[k]+=Number(res[k]||0)})}if(typeof fastBootstrapLoad==="function")await fastBootstrapLoad({silent:true,fresh:true});else if(typeof refreshAll==="function")await refreshAll({clearForm:false,silent:true});p.textContent="Selesai. Update: "+total.updated+" | Baru: "+total.added+" | Duplicate dibuang: "+total.duplicateRemoved+(total.previousCaptured?" | Staff lama direkod: "+total.previousCaptured:"");if(typeof finishSaveMotionV29==="function")await finishSaveMotionV29("Tampalan Excel berjaya");if(typeof showToast==="function")showToast("Data tampalan berjaya disimpan tanpa duplicate");renderGrid(20);if(typeof renderComputerV38==="function")try{renderComputerV38()}catch(e){}if(typeof window.renderPkpjPurchaseV41==="function")try{window.renderPkpjPurchaseV41()}catch(e){}}
+    catch(err){console.error(err);p.textContent="Gagal: "+(err.message||err);if(typeof failSaveMotionV29==="function")failSaveMotionV29(err.message||String(err));alert("Simpan tampalan gagal: "+(err.message||err))}finally{btn.disabled=false}}
+
+  function activeComputerMode(){var b=document.querySelector('#computerInventoryOverlayV38 [data-mode].active');if(b&&b.dataset.mode==="pkpj")return "pkpj";if(b&&b.dataset.mode==="ict")return "general";var tab=document.querySelector('#computerInventoryOverlayV38 [data-tab].active');return tab&&tab.dataset.tab==="laptop"?"laptop":"pc"}
+  function relabel(){var b=ui("computerImportBtnV38");if(b){b.innerHTML='<i class="fa-solid fa-table-cells"></i> Tampal Dari Excel';b.title="Copy baris dari Excel dan tampal terus ke grid"}var opt=document.querySelector("#inventoryEntryV39 .inventory-entry-v39-option.excel");if(opt){var bb=opt.querySelector("b"),sm=opt.querySelector("small"),ic=opt.querySelector("i.fa-file-excel");if(bb)bb.textContent="Tampal Dari Excel";if(sm)sm.textContent="Copy baris daripada Excel dan tampal terus ke kolum sistem.";if(ic){ic.classList.remove("fa-file-excel");ic.classList.add("fa-table-cells")}}}
+  document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("#computerImportBtnV38");if(b){ev.preventDefault();ev.stopImmediatePropagation();window.openPasteExcelV46(activeComputerMode());return}},true);
+  window.openInventoryExcelV39=function(){try{if(typeof closeInventoryEntryV39==="function")closeInventoryEntryV39()}catch(e){}window.openPasteExcelV46("general")};
+  function boot(){ensureUi();relabel();setInterval(relabel,1200)}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+
 </body>
 </html>
