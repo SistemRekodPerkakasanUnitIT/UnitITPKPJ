@@ -12968,5 +12968,203 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
 })();
 </script>
 
+
+
+<style id="pkpjV48CleanEditActionsStyle">
+/* ===== V48: TINDAKAN KEMAS + PINDAH KATEGORI DI DALAM EDIT ===== */
+.rental-v47-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  flex-wrap:nowrap!important;
+}
+.rental-v47-actions .rental-v47-pkpj,
+.rental-v47-actions .rental-v47-ict{
+  display:none!important;
+}
+.rental-v47-edit,.rental-v47-delete,.computer-v48-edit{
+  min-width:72px!important;
+  min-height:32px!important;
+  border:0!important;
+  border-radius:8px!important;
+  padding:7px 12px!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  white-space:nowrap!important;
+}
+.rental-v47-edit,.computer-v48-edit{background:#2563eb!important;color:#fff!important;}
+.rental-v47-delete{background:#fee2e2!important;color:#991b1b!important;border:1px solid #fecaca!important;}
+.rental-v47-edit:hover,.computer-v48-edit:hover{background:#1d4ed8!important;}
+.rental-v47-delete:hover{background:#fecaca!important;}
+.v48-category-box{
+  margin-top:16px;
+  padding:14px;
+  border:1px solid #bfdbfe;
+  border-radius:12px;
+  background:linear-gradient(135deg,#eff6ff,#f8fafc);
+}
+.v48-category-box-title{font-size:12px;font-weight:900;color:#1e3a8a;margin-bottom:4px;}
+.v48-category-box-note{font-size:11px;color:#64748b;line-height:1.4;margin-bottom:10px;}
+.v48-category-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.v48-category-actions button{
+  min-height:34px!important;
+  border:0!important;
+  border-radius:8px!important;
+  padding:8px 13px!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+}
+.v48-to-pkpj{background:#7c3aed!important;color:#fff!important;}
+.v48-to-ict{background:#0f766e!important;color:#fff!important;}
+.v48-to-rental{background:#f59e0b!important;color:#111827!important;}
+.v48-edit-save-note{font-size:11px;color:#475569;margin-top:8px;line-height:1.35;}
+#computerContentV38 .computer-v48-action-wrap{display:flex;align-items:center;justify-content:center;gap:7px;}
+@media(max-width:760px){
+  .v48-category-actions{display:grid;grid-template-columns:1fr;}
+  .v48-category-actions button{width:100%!important;}
+  .rental-v47-actions{flex-wrap:wrap!important;}
+}
+</style>
+<script id="pkpjV48CleanEditActionsLogic">
+(function(){
+  "use strict";
+  var V="V48";
+  function q(id){return document.getElementById(id);}
+  function s(v){return String(v==null?"":v).trim();}
+  function low(v){return s(v).toLowerCase();}
+  function esc(v){return s(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+  function data(){try{return Array.isArray(window.allData)?window.allData:(typeof allData!=="undefined"&&Array.isArray(allData)?allData:[]);}catch(e){return [];}}
+  function findRow(row){row=Number(row||0);return data().find(function(x){return Number(x&&x.row||0)===row;})||null;}
+  function currentMode(){var b=document.querySelector('#computerInventoryOverlayV38 [data-mode].active');return b?b.dataset.mode:"sewaan";}
+  function computerContent(){return q("computerContentV38");}
+
+  async function submitUpdate(row,record,success){
+    var requestId="v48_"+Date.now()+"_"+Math.floor(Math.random()*99999);
+    try{
+      if(typeof showSaveMotionV29==="function")showSaveMotionV29("Kemaskini Kategori","Sedang memproses...");
+      submitHiddenForm({action:"update",row:String(row),recordsJson:JSON.stringify([record]),requestId:requestId});
+      var res=await waitSaveResultFast(requestId);
+      if(!res||res.status!=="OK")throw new Error((res&&res.message)||"Kemaskini gagal");
+      if(typeof fastBootstrapLoad==="function")await fastBootstrapLoad({silent:true,fresh:true});
+      else if(typeof refreshAll==="function")await refreshAll({clearForm:false,silent:true});
+      if(typeof finishSaveMotionV29==="function")await finishSaveMotionV29(success||"Berjaya dikemaskini");
+      if(typeof showToast==="function")showToast(success||"Berjaya dikemaskini");
+      try{if(typeof window.renderComputerV38==="function")window.renderComputerV38();}catch(e){}
+      return res;
+    }catch(err){
+      try{if(typeof failSaveMotionV29==="function")failSaveMotionV29(err.message||String(err));}catch(e){}
+      alert("Proses gagal: "+(err.message||err));
+      throw err;
+    }
+  }
+
+  window.moveOwnedComputerV48=async function(row,target){
+    var item=findRow(row);if(!item)return alert("Rekod aset tidak dijumpai.");
+    target=s(target).toUpperCase();
+    if(["PKPJ","SEWAAN","ICT"].indexOf(target)<0)return;
+    var from=s(item.kategori)||"ICT";
+    if(from.toUpperCase()===target)return alert("Aset ini memang sudah dalam kategori "+target+".");
+    var label=target==="PKPJ"?"Aset Pembelian PKPJ":target==="SEWAAN"?"Sewaan":"ICT";
+    if(!confirm("Tukar aset ini daripada "+from+" ke "+label+"?\n\nNama: "+s(item.namaStaff||item.namaPemegang||item.nama)+"\nNo. Siri: "+s(item.noSiri)))return;
+    var rec={};Object.keys(item).forEach(function(k){if(k!=="row")rec[k]=item[k];});
+    rec.kategori=target==="SEWAAN"?"Sewaan":target;
+    if(target==="SEWAAN"){
+      rec.kumpulanSewaan=s(rec.kumpulanSewaan)||("ICT-SEWAAN-"+Date.now()+"-"+Number(row||0));
+      rec.sumberImport=s(rec.sumberImport)||"Tukar ICT ke Sewaan V48";
+      rec.catatan=s(rec.catatan)?s(rec.catatan)+" | Ditukar ke Sewaan melalui Edit V48":"Ditukar ke Sewaan melalui Edit V48";
+    }else{
+      rec.kumpulanSewaan="";
+      rec.sumberImport=s(rec.sumberImport)||("Tukar ke "+target+" V48");
+      rec.catatan=s(rec.catatan)?s(rec.catatan)+" | Ditukar ke "+label+" melalui Edit V48":"Ditukar ke "+label+" melalui Edit V48";
+    }
+    if(target==="PKPJ"){
+      rec.jenisPembelianPkpj=s(rec.jenisPembelianPkpj)||s(rec.jenisPerkakasan)||"Komputer / Laptop";
+      rec.kumpulanPkpj=s(rec.kumpulanPkpj)||("PKPJ-V48-"+Date.now()+"-"+Number(row||0));
+    }
+    await submitUpdate(row,rec,"Aset berjaya ditukar ke "+label);
+    try{var form=q("formPage");if(form&&form.classList.contains("active")&&typeof closeInventoryFormModal==="function")closeInventoryFormModal();}catch(e){}
+    setTimeout(function(){try{if(typeof window.openComputerInventoryV38==="function")window.openComputerInventoryV38(target==="SEWAAN"?"sewaan":target.toLowerCase());}catch(e){}},120);
+  };
+
+  function decorateRentalEdit(index){
+    var body=q("rentalEditBodyV47");if(!body)return;
+    var form=q("rentalEditFormV47");if(!form)return;
+    var old=body.querySelector(".v48-category-box");if(old)old.remove();
+    var box=document.createElement("div");box.className="v48-category-box";
+    box.innerHTML='<div class="v48-category-box-title"><i class="fa-solid fa-arrow-right-arrow-left"></i> Tukar Kategori</div><div class="v48-category-box-note">Pilihan pindah diletakkan di dalam Edit supaya kolum Tindakan kekal kemas.</div><div class="v48-category-actions"><button type="button" class="v48-to-pkpj"><i class="fa-solid fa-landmark"></i> Tukar ke PKPJ</button><button type="button" class="v48-to-ict"><i class="fa-solid fa-screwdriver-wrench"></i> Tukar ke ICT</button></div><div class="v48-edit-save-note">Gunakan <b>Simpan</b> untuk ubah maklumat. Gunakan butang di atas hanya jika mahu pindahkan kategori.</div>';
+    form.insertBefore(box,form.querySelector(".rental-v47-form-actions"));
+    var btnP=box.querySelector(".v48-to-pkpj"),btnI=box.querySelector(".v48-to-ict");
+    btnP.onclick=async function(){btnP.disabled=true;btnI.disabled=true;try{await window.moveRentalSetV47(index,"PKPJ");var o=q("rentalEditOverlayV47");if(o)o.classList.remove("show");}finally{btnP.disabled=false;btnI.disabled=false;}};
+    btnI.onclick=async function(){btnP.disabled=true;btnI.disabled=true;try{await window.moveRentalSetV47(index,"ICT");var o=q("rentalEditOverlayV47");if(o)o.classList.remove("show");}finally{btnP.disabled=false;btnI.disabled=false;}};
+  }
+
+  if(typeof window.editRentalSetV47==="function"&&!window.editRentalSetV47.__v48){
+    var baseRentalEdit=window.editRentalSetV47;
+    var wrapRental=function(index){var out=baseRentalEdit.apply(this,arguments);setTimeout(function(){decorateRentalEdit(index);},0);return out;};
+    wrapRental.__v48=true;window.editRentalSetV47=wrapRental;
+  }
+
+  function injectIctCategoryActions(row){
+    var formPage=q("formPage");if(!formPage)return;
+    var old=q("ictCategoryActionsV48");if(old)old.remove();
+    var buttons=formPage.querySelector(".form-buttons");if(!buttons)return;
+    var box=document.createElement("div");box.id="ictCategoryActionsV48";box.className="v48-category-box";
+    box.innerHTML='<div class="v48-category-box-title"><i class="fa-solid fa-arrow-right-arrow-left"></i> Tukar Kategori PC / Laptop ICT</div><div class="v48-category-box-note">Simpan perubahan biasa dengan butang Simpan/Kemaskini. Untuk pindah kategori, gunakan pilihan ini.</div><div class="v48-category-actions"><button type="button" class="v48-to-pkpj"><i class="fa-solid fa-landmark"></i> Tukar ke PKPJ</button><button type="button" class="v48-to-rental"><i class="fa-solid fa-building"></i> Tukar ke Sewaan</button></div>';
+    buttons.parentElement.insertBefore(box,buttons);
+    box.querySelector(".v48-to-pkpj").onclick=function(){window.moveOwnedComputerV48(row,"PKPJ");};
+    box.querySelector(".v48-to-rental").onclick=function(){window.moveOwnedComputerV48(row,"SEWAAN");};
+  }
+
+  window.openIctEditV48=function(row){
+    row=Number(row||0);if(!row)return;
+    var overlay=q("computerInventoryOverlayV38");if(overlay)overlay.classList.remove("show");
+    try{document.body.classList.remove("computer-v38-open");}catch(e){}
+    if(typeof editData!=="function")return alert("Fungsi Edit aset tidak dijumpai.");
+    editData(row);
+    setTimeout(function(){injectIctCategoryActions(row);},80);
+  };
+
+  function parseRowFromButton(btn){
+    var raw=btn?String(btn.getAttribute("onclick")||""):"";
+    var m=raw.match(/showAssetGroupDetailV31\((\d+)\)/);return m?Number(m[1]):0;
+  }
+
+  function decorateIctTable(){
+    if(currentMode()!=="ict")return;
+    var content=computerContent();if(!content)return;
+    var table=content.querySelector("table");if(!table)return;
+    table.dataset.v48ict="1";
+    table.querySelectorAll("tbody tr").forEach(function(tr){
+      var cell=tr.querySelector('td[data-label="Tindakan"]')||tr.lastElementChild;if(!cell)return;
+      var oldBtn=cell.querySelector("button");var row=parseRowFromButton(oldBtn);if(!row)return;
+      cell.innerHTML='<div class="computer-v48-action-wrap"><button type="button" class="computer-v48-edit" onclick="openIctEditV48('+row+')"><i class="fa-solid fa-pen"></i> Edit</button></div>';
+    });
+  }
+
+  function cleanRentalActionButtons(){
+    if(currentMode()!=="sewaan")return;
+    var content=computerContent();if(!content)return;
+    content.querySelectorAll(".rental-v47-pkpj,.rental-v47-ict").forEach(function(b){b.style.setProperty("display","none","important");});
+  }
+
+  var observer=null;
+  function hook(){
+    var content=computerContent();
+    if(content&&!observer){observer=new MutationObserver(function(){setTimeout(function(){decorateIctTable();cleanRentalActionButtons();},0);});observer.observe(content,{childList:true,subtree:false});}
+    decorateIctTable();cleanRentalActionButtons();
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(hook,120);});else setTimeout(hook,120);
+  setInterval(hook,900);
+})();
+</script>
 </body>
 </html>
