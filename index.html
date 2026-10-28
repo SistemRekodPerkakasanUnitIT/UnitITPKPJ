@@ -12714,5 +12714,74 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
   setInterval(enforce,1000);
 })();
 </script>
+
+
+<style id="pkpjResetExcelOnlyV45Style">
+#pkpjCompareBtnV43{display:none!important}
+.computer-v45-reset-excel{background:#dc2626!important;color:#fff!important;display:inline-flex!important;align-items:center!important;gap:6px!important}
+.computer-v45-reset-excel:hover{background:#b91c1c!important}
+@media(max-width:760px){.computer-v45-reset-excel{width:100%!important;justify-content:center!important}}
+</style>
+<script id="pkpjResetExcelOnlyV45Logic">
+(function(){
+  "use strict";
+  function byId(id){return document.getElementById(id);}
+  function clearExcelInputs(){
+    ["rentalComputerExcelInputV38","inventoryExcelFileV39","pkpjPurchaseExcelInputV41","pkpjOldFileV43","pkpjLatestFileV43"].forEach(function(id){var el=byId(id);if(el)el.value="";});
+  }
+  function hideCompareUi(){
+    var btn=byId("pkpjCompareBtnV43");if(btn)btn.style.setProperty("display","none","important");
+    var modal=byId("pkpjCompareOverlayV43");if(modal)modal.classList.remove("show");
+  }
+  function ensureResetButton(){
+    hideCompareUi();
+    var head=document.querySelector("#computerInventoryOverlayV38 .computer-v38-head-actions");
+    if(!head||byId("computerResetExcelBtnV45"))return;
+    var btn=document.createElement("button");
+    btn.type="button";
+    btn.id="computerResetExcelBtnV45";
+    btn.className="computer-v38-import computer-v45-reset-excel";
+    btn.innerHTML='<i class="fa-solid fa-rotate-left"></i> Reset Import Excel';
+    btn.title="Padam rekod PC/Laptop yang datang daripada Excel sahaja. Rekod manual tidak disentuh.";
+    btn.addEventListener("click",resetExcelOnlyV45);
+    var importBtn=byId("computerImportBtnV38");
+    if(importBtn&&importBtn.parentNode===head)head.insertBefore(btn,importBtn);else head.insertBefore(btn,head.firstChild);
+  }
+  async function resetExcelOnlyV45(){
+    try{
+      var countRes=await jsonp({action:"countExcelImportsV45",_ts:Date.now()});
+      if(!countRes||countRes.status!=="OK")throw new Error((countRes&&countRes.message)||"Gagal kira rekod import Excel");
+      var count=Number(countRes.count||0);
+      if(!count){clearExcelInputs();if(typeof showToast==="function")showToast("Tiada rekod import Excel PC/Laptop untuk direset");return;}
+      var msg="Reset "+count+" rekod PC/Laptop yang datang daripada Excel?\n\n"+
+        "Yang AKAN dipadam:\n• Rekod import Excel Sewaan / PKPJ / ICT dalam modul PC-Laptop\n• Rekod compare lama yang ditanda sebagai sumber fail Excel\n\n"+
+        "Yang TIDAK dipadam:\n• Rekod yang dimasukkan manual\n• Data staff\n• VOIP / WiFi / Printer / aset lain\n\n"+
+        "Selepas reset, tuan boleh upload SATU fail Excel terkini sahaja.";
+      if(!confirm(msg))return;
+      var requestId="resetexcel45_"+Date.now()+"_"+Math.floor(Math.random()*99999);
+      if(typeof showSaveMotionV29==="function")showSaveMotionV29("Reset Import Excel","Membuang rekod Excel PC/Laptop sahaja...");
+      submitHiddenForm({action:"resetExcelImportsV45",requestId:requestId});
+      var res=await waitSaveResultFast(requestId);
+      if(!res||res.status!=="OK")throw new Error((res&&res.message)||"Reset Excel gagal");
+      clearExcelInputs();
+      try{var p=byId("computerProgressV38");if(p){p.classList.add("show");p.textContent="Reset Excel selesai: "+Number(res.deleted||0)+" rekod import dibuang. Sila upload satu fail Excel terkini.";}}catch(e){}
+      if(typeof fastBootstrapLoad==="function")await fastBootstrapLoad({silent:true,fresh:true});
+      else if(typeof refreshAll==="function")await refreshAll({clearForm:false,silent:true});
+      if(typeof renderComputerV38==="function")renderComputerV38();
+      if(typeof window.renderPkpjPurchaseV41==="function")try{window.renderPkpjPurchaseV41();}catch(e){}
+      if(typeof finishSaveMotionV29==="function")await finishSaveMotionV29("Reset Excel selesai");
+      if(typeof showToast==="function")showToast("Reset Excel selesai. Rekod manual kekal.");
+    }catch(err){
+      console.error(err);
+      if(typeof failSaveMotionV29==="function")failSaveMotionV29(err.message||String(err));
+      alert("Reset Excel gagal: "+(err.message||err));
+    }
+  }
+  window.resetExcelOnlyV45=resetExcelOnlyV45;
+  function boot(){ensureResetButton();hideCompareUi();setInterval(function(){ensureResetButton();hideCompareUi();},1200);}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+
 </body>
 </html>
