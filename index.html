@@ -7407,7 +7407,10 @@ if(oldRefreshAllSelesai){
 
   function masterGroupName(item){
     const manualGroup = String(item && item.kumpulanPaparan || "").trim();
-    if(manualGroup.toLowerCase() === "lain-lain") return "Lain-lain";
+    const kategori = String(item && item.kategori || "").trim().toLowerCase();
+    const directJenis = String(item && item.jenisPerkakasan || "").trim().toLowerCase();
+    /* Komponen dalam satu set PC Sewaan tidak dipaparkan sebagai aset berasingan di hub utama. */
+    if(kategori === "sewaan" && /^(monitor|keyboard|mouse)$/.test(directJenis)) return "Komponen PC Sewaan";
     const raw = [item && item.jenisPerkakasan, item && item.jenisPerkakasanLain, item && item.catatan, item && item.jenama, item && item.model]
       .map(v => String(v || "").toLowerCase()).join(" ");
     if(/laptop|notebook|komputer riba/.test(raw)) return "Laptop";
@@ -7418,7 +7421,9 @@ if(oldRefreshAllSelesai){
     if(/johor\s*wifi|wifi\s*johor|aksesori\s*(?:johor\s*)?wifi/.test(raw)) return "Aksesori WiFi";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw)) return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server|set komputer|komputer meja|komputer desktop|pc\s*\/?\s*cpu|\bpc\b/.test(raw)) return "CPU / Desktop";
-    if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw)) return "Aksesori";
+    if(/keyboard|papan kekunci|mouse|tetikus|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw)) return "Aksesori";
+    /* Hanya aset yang memang tidak dikenali dibenarkan kekal dalam Lain-lain. */
+    if(manualGroup.toLowerCase() === "lain-lain") return "Lain-lain";
     const jenis = String(item && item.jenisPerkakasan || "").trim();
     if(!jenis || jenis.toLowerCase() === "tiada") return "Belum Dikelaskan";
     return "Lain-lain";
@@ -11170,7 +11175,10 @@ body.asset-group-overview-open-v31{overflow:hidden!important}
   function e(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");}
   function meaningful(v){var s=n(v),l=s.toLowerCase();return (!s||l==="tiada"||l==="tidak berkaitan"||l==="-")?"":s;}
   function groupOf(item){
-    var manual=n(item&&item.kumpulanPaparan);if(manual.toLowerCase()==="lain-lain")return "Lain-lain";
+    var manual=n(item&&item.kumpulanPaparan);
+    var kategori=n(item&&item.kategori).toLowerCase();
+    var directJenis=n(item&&item.jenisPerkakasan).toLowerCase();
+    if(kategori==="sewaan"&&/^(monitor|keyboard|mouse)$/.test(directJenis))return "Komponen PC Sewaan";
     var raw=[item&&item.jenisPerkakasan,item&&item.jenisPerkakasanLain,item&&item.catatan,item&&item.jenama,item&&item.model].map(function(v){return n(v).toLowerCase();}).join(" ");
     if(/laptop|notebook|komputer riba/.test(raw))return "Laptop";
     if(/monitor|paparan|screen|skrin/.test(raw))return "Monitor";
@@ -11180,9 +11188,9 @@ body.asset-group-overview-open-v31{overflow:hidden!important}
     if(/johor\s*wifi|wifi\s*johor|aksesori\s*(?:johor\s*)?wifi/.test(raw))return "Aksesori WiFi";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw))return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server|set komputer|komputer meja|komputer desktop|pc\s*\/?\s*cpu|\bpc\b/.test(raw))return "CPU / Desktop";
-    if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
-    var jenis=n(item&&item.jenisPerkakasan);if(!jenis||jenis.toLowerCase()==="tiada")return "Belum Dikelaskan";
-    return "Lain-lain";
+    if(/keyboard|papan kekunci|mouse|tetikus|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
+    if(manual.toLowerCase()==="lain-lain")return "Lain-lain";
+    var jenis=n(item&&item.jenisPerkakasan);if(!jenis||jenis.toLowerCase()==="tiada")return "Belum Dikelaskan";return "Lain-lain";
   }
   function isActive(item){try{if(typeof isCompletedAsset==="function"&&isCompletedAsset(item))return false;}catch(err){}return n(item&&item.status).toLowerCase()!=="selesai";}
   function iconOf(group){if(group==="Laptop")return "fa-laptop";if(group==="Monitor")return "fa-desktop";if(group==="Printer")return "fa-print";if(group==="WiFi Pole")return "fa-tower-broadcast";if(group==="Aksesori WiFi")return "fa-screwdriver-wrench";if(group==="Rangkaian / WiFi")return "fa-wifi";if(group==="CPU / Desktop")return "fa-computer";if(group==="Aksesori")return "fa-keyboard";if(group==="Belum Dikelaskan")return "fa-circle-question";return "fa-box";}
@@ -11330,7 +11338,10 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
   function esc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");}
   function isActive(item){try{if(typeof isCompletedAsset==="function")return !isCompletedAsset(item);}catch(e){}return n(item&&item.status).toLowerCase()!=="selesai";}
   function groupOf(item){
-    var manual=n(item&&item.kumpulanPaparan);if(manual.toLowerCase()==="lain-lain")return "Lain-lain";
+    var manual=n(item&&item.kumpulanPaparan);
+    var kategori=n(item&&item.kategori).toLowerCase();
+    var directJenis=n(item&&item.jenisPerkakasan).toLowerCase();
+    if(kategori==="sewaan"&&/^(monitor|keyboard|mouse)$/.test(directJenis))return "Komponen PC Sewaan";
     var raw=[item&&item.jenisPerkakasan,item&&item.jenisPerkakasanLain,item&&item.catatan,item&&item.jenama,item&&item.model].map(function(v){return n(v).toLowerCase();}).join(" ");
     if(/laptop|notebook|komputer riba/.test(raw))return "Laptop";
     if(/monitor|paparan|screen|skrin/.test(raw))return "Monitor";
@@ -11340,7 +11351,8 @@ body.asset-detail-popup-open-v32 .image-overlay{z-index:290010!important}body.as
     if(/johor\s*wifi|wifi\s*johor|aksesori\s*(?:johor\s*)?wifi/.test(raw))return "Aksesori WiFi";
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw))return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server|set komputer|komputer meja|komputer desktop|pc\s*\/?\s*cpu|\bpc\b/.test(raw))return "CPU / Desktop";
-    if(/keyboard|mouse|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
+    if(/keyboard|papan kekunci|mouse|tetikus|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
+    if(manual.toLowerCase()==="lain-lain")return "Lain-lain";
     var jenis=n(item&&item.jenisPerkakasan);if(!jenis||jenis.toLowerCase()==="tiada")return "Belum Dikelaskan";return "Lain-lain";
   }
   function iconOf(group){
@@ -11987,7 +11999,24 @@ body.computer-v38-open{overflow:hidden!important}
       cpu.style.setProperty("display","flex","important");cpu.setAttribute("onclick","openComputerInventoryV38('sewaan')");
       var name=cpu.querySelector(".asset-category-name-v32"),count=cpu.querySelector(".asset-category-count-v32"),icon=cpu.querySelector("i");
       if(name)name.textContent="PC / Laptop";if(icon)icon.className="fa-solid fa-computer";
-      var seen={},total=0;(Array.isArray(allData)?allData:[]).filter(function(x){return isActive(x)&&isComputer(x);}).forEach(function(x){var serial=n(x.noSiri),tag=n(x.tagAset||x.noInventori),identity=serial||tag;var key=identity?identity.toUpperCase().replace(/[^A-Z0-9]/g,""):("ROW"+Number(x.row||0));if(seen[key])return;seen[key]=1;total++;});if(count)count.textContent=total+" aset unik";
+      var seen={},total=0;(Array.isArray(allData)?allData:[]).filter(function(x){return isActive(x)&&isComputer(x);}).forEach(function(x){
+        var jenis=low(x.jenisPerkakasan),cat=category(x),key="";
+        if(cat==="sewaan"){
+          var gid=n(x.kumpulanSewaan);
+          if(gid){key="SEWAAN|"+gid.toUpperCase();}
+          else{
+            if(jenis!=="cpu"&&jenis!=="laptop")return;
+            var holder=n(x.namaStaff||x.namaPemegang||x.nama).toUpperCase();
+            var ident=n(x.noSiri||x.tagAset||x.noInventori).toUpperCase().replace(/[^A-Z0-9]/g,"");
+            key="SEWAAN|"+jenis+"|"+(ident||holder||("ROW"+Number(x.row||0)));
+          }
+        }else{
+          if(jenis!=="cpu"&&jenis!=="laptop")return;
+          var identity=n(x.noSiri||x.tagAset||x.noInventori).toUpperCase().replace(/[^A-Z0-9]/g,"");
+          key=cat+"|"+jenis+"|"+(identity||("ROW"+Number(x.row||0)));
+        }
+        if(seen[key])return;seen[key]=1;total++;
+      });if(count)count.textContent=total+" set / aset";
       cpu.title="Kiraan berdasarkan No. Siri / No. Daftar Aset unik. Rekod duplicate tidak dikira dua kali.";
     }
   }
@@ -13446,7 +13475,10 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
   }
 
   function classify(item){
-    var manual=low(item&&item.kumpulanPaparan);if(manual==="lain-lain")return "Lain-lain";
+    var manual=low(item&&item.kumpulanPaparan);
+    var kategori=low(item&&item.kategori);
+    var directJenis=low(item&&item.jenisPerkakasan);
+    if(kategori==="sewaan"&&/^(monitor|keyboard|mouse)$/.test(directJenis))return "Komponen PC Sewaan";
     var raw=[item&&item.jenisPerkakasan,item&&item.jenisPerkakasanLain,item&&item.catatan,item&&item.jenama,item&&item.model].map(low).join(" ");
     if(/laptop|notebook|komputer riba/.test(raw))return "Laptop";
     if(/monitor|paparan|screen|skrin/.test(raw))return "Monitor";
@@ -13457,6 +13489,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
     if(/wifi|wi-fi|rangkaian|router|switch|access point|\bap\b|unifi|ruckus|mikrotik/.test(raw))return "Rangkaian / WiFi";
     if(/cpu|desktop|micro tower|prodesk|elitedesk|thinkcentre|server|set komputer|komputer meja|komputer desktop|pc\s*\/?\s*cpu|\bpc\b/.test(raw))return "CPU / Desktop";
     if(/keyboard|papan kekunci|mouse|tetikus|speaker|cable|kabel|aksesori|adapter|adaptor|vga|hdmi/.test(raw))return "Aksesori";
+    if(manual==="lain-lain")return "Lain-lain";
     var jenis=low(item&&item.jenisPerkakasan);if(!jenis||jenis==="tiada")return "Belum Dikelaskan";return "Lain-lain";
   }
 
@@ -13890,5 +13923,7 @@ body{color:var(--v51-text)!important;}
   },true);
 })();
 </script>
+
+<!-- V54: FIX grouping komponen PC Sewaan; tiada fungsi baharu ditambah. -->
 </body>
 </html>
