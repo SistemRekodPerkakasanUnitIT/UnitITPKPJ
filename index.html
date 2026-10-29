@@ -13498,5 +13498,177 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
 })();
 </script>
 
+
+<!-- ===== V51: WIZARD TAMBAH ASET + COPY PASTE PER JENIS + BULK DELETE + UI GOOGLE ===== -->
+<style id="pkpjV51WizardBulkStyle">
+:root{--v51-blue:#1a73e8;--v51-blue2:#174ea6;--v51-text:#202124;--v51-muted:#5f6368;--v51-line:#dadce0;--v51-bg:#f8fafd;}
+html,body,button,input,select,textarea{font-family:"Google Sans","Roboto",Arial,sans-serif!important;}
+body{color:var(--v51-text)!important;}
+/* Buang butang tambahan V50 yang mengelirukan. Pemilihan jenis dibuat sekali di awal. */
+#computerAddAssetV50,#v50PickerPaste,#formPage .inventory-type-actions{display:none!important;}
+#formPage.v51-wizard-active .inventory-selected-type-box,#formPage.v51-wizard-active .form-staff-upload-field,#formPage.v51-wizard-active .inventory-primary-location{display:none!important;}
+#formPage.v51-wizard-active .form-area{background:#f8fafd!important;padding:14px 16px 0!important;}
+#formPage.v51-wizard-active .form-grid{display:block!important;}
+#formPage.v51-wizard-active .form-grid>.field{display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="1"] .inventory-primary-name{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="2"] .inventory-primary-year{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="2"] .v51-device-wrapper,
+#formPage.v51-wizard-active[data-v51-step="3"] .v51-device-wrapper,
+#formPage.v51-wizard-active[data-v51-step="4"] .v51-device-wrapper{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="1"].v51-has-basic-device .v51-device-wrapper{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="1"] .device-card:not(.v51-has-basic){display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="1"] .device-card.v51-has-basic .device-card-header{display:none!important;}
+#formPage.v51-wizard-active .device-card-grid>.field{display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="1"] .device-card-grid>.v51-field-basic,
+#formPage.v51-wizard-active[data-v51-step="2"] .device-card-grid>.v51-field-main,
+#formPage.v51-wizard-active[data-v51-step="3"] .device-card-grid>.v51-field-asset,
+#formPage.v51-wizard-active[data-v51-step="4"] .device-card-grid>.v51-field-extra{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="5"] .form-grid{display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="5"] #v51Review{display:block!important;}
+#formPage.v51-wizard-active:not([data-v51-step="5"]) #v51Review{display:none!important;}
+#formPage.v51-wizard-active .inventory-primary-name{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;}
+#formPage.v51-wizard-active .inventory-primary-name>label{font-size:12px!important;font-weight:600!important;color:#3c4043!important;margin-bottom:7px!important;}
+#formPage.v51-wizard-active .inventory-primary-name input{min-height:46px!important;border:1px solid #c7d2e3!important;border-radius:9px!important;background:#fff!important;font-size:14px!important;font-weight:400!important;padding:10px 12px!important;}
+#formPage.v51-wizard-active .staff-quick-buttons button{font-size:11px!important;font-weight:500!important;}
+.v51-wizard-head{background:#fff;border:1px solid #e0e6ef;border-radius:13px;padding:13px 14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(60,64,67,.05)}
+.v51-wizard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.v51-wizard-title b{display:block;font-size:14px;font-weight:600;color:#202124}.v51-wizard-title span{display:block;font-size:11px;color:#5f6368;margin-top:3px}.v51-paste-current{border:1px solid #d2e3fc!important;background:#e8f0fe!important;color:#1967d2!important;border-radius:8px!important;padding:8px 11px!important;font-size:11px!important;font-weight:600!important;white-space:nowrap}.v51-paste-current i{margin-right:5px}
+.v51-progress{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.v51-progress-step{display:flex;align-items:center;gap:7px;min-width:0;padding:7px 8px;border-radius:9px;background:#f1f3f4;color:#5f6368;font-size:10px;font-weight:500}.v51-progress-step i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid #dadce0;font-style:normal;font-size:10px;flex:0 0 auto}.v51-progress-step.active{background:#e8f0fe;color:#174ea6}.v51-progress-step.active i,.v51-progress-step.done i{background:#1a73e8;color:#fff;border-color:#1a73e8}.v51-progress-step.done{color:#1967d2}.v51-progress-step span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v51-step-heading{display:flex;align-items:center;gap:10px;margin:2px 0 12px;padding:0 2px}.v51-step-heading i{width:31px;height:31px;border-radius:9px;display:grid;place-items:center;background:#e8f0fe;color:#1a73e8;font-style:normal;font-weight:700}.v51-step-heading b{font-size:15px;font-weight:600;color:#202124}.v51-step-heading small{display:block;color:#5f6368;font-size:10.5px;margin-top:2px;font-weight:400}
+#formPage.v51-wizard-active .device-card{border:1px solid #dde4ee!important;border-radius:12px!important;box-shadow:none!important;background:#fff!important;margin-bottom:12px!important;overflow:hidden!important}
+#formPage.v51-wizard-active .device-card-header{background:#f8fafd!important;color:#174ea6!important;border-bottom:1px solid #e3e8ef!important;padding:10px 12px!important}
+#formPage.v51-wizard-active .device-card-header>span:first-child{font-size:12px!important;font-weight:600!important}#formPage.v51-wizard-active .device-card-header .note{color:#6b7280!important;font-weight:400!important}
+#formPage.v51-wizard-active .device-card-body{padding:12px!important;background:#fff!important}
+#formPage.v51-wizard-active .device-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px 12px!important}
+#formPage.v51-wizard-active .device-card-grid>.field{padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;min-width:0!important}
+#formPage.v51-wizard-active .device-card-grid>.field.full-width{grid-column:1/-1!important}
+#formPage.v51-wizard-active .device-card-grid label{font-size:11px!important;font-weight:600!important;color:#3c4043!important;margin:0 0 5px!important}
+#formPage.v51-wizard-active .device-card-grid input,#formPage.v51-wizard-active .device-card-grid select,#formPage.v51-wizard-active .device-card-grid textarea,#formPage.v51-wizard-active .inventory-primary-year select{min-height:42px!important;border:1px solid #c7d2e3!important;border-radius:8px!important;background:#fff!important;color:#202124!important;font-size:13px!important;font-weight:400!important;padding:8px 10px!important;box-shadow:none!important}
+#formPage.v51-wizard-active .device-card-grid textarea{min-height:92px!important;resize:vertical}.v51-device-wrapper{display:none!important}.v51-review{display:none;background:#fff;border:1px solid #dfe5ee;border-radius:12px;padding:14px;margin-bottom:12px}.v51-review-block{border:1px solid #edf0f4;border-radius:10px;overflow:hidden;margin-top:10px}.v51-review-block h4{margin:0;padding:9px 11px;background:#f8fafd;color:#174ea6;font-size:12px;font-weight:600}.v51-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}.v51-review-item{padding:8px 10px;border-top:1px solid #edf0f4;min-width:0}.v51-review-item:nth-child(odd){border-right:1px solid #edf0f4}.v51-review-item span{display:block;font-size:9.5px;color:#6b7280;margin-bottom:2px}.v51-review-item b{display:block;font-size:11px;color:#202124;overflow-wrap:anywhere;font-weight:500}
+#formPage.v51-wizard-active .form-buttons{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important}.v51-nav-back,.v51-nav-next{min-height:42px!important;border-radius:8px!important;padding:9px 16px!important;font-size:12px!important;font-weight:600!important}.v51-nav-back{background:#fff!important;color:#3c4043!important;border:1px solid #dadce0!important}.v51-nav-next{background:#1a73e8!important;color:#fff!important}.v51-nav-next:hover{background:#1765cc!important}#formPage.v51-wizard-active #saveBtn{background:#1a73e8!important;border-radius:8px!important;font-size:12px!important;font-weight:600!important;min-height:42px!important}#formPage.v51-wizard-active .form-buttons>.btn-reset{background:#fff!important;color:#5f6368!important;border:1px solid #dadce0!important;font-size:11px!important;font-weight:500!important}#formPage.v51-wizard-active .form-buttons>.btn-back-main{display:none!important}
+/* Copy/paste terus pada setiap kad jenis. */
+.inventory-type-card{position:relative!important;padding-bottom:43px!important}.v51-type-paste{position:absolute;left:12px;right:12px;bottom:9px;height:27px;display:flex;align-items:center;justify-content:center;gap:5px;border:1px solid #d2e3fc;border-radius:7px;background:#fff;color:#1967d2;font-size:9.5px;font-weight:600;z-index:3}.v51-type-paste:hover{background:#e8f0fe}.inventory-type-copy b{font-weight:600!important}.inventory-type-copy small{font-weight:400!important}
+/* Bulk tick + tong sampah pada Senarai Inventori */
+.master-asset-list-item.v51-bulk-ready{grid-template-columns:24px 10px minmax(0,1fr) auto!important;padding-left:10px!important}.v51-bulk-tick{width:18px;height:18px;border:1.5px solid #9aa0a6;border-radius:4px;background:#fff;display:grid;place-items:center;color:#fff;cursor:pointer;flex:0 0 auto}.v51-bulk-tick.checked{background:#1a73e8;border-color:#1a73e8}.v51-bulk-tick.checked:after{content:"✓";font-size:12px;font-weight:700;line-height:1}.v51-bulk-bar{display:flex;align-items:center;gap:8px;margin-top:9px;padding:8px;border:1px solid #e0e6ef;border-radius:9px;background:#f8fafd}.v51-select-all{display:flex;align-items:center;gap:6px;font-size:10px;color:#3c4043;font-weight:500;cursor:pointer}.v51-select-all input{width:15px;height:15px;accent-color:#1a73e8}.v51-bulk-count{margin-left:auto;font-size:10px;color:#5f6368}.v51-bulk-trash{width:34px;height:32px;padding:0!important;display:grid!important;place-items:center;background:#fff!important;color:#d93025!important;border:1px solid #f3c7c3!important;border-radius:8px!important}.v51-bulk-trash:disabled{opacity:.4!important}.v51-bulk-trash:not(:disabled):hover{background:#fce8e6!important}
+#duplicateCheckBtnV50{font-family:"Google Sans","Roboto",Arial,sans-serif!important}
+@media(max-width:760px){.v51-progress{grid-template-columns:1fr}.v51-progress-step:not(.active){display:none}.v51-wizard-top{flex-direction:column}.v51-paste-current{width:100%}.v51-review-grid{grid-template-columns:1fr}.v51-review-item:nth-child(odd){border-right:0}#formPage.v51-wizard-active .device-card-grid{grid-template-columns:1fr!important}.inventory-type-card{padding-bottom:42px!important}.v51-bulk-bar{flex-wrap:wrap}.v51-bulk-count{margin-left:0;flex:1}.v51-nav-back,.v51-nav-next{flex:1}}
+</style>
+<script id="pkpjV51WizardBulkLogic">
+(function(){
+  "use strict";
+  var currentStep=1;
+  var selectedBulk=new Set();
+  var stepInfo=[
+    ["Maklumat Asas","Nama / pemegang"],
+    ["Maklumat Utama","Tahun, kategori, lokasi, status dan tarikh"],
+    ["Maklumat Aset","Jenama, model, no siri dan maklumat perkakasan"],
+    ["Maklumat Tambahan","Gambar dan catatan"],
+    ["Semak & Simpan","Semak semua maklumat sebelum simpan"]
+  ];
+  function q(id){return document.getElementById(id)}
+  function txt(v){return String(v==null?"":v).trim()}
+  function low(v){return txt(v).toLowerCase()}
+  function esc(v){return txt(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function isAdd(){var e=q("editingRow");return !(e&&txt(e.value))}
+  function form(){return q("formPage")}
+  function selectedTypes(){try{return typeof getSelectedJenisValues==="function"?getSelectedJenisValues():[]}catch(e){return []}}
+  function addRoboto(){if(document.querySelector('link[data-v51-font]'))return;var l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap";l.dataset.v51Font="1";document.head.appendChild(l)}
+  function fieldLabel(field){var l=field&&field.querySelector("label");return low(l?l.textContent:"")}
+  function classifyFields(){
+    var f=form();if(!f)return;var wrap=q("deviceSections");if(wrap&&wrap.parentElement)wrap.parentElement.classList.add("v51-device-wrapper");
+    var hasBasic=false;
+    f.querySelectorAll(".device-card").forEach(function(card){
+      var basic=false;
+      card.querySelectorAll(".device-card-grid>.field").forEach(function(field){
+        field.classList.remove("v51-field-basic","v51-field-main","v51-field-asset","v51-field-extra");
+        var label=fieldLabel(field);
+        if(field.classList.contains("voip-staff-field")||/^nama staff|nama .*pemegang/.test(label)){field.classList.add("v51-field-basic");basic=true;hasBasic=true;}
+        else if(/^(kategori|lokasi|status|keadaan voip|tarikh)/.test(label))field.classList.add("v51-field-main");
+        else if(/^gambar|^catatan/.test(label))field.classList.add("v51-field-extra");
+        else field.classList.add("v51-field-asset");
+      });
+      card.classList.toggle("v51-has-basic",basic);
+    });
+    f.classList.toggle("v51-has-basic-device",hasBasic);
+  }
+  function ensureWizardUi(){
+    var f=form();if(!f||!isAdd())return;addRoboto();f.classList.add("v51-wizard-active");
+    var nameLabel=f.querySelector(".inventory-primary-name>label");if(nameLabel)nameLabel.innerHTML='Nama / Pemegang <span class="req">*</span>';
+    var area=f.querySelector(".form-area");if(!area)return;
+    if(!q("v51WizardHead")){
+      var h=document.createElement("div");h.id="v51WizardHead";h.className="v51-wizard-head";h.innerHTML='<div class="v51-wizard-top"><div class="v51-wizard-title"><b>Tambah Aset Baru</b><span>Isi maklumat secara berperingkat. Semua medan asal sistem dikekalkan.</span></div><button type="button" id="v51PasteCurrent" class="v51-paste-current"><i class="fa-solid fa-table-cells"></i> Tampal Dari Excel</button></div><div id="v51Progress" class="v51-progress"></div>';area.insertBefore(h,area.firstChild);
+      q("v51PasteCurrent").onclick=openPasteForCurrent;
+    }
+    if(!q("v51StepHeading")){var sh=document.createElement("div");sh.id="v51StepHeading";sh.className="v51-step-heading";area.insertBefore(sh,area.querySelector(".form-grid"));}
+    if(!q("v51Review")){var rv=document.createElement("div");rv.id="v51Review";rv.className="v51-review";area.insertBefore(rv,area.querySelector(".form-buttons"));}
+    var buttons=f.querySelector(".form-buttons");if(buttons){
+      if(!q("v51Back")){var b=document.createElement("button");b.type="button";b.id="v51Back";b.className="v51-nav-back";b.innerHTML='<i class="fa-solid fa-arrow-left"></i> Kembali';b.onclick=function(){goStep(currentStep-1)};buttons.insertBefore(b,q("saveBtn"));}
+      if(!q("v51Next")){var n=document.createElement("button");n.type="button";n.id="v51Next";n.className="v51-nav-next";n.innerHTML='Seterusnya <i class="fa-solid fa-arrow-right"></i>';n.onclick=function(){if(validateStep(currentStep))goStep(currentStep+1)};buttons.insertBefore(n,q("saveBtn"));}
+    }
+    classifyFields();goStep(currentStep||1);
+  }
+  function exitWizard(){var f=form();if(!f)return;f.classList.remove("v51-wizard-active","v51-has-basic-device");f.removeAttribute("data-v51-step")}
+  function goStep(step){
+    step=Math.max(1,Math.min(5,Number(step||1)));currentStep=step;var f=form();if(!f)return;classifyFields();f.dataset.v51Step=String(step);
+    var p=q("v51Progress");if(p)p.innerHTML=stepInfo.map(function(x,i){var num=i+1,cl=num===step?" active":(num<step?" done":"");return '<div class="v51-progress-step'+cl+'"><i>'+(num<step?'✓':num)+'</i><span>'+esc(x[0])+'</span></div>'}).join("");
+    var h=q("v51StepHeading");if(h)h.innerHTML='<i>'+step+'</i><div><b>'+esc(stepInfo[step-1][0])+'</b><small>'+esc(stepInfo[step-1][1])+'</small></div>';
+    var back=q("v51Back"),next=q("v51Next"),save=q("saveBtn");if(back)back.style.display=step>1?"inline-flex":"none";if(next)next.style.display=step<5?"inline-flex":"none";if(save)save.style.display=step===5?"inline-flex":"none";
+    if(step===5)buildReview();
+    try{f.scrollTo({top:0,behavior:"smooth"})}catch(e){f.scrollTop=0}
+  }
+  function firstControl(field){return field&&field.querySelector('input:not([type="file"]):not([type="hidden"]),select,textarea')}
+  function validateStep(step){
+    var f=form();if(!f)return true;
+    if(step===1){
+      var voip=f.querySelector('.v51-field-basic input[id^="voipStaffDisplay_"]');if(voip&&voip.offsetParent!==null&&!txt(voip.value)){alert("Sila isi Nama Staff / Pemegang.");voip.focus();return false;}
+      if(!voip){var name=q("namaStaffSearch");var val=typeof getFinalStaffName==="function"?txt(getFinalStaffName()):txt(name&&name.value);if(!val){alert("Sila isi Nama / Pemegang.");if(name)name.focus();return false;}}
+    }
+    if(step===2){
+      var year=q("tahun");if(year&&!txt(year.value)){alert("Sila pilih Tahun.");year.focus();return false;}
+      var fields=Array.from(f.querySelectorAll('.v51-field-main')).filter(function(x){return x.offsetParent!==null});for(var i=0;i<fields.length;i++){var c=firstControl(fields[i]),label=fieldLabel(fields[i]);if(c&&!txt(c.value)&&!/^tarikh/.test(label)){alert("Sila lengkapkan "+(fields[i].querySelector("label")?fields[i].querySelector("label").textContent.trim():"Maklumat Utama")+".");c.focus();return false;}if(c&&!txt(c.value)&&/^tarikh/.test(label)){alert("Sila isi Tarikh.");c.focus();return false;}}
+    }
+    if(step===3){
+      var req=Array.from(f.querySelectorAll('.v51-field-asset')).filter(function(x){return x.offsetParent!==null&&x.querySelector(".req")});for(var j=0;j<req.length;j++){var rc=firstControl(req[j]);if(rc&&!txt(rc.value)){alert("Sila lengkapkan "+req[j].querySelector("label").textContent.trim()+".");rc.focus();return false;}}
+    }
+    return true;
+  }
+  function buildReview(){
+    var rv=q("v51Review");if(!rv)return;var name=typeof getFinalStaffName==="function"?txt(getFinalStaffName()):txt(q("namaStaffSearch")&&q("namaStaffSearch").value);var year=txt(q("tahun")&&q("tahun").value);var html='<div class="v51-review-block"><h4>Maklumat Asas</h4><div class="v51-review-grid"><div class="v51-review-item"><span>Nama / Pemegang</span><b>'+esc(name||"-")+'</b></div><div class="v51-review-item"><span>Tahun</span><b>'+esc(year||"-")+'</b></div></div></div>';
+    form().querySelectorAll(".device-card").forEach(function(card){var title=txt(card.getAttribute("data-jenis"))||"Aset",items=[];card.querySelectorAll(".device-card-grid>.field").forEach(function(field){var label=field.querySelector("label");if(!label)return;var labelText=txt(label.textContent.replace(/\*/g,""));var control=firstControl(field);var value="";if(/^gambar/i.test(labelText)){var id=card.dataset.id||"";value=txt(q("gambar_"+id)&&q("gambar_"+id).value);value=value?"Ada gambar / URL":"Tiada gambar";}else if(control)value=txt(control.value);if(value)items.push('<div class="v51-review-item"><span>'+esc(labelText)+'</span><b>'+esc(value)+'</b></div>');});html+='<div class="v51-review-block"><h4>'+esc(title==="CPU"?"PC / CPU":title)+'</h4><div class="v51-review-grid">'+(items.join("")||'<div class="v51-review-item"><span>Maklumat</span><b>-</b></div>')+'</div></div>';});rv.innerHTML='<div class="v51-step-heading" style="margin:0 0 6px"><i>✓</i><div><b>Semak sebelum simpan</b><small>Pastikan maklumat di bawah betul sebelum tekan Simpan Inventori.</small></div></div>'+html;
+  }
+  function pasteMode(type){
+    var ctx=low((q("v50PickerContext")&&q("v50PickerContext").textContent)||"");var t=low(type);if(ctx.indexOf("sewaan")>-1){if(t.indexOf("laptop")>-1)return "laptop";if(t.indexOf("set komputer")>-1||t==="cpu"||t.indexOf("pc")>-1)return "pc";}if(ctx.indexOf("pkpj")>-1&&(t.indexOf("laptop")>-1||t==="cpu"||t.indexOf("set komputer")>-1))return "pkpj";return "general";
+  }
+  function openPaste(mode){try{if(typeof closeInventoryTypePicker==="function")closeInventoryTypePicker()}catch(e){}if(typeof window.openPasteExcelV46==="function")window.openPasteExcelV46(mode||"general");else alert("Mod Tampal Dari Excel tidak tersedia.")}
+  function openPasteForCurrent(){var types=selectedTypes(),cats=[];form().querySelectorAll('[id^="kategori_"]').forEach(function(x){if(txt(x.value))cats.push(low(x.value))});var rental=cats.length&&cats.every(function(x){return x==="sewaan"});var pkpj=cats.length&&cats.every(function(x){return x==="pkpj"});var mode="general";if(rental&&types.indexOf("Laptop")>-1)mode="laptop";else if(rental&&(types.indexOf("CPU")>-1||types.indexOf("Monitor")>-1))mode="pc";else if(pkpj&&(types.indexOf("CPU")>-1||types.indexOf("Laptop")>-1))mode="pkpj";openPaste(mode)}
+  function decorateTypeCards(){
+    var picker=q("inventoryTypePicker");if(!picker)return;picker.querySelectorAll(".inventory-type-card").forEach(function(card){if(card.querySelector(".v51-type-paste"))return;var title=txt(card.querySelector(".inventory-type-copy b")&&card.querySelector(".inventory-type-copy b").textContent);var b=document.createElement("span");b.className="v51-type-paste";b.innerHTML='<i class="fa-solid fa-table-cells"></i> Tampal Excel';b.onclick=function(ev){ev.preventDefault();ev.stopPropagation();openPaste(pasteMode(title))};card.appendChild(b)});
+  }
+  function activateIfNeeded(){var f=form();if(!f)return;if(f.classList.contains("active")&&isAdd())ensureWizardUi();else if(!isAdd())exitWizard();decorateTypeCards()}
+
+  /* Paparan: jangan biarkan aset jenis yang memang dikenali kekal terperangkap dalam manual group Lain-lain. */
+  function normalizeKnownGroups(){var data=[];try{data=Array.isArray(window.allData)?window.allData:(Array.isArray(allData)?allData:[])}catch(e){};data.forEach(function(x){if(low(x.kumpulanPaparan)!=="lain-lain")return;var j=low(x.jenisPerkakasan),jl=low(x.jenisPerkakasanLain);if(["laptop","cpu","monitor","keyboard","mouse","printer","telefon voip","wifi pole","aksesori wifi"].indexOf(j)>-1||/set komputer|pc\s*\/?\s*cpu|desktop/.test(j+" "+jl))x.kumpulanPaparan=""})}
+  function serialKey(v){v=low(v).replace(/[^a-z0-9]/g,"");return (!v||v==="tiada"||v==="tidakberkaitan")?"":v}
+  function dedupeDisplay(){var data=[];try{data=Array.isArray(window.allData)?window.allData:(Array.isArray(allData)?allData:[])}catch(e){};if(!data.length)return;var seen={},out=[];data.slice().sort(function(a,b){var ya=Number(String(a.tahun||"").replace(/\D/g,""))||0,yb=Number(String(b.tahun||"").replace(/\D/g,""))||0;return (yb-ya)||(Number(b.row||0)-Number(a.row||0))}).forEach(function(x){var k=serialKey(x.noSiri);if(k){if(seen[k])return;seen[k]=1}out.push(x)});out.sort(function(a,b){return Number(a.row||0)-Number(b.row||0)});try{allData=out;window.allData=out;tableBaseData=out.slice()}catch(e){}}
+  var baseFast=window.fastBootstrapLoad||((typeof fastBootstrapLoad==="function")?fastBootstrapLoad:null);if(typeof baseFast==="function"&&!baseFast.__v51){var fw=async function(){var r=await baseFast.apply(this,arguments);normalizeKnownGroups();dedupeDisplay();try{if(typeof window.renderMasterInventory==="function")window.renderMasterInventory()}catch(e){};return r};fw.__v51=true;window.fastBootstrapLoad=fw;try{fastBootstrapLoad=fw}catch(e){}}
+  var baseRender=window.renderMasterInventory;if(typeof baseRender==="function"&&!baseRender.__v51){var rw=function(){normalizeKnownGroups();dedupeDisplay();var r=baseRender.apply(this,arguments);setTimeout(decorateBulkList,0);return r};rw.__v51=true;window.renderMasterInventory=rw}
+
+  /* Checkbox pukal pada senarai master. */
+  function rowOfItem(item){var s=txt(item.getAttribute("onclick")),m=s.match(/masterSelectAsset\((\d+)\)/);return m?Number(m[1]):0}
+  function updateBulkBar(){var c=q("v51BulkCount"),d=q("v51BulkTrash"),a=q("v51SelectAll");if(c)c.textContent=selectedBulk.size+" dipilih";if(d)d.disabled=!selectedBulk.size;if(a){var visible=Array.from(document.querySelectorAll("#masterInventoryGroups .master-asset-list-item")).map(rowOfItem).filter(Boolean);a.checked=!!visible.length&&visible.every(function(r){return selectedBulk.has(r)})}}
+  function decorateBulkList(){
+    var tools=document.querySelector("#tablePage .master-list-tools");if(tools&&!q("v51BulkBar")){var bar=document.createElement("div");bar.id="v51BulkBar";bar.className="v51-bulk-bar";bar.innerHTML='<label class="v51-select-all"><input type="checkbox" id="v51SelectAll"> Pilih semua dipaparkan</label><span id="v51BulkCount" class="v51-bulk-count">0 dipilih</span><button type="button" id="v51BulkTrash" class="v51-bulk-trash" title="Padam aset dipilih" disabled><i class="fa-solid fa-trash"></i></button>';tools.appendChild(bar);q("v51SelectAll").onchange=function(){var yes=this.checked;document.querySelectorAll("#masterInventoryGroups .master-asset-list-item").forEach(function(item){var r=rowOfItem(item);if(!r)return;if(yes)selectedBulk.add(r);else selectedBulk.delete(r)});decorateBulkList()};q("v51BulkTrash").onclick=deleteSelected;}
+    document.querySelectorAll("#masterInventoryGroups .master-asset-list-item").forEach(function(item){var r=rowOfItem(item);if(!r)return;item.classList.add("v51-bulk-ready");var box=item.querySelector(".v51-bulk-tick");if(!box){box=document.createElement("span");box.className="v51-bulk-tick";box.setAttribute("role","checkbox");box.setAttribute("title","Pilih untuk tindakan pukal");box.onclick=function(ev){ev.preventDefault();ev.stopPropagation();if(selectedBulk.has(r))selectedBulk.delete(r);else selectedBulk.add(r);decorateBulkList()};item.insertBefore(box,item.firstChild)}box.classList.toggle("checked",selectedBulk.has(r));box.setAttribute("aria-checked",selectedBulk.has(r)?"true":"false")});updateBulkBar();
+  }
+  async function deleteSelected(){var rows=Array.from(selectedBulk);if(!rows.length)return;if(!confirm("Padam "+rows.length+" aset yang dipilih?\n\nTindakan ini akan direkodkan dalam Sejarah Pergerakan Aset."))return;var id="bulk51_"+Date.now()+"_"+Math.floor(Math.random()*99999);try{if(typeof showSaveMotionV29==="function")showSaveMotionV29("Padam Pukal","Memadam aset yang dipilih...");submitHiddenForm({action:"bulkdeletev51",rowsJson:JSON.stringify(rows),requestId:id});var res=await waitSaveResultFast(id);if(!res||res.status!=="OK")throw new Error((res&&res.message)||"Padam pukal gagal");selectedBulk.clear();if(typeof fastBootstrapLoad==="function")await fastBootstrapLoad({silent:true,fresh:true});else if(typeof refreshAll==="function")await refreshAll({clearForm:false,silent:true});if(typeof finishSaveMotionV29==="function")await finishSaveMotionV29(Number(res.deleted||0)+" aset dipadam");decorateBulkList()}catch(err){if(typeof failSaveMotionV29==="function")failSaveMotionV29(err.message||String(err));alert("Gagal padam pukal: "+(err.message||err))}}
+  window.bulkDeleteSelectedV51=deleteSelected;
+
+  /* Hook selepas pilih jenis supaya wizard sentiasa muncul. */
+  ["selectInventoryType","selectComputerSet"].forEach(function(name){var old=window[name];if(typeof old==="function"&&!old.__v51){var w=function(){var r=old.apply(this,arguments);currentStep=1;setTimeout(activateIfNeeded,80);return r};w.__v51=true;window[name]=w}});
+  var oldClear=window.clearForm||((typeof clearForm==="function")?clearForm:null);if(typeof oldClear==="function"&&!oldClear.__v51){var cw=function(){var r=oldClear.apply(this,arguments);currentStep=1;setTimeout(activateIfNeeded,40);return r};cw.__v51=true;window.clearForm=cw;try{clearForm=cw}catch(e){}}
+  var mo=new MutationObserver(function(){setTimeout(function(){activateIfNeeded();decorateBulkList();normalizeKnownGroups()},0)});mo.observe(document.body,{childList:true,subtree:true});
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){decorateTypeCards();activateIfNeeded();decorateBulkList();normalizeKnownGroups()},150)});else setTimeout(function(){decorateTypeCards();activateIfNeeded();decorateBulkList();normalizeKnownGroups()},150);
+})();
+</script>
+
 </body>
 </html>
