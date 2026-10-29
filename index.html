@@ -13670,5 +13670,189 @@ body{color:var(--v51-text)!important;}
 })();
 </script>
 
+
+<!-- ===== V52: WIZARD SMOOTH + STAFF DEDUPE + PASTE INSIDE FORM ONLY ===== -->
+<style id="pkpjV52SmoothWizardStyle">
+/* Paste hanya di dalam borang selepas jenis aset dipilih. */
+#v51PasteCurrent,.v51-type-paste,#v50PickerPaste{display:none!important;}
+.inventory-type-card{padding-bottom:14px!important;}
+
+/* Satu langkah sahaja dipaparkan pada satu masa. */
+#formPage.v51-wizard-active .form-grid>*{display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="1"] #v37BasicCard,
+#formPage.v51-wizard-active[data-v51-step="1"] .inventory-primary-name{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="2"] .inventory-primary-year,
+#formPage.v51-wizard-active[data-v51-step="2"] .v51-device-wrapper,
+#formPage.v51-wizard-active[data-v51-step="3"] .v51-device-wrapper,
+#formPage.v51-wizard-active[data-v51-step="4"] .v51-device-wrapper{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="5"] .form-grid{display:none!important;}
+
+/* V37 telah pecahkan kad kepada seksyen. V52 kawal seksyen ikut langkah. */
+#formPage.v51-wizard-active .v37-card-section,
+#formPage.v51-wizard-active .v37-extra-details{display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="2"] .v52-section-main{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="3"] .v52-section-asset{display:block!important;}
+#formPage.v51-wizard-active[data-v51-step="4"] .v37-extra-details{display:block!important;}
+#formPage.v51-wizard-active .v37-year-field{display:none!important;}
+#formPage.v51-wizard-active .device-section-title{display:none!important;}
+#formPage.v51-wizard-active .v37-card-section-title{display:none!important;}
+
+/* Fallback untuk kad yang belum melalui transform V37. */
+#formPage.v51-wizard-active .device-card-grid>.field{display:none!important;}
+#formPage.v51-wizard-active[data-v51-step="2"] .device-card-grid>.v51-field-main,
+#formPage.v51-wizard-active[data-v51-step="3"] .device-card-grid>.v51-field-asset,
+#formPage.v51-wizard-active[data-v51-step="4"] .device-card-grid>.v51-field-extra{display:block!important;}
+
+/* Kaedah kemasukan data berada di dalam borang, bukan pada kad luar. */
+.v52-entry-mode{display:none;align-items:center;gap:8px;margin:0 0 12px;padding:10px 11px;background:#fff;border:1px solid #e0e6ef;border-radius:11px;box-shadow:0 1px 4px rgba(60,64,67,.04);}
+#formPage.v51-wizard-active[data-v51-step="1"] .v52-entry-mode{display:flex;}
+.v52-entry-mode-label{font-size:11px;font-weight:600;color:#3c4043;margin-right:3px;}
+.v52-mode-btn{min-height:34px!important;padding:7px 11px!important;border-radius:8px!important;font-size:11px!important;font-weight:600!important;display:inline-flex!important;align-items:center!important;gap:6px!important;}
+.v52-mode-manual{background:#1a73e8!important;color:#fff!important;border:1px solid #1a73e8!important;}
+.v52-mode-paste{background:#fff!important;color:#1967d2!important;border:1px solid #d2e3fc!important;}
+.v52-mode-paste:hover{background:#e8f0fe!important;}
+
+/* Nama staff: satu dropdown sistem sahaja. */
+#formPage #staffSuggestionList{position:relative!important;z-index:25!important;max-height:260px!important;overflow:auto!important;margin-top:5px!important;border:1px solid #d9e1ec!important;border-radius:9px!important;background:#fff!important;box-shadow:0 8px 22px rgba(15,23,42,.10)!important;}
+#formPage #staffSuggestionList:not(.show){display:none!important;}
+#formPage #staffSuggestionList.show{display:block!important;}
+#formPage .staff-suggestion-item{padding:9px 11px!important;font-size:12px!important;font-weight:400!important;color:#202124!important;border-bottom:1px solid #edf0f4!important;cursor:pointer!important;}
+#formPage .staff-suggestion-item:last-child{border-bottom:0!important;}
+#formPage .staff-suggestion-item:hover{background:#f1f6ff!important;color:#174ea6!important;}
+#formPage #staffFilterNote{font-size:10.5px!important;font-weight:400!important;color:#5f6368!important;margin-top:6px!important;}
+
+/* Lebih lancar dan ringan pada desktop/telefon. */
+#formPage.v51-wizard-active .v51-wizard-head{position:sticky;top:0;z-index:12;}
+#formPage.v51-wizard-active .v51-progress-step{transition:background .12s ease,color .12s ease;}
+#formPage.v51-wizard-active .device-card{animation:v52Fade .12s ease-out;}
+@keyframes v52Fade{from{opacity:.72;transform:translateY(2px)}to{opacity:1;transform:none}}
+@media(max-width:760px){
+  .v52-entry-mode{display:none;grid-template-columns:1fr 1fr;gap:7px;}
+  #formPage.v51-wizard-active[data-v51-step="1"] .v52-entry-mode{display:grid;}
+  .v52-entry-mode-label{grid-column:1/-1;}
+  .v52-mode-btn{justify-content:center!important;}
+}
+</style>
+<script id="pkpjV52SmoothWizardLogic">
+(function(){
+  "use strict";
+  function q(id){return document.getElementById(id)}
+  function txt(v){return String(v==null?"":v).trim()}
+  function low(v){return txt(v).toLowerCase()}
+  function esc(v){return txt(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+  function markSections(){
+    document.querySelectorAll("#formPage .device-card").forEach(function(card){
+      card.querySelectorAll(".v37-card-section").forEach(function(sec){
+        var title=low(sec.querySelector(".v37-card-section-title")&&sec.querySelector(".v37-card-section-title").textContent);
+        sec.classList.remove("v52-section-main","v52-section-asset");
+        if(title.indexOf("maklumat utama")>-1)sec.classList.add("v52-section-main");
+        else sec.classList.add("v52-section-asset");
+      });
+    });
+  }
+
+  function selectedTypes(){
+    try{return typeof getSelectedJenisValues==="function"?getSelectedJenisValues():[]}catch(e){return []}
+  }
+  function currentPasteMode(){
+    var types=selectedTypes();
+    var cats=[];
+    document.querySelectorAll('#formPage [id^="kategori_"]').forEach(function(x){if(txt(x.value))cats.push(low(x.value))});
+    var rental=cats.length&&cats.every(function(x){return x==="sewaan"});
+    var pkpj=cats.length&&cats.every(function(x){return x==="pkpj"});
+    if(rental&&types.indexOf("Laptop")>-1&&types.length===1)return "laptop";
+    if(rental&&(types.indexOf("CPU")>-1||types.indexOf("Monitor")>-1||types.length>1))return "pc";
+    if(pkpj&&(types.indexOf("CPU")>-1||types.indexOf("Laptop")>-1))return "pkpj";
+    return "general";
+  }
+  function openPasteInside(){
+    if(typeof window.openPasteExcelV46==="function")window.openPasteExcelV46(currentPasteMode());
+    else alert("Mod Tampal Dari Excel tidak tersedia.");
+  }
+  function ensureEntryMode(){
+    var form=q("formPage"),head=q("v51WizardHead");if(!form||!head)return;
+    var old=q("v52EntryMode");if(!old){
+      var box=document.createElement("div");box.id="v52EntryMode";box.className="v52-entry-mode";
+      box.innerHTML='<span class="v52-entry-mode-label">Cara masukkan data</span><button type="button" class="v52-mode-btn v52-mode-manual"><i class="fa-solid fa-keyboard"></i> Isi Manual</button><button type="button" class="v52-mode-btn v52-mode-paste"><i class="fa-solid fa-table-cells"></i> Tampal Dari Excel</button>';
+      head.insertAdjacentElement("afterend",box);
+      box.querySelector(".v52-mode-paste").onclick=openPasteInside;
+      box.querySelector(".v52-mode-manual").onclick=function(){var input=q("namaStaffSearch");if(input)input.focus();};
+    }
+  }
+
+  function canonicalStaff(name){
+    var s=txt(name).replace(/\s+/g," ");
+    var prev="";
+    while(prev!==s){
+      prev=s;
+      s=s.replace(/\s*-\s*[A-Za-z]{1,3}\d{1,2}\s*(?:\([^)]*\))?\s*$/i,"").trim();
+      s=s.replace(/\s*\([^)]*(?:kontrak|contract|pencen|bersara)[^)]*\)\s*$/i,"").trim();
+    }
+    return low(s);
+  }
+  function staffScore(name){
+    var s=txt(name),score=s.length;
+    if(/\b(?:kontrak|contract)\b/i.test(s))score+=20;
+    if(/-\s*[A-Za-z]{1,3}\d{1,2}\b/i.test(s))score+=15;
+    return score;
+  }
+  function cleanStaffNames(){
+    var raw=[];
+    try{if(typeof mergeStaffRecordsFix2==="function")raw=mergeStaffRecordsFix2().map(function(r){return txt(r&&r.namaStaff)});}catch(e){}
+    if(!raw.length){try{raw=(Array.isArray(staffList)?staffList:[]).map(txt)}catch(e){}}
+    var map={};
+    raw.forEach(function(name){
+      if(!name||low(name)==="tidak berkaitan"||low(name)==="lain-lain")return;
+      var key=canonicalStaff(name)||low(name),old=map[key];
+      if(!old||staffScore(name)>staffScore(old))map[key]=name;
+    });
+    return Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return a.localeCompare(b,"ms",{sensitivity:"base"})});
+  }
+  function chooseName(name){
+    var input=q("namaStaffSearch");if(input)input.value=name;
+    try{if(typeof namaStaffSelectEl!=="undefined"&&namaStaffSelectEl)namaStaffSelectEl.value="Lain-lain";}catch(e){}
+    try{if(typeof namaStaffManualEl!=="undefined"&&namaStaffManualEl)namaStaffManualEl.value=name;}catch(e){}
+    var list=q("staffSuggestionList");if(list){list.classList.remove("show");list.innerHTML="";}
+    var note=q("staffFilterNote");if(note)note.textContent="Nama staff dipilih: "+name;
+  }
+  function renderStaffNames(){
+    var input=q("namaStaffSearch"),list=q("staffSuggestionList");if(!input||!list)return;
+    input.removeAttribute("list");input.setAttribute("autocomplete","off");
+    var names=cleanStaffNames(),keyword=low(input.value),filtered=keyword?names.filter(function(n){return low(n).indexOf(keyword)>-1}):[];
+    var dl=q("staffNameDatalist");if(dl)dl.innerHTML=names.slice(0,100).map(function(n){return '<option value="'+esc(n)+'"></option>'}).join("");
+    if(!keyword){list.classList.remove("show");list.innerHTML="";}
+    else if(filtered.length){list.innerHTML=filtered.slice(0,12).map(function(n,i){return '<div class="staff-suggestion-item" data-v52-name="'+i+'">'+esc(n)+'</div>'}).join("");list.classList.add("show");Array.from(list.querySelectorAll("[data-v52-name]")).forEach(function(el){el.onclick=function(){chooseName(filtered[Number(el.getAttribute("data-v52-name"))]||"")}});}
+    else{list.innerHTML='<div class="staff-suggestion-item" data-v52-manual="1">Guna nama manual: '+esc(input.value)+'</div>';list.classList.add("show");var m=list.querySelector("[data-v52-manual]");if(m)m.onclick=function(){chooseName(txt(input.value))};}
+    var note=q("staffFilterNote");if(note&&!keyword)note.textContent="Jumlah nama staff unik: "+names.length+".";
+  }
+
+  /* Override carian nama supaya tidak memaparkan nama asas dan nama ber-suffix serentak. */
+  window.filterStaffOptions=function(){
+    var input=q("namaStaffSearch"),typed=txt(input&&input.value);
+    try{if(typeof namaStaffSelectEl!=="undefined"&&namaStaffSelectEl)namaStaffSelectEl.value=typed?"Lain-lain":"";}catch(e){}
+    try{if(typeof namaStaffManualEl!=="undefined"&&namaStaffManualEl)namaStaffManualEl.value=typed;}catch(e){}
+    renderStaffNames();
+  };
+  window.updateStaffSelectOptions=function(){renderStaffNames();};
+
+  function cleanupOutsidePaste(){
+    document.querySelectorAll(".v51-type-paste").forEach(function(x){x.style.display="none"});
+    var b=q("v50PickerPaste");if(b)b.style.display="none";
+    var top=q("v51PasteCurrent");if(top)top.style.display="none";
+    document.querySelectorAll(".inventory-type-card").forEach(function(c){c.style.paddingBottom="14px"});
+  }
+  function applyFixes(){markSections();ensureEntryMode();cleanupOutsidePaste();renderStaffNames();}
+
+  document.addEventListener("input",function(ev){if(ev.target&&ev.target.id==="namaStaffSearch")renderStaffNames()});
+  document.addEventListener("focusin",function(ev){if(ev.target&&ev.target.id==="namaStaffSearch"&&txt(ev.target.value))renderStaffNames()});
+  document.addEventListener("click",function(ev){if(!(ev.target&&ev.target.closest&&ev.target.closest(".inventory-primary-name"))){var l=q("staffSuggestionList");if(l)l.classList.remove("show")}});
+
+  var mo=new MutationObserver(function(){window.setTimeout(function(){markSections();ensureEntryMode();cleanupOutsidePaste()},0)});
+  mo.observe(document.body,{childList:true,subtree:true});
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(applyFixes,180)});else setTimeout(applyFixes,180);
+})();
+</script>
+
 </body>
 </html>
