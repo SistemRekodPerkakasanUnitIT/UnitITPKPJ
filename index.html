@@ -12181,7 +12181,7 @@ body.computer-v38-open{overflow:hidden!important}
   var baseUpdatePayloadV38=typeof makeUpdatePayloadFromAsset==="function"?makeUpdatePayloadFromAsset:null;
   if(baseUpdatePayloadV38){makeUpdatePayloadFromAsset=function(v,updates){var p=baseUpdatePayloadV38(v,updates);p.emailStaff=(updates&&updates.emailStaff!=null)?updates.emailStaff:(v.emailStaff||"");p.kumpulanSewaan=(updates&&updates.kumpulanSewaan!=null)?updates.kumpulanSewaan:(v.kumpulanSewaan||"");p.sumberImport=(updates&&updates.sumberImport!=null)?updates.sumberImport:(v.sumberImport||"");return p;};}
 
-  function boot(){ensureUi();decorateHub();window.setInterval(decorateHub,1200);window.setTimeout(function(){loadStaffExtendedV38().catch(function(){});},900);}
+  function boot(){ensureUi();decorateHub();window.setTimeout(function(){loadStaffExtendedV38().catch(function(){});},900);}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
 </script>
@@ -12616,7 +12616,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
   var baseMakeV41=typeof makeUpdatePayloadFromAsset==="function"?makeUpdatePayloadFromAsset:null;
   if(baseMakeV41){makeUpdatePayloadFromAsset=function(v,updates){var p=baseMakeV41(v,updates);EXTRA_FIELDS.forEach(function(k){p[k]=(updates&&updates[k]!=null)?updates[k]:(v&&v[k]!=null?v[k]:"");});return p;};window.makeUpdatePayloadFromAsset=makeUpdatePayloadFromAsset;}
 
-  function boot(){ensureExtraUi();window.setInterval(ensureExtraUi,1500);}
+  function boot(){ensureExtraUi();}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
 </script>
@@ -12694,7 +12694,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
 
   function watch(){ensureHeaderButtons();if(isPkpjMode())enhanceTable();}
   var observer=new MutationObserver(function(){setTimeout(watch,0);});
-  function boot(){ensureCompareModal();ensureHeaderButtons();var target=document.getElementById("computerInventoryOverlayV38")||document.body;observer.observe(target,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});document.addEventListener("click",function(){setTimeout(watch,0);},true);setInterval(watch,1200);}
+  function boot(){ensureCompareModal();ensureHeaderButtons();document.addEventListener("click",function(){setTimeout(watch,0);},true);}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
 </script>
@@ -12713,8 +12713,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
     if(cpu&&lap&&lap!==cpu){lap.dataset.v44Hidden="1";lap.style.setProperty("display","none","important");}
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",enforce);else enforce();
-  new MutationObserver(function(){setTimeout(enforce,0);}).observe(document.documentElement,{childList:true,subtree:true});
-  setInterval(enforce,1000);
+  document.addEventListener("click",function(){setTimeout(enforce,0);},true);
 })();
 </script>
 
@@ -12781,7 +12780,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
     }
   }
   window.resetExcelOnlyV45=resetExcelOnlyV45;
-  function boot(){ensureResetButton();hideCompareUi();setInterval(function(){ensureResetButton();hideCompareUi();},1200);}
+  function boot(){ensureResetButton();hideCompareUi();document.addEventListener("click",function(){setTimeout(function(){ensureResetButton();hideCompareUi();},0);},true);}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
 </script>
@@ -12873,7 +12872,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
   function relabel(){var b=ui("computerImportBtnV38");if(b){b.innerHTML='<i class="fa-solid fa-table-cells"></i> Tampal Dari Excel';b.title="Copy baris dari Excel dan tampal terus ke grid"}var opt=document.querySelector("#inventoryEntryV39 .inventory-entry-v39-option.excel");if(opt){var bb=opt.querySelector("b"),sm=opt.querySelector("small"),ic=opt.querySelector("i.fa-file-excel");if(bb)bb.textContent="Tampal Dari Excel";if(sm)sm.textContent="Copy baris daripada Excel dan tampal terus ke kolum sistem.";if(ic){ic.classList.remove("fa-file-excel");ic.classList.add("fa-table-cells")}}}
   document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("#computerImportBtnV38");if(b){ev.preventDefault();ev.stopImmediatePropagation();window.openPasteExcelV46(activeComputerMode());return}},true);
   window.openInventoryExcelV39=function(){try{if(typeof closeInventoryEntryV39==="function")closeInventoryEntryV39()}catch(e){}window.openPasteExcelV46("general")};
-  function boot(){ensureUi();relabel();setInterval(relabel,1200)}
+  function boot(){ensureUi();relabel();document.addEventListener("click",function(){setTimeout(relabel,0);},true)}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
 })();
 </script>
@@ -12974,7 +12973,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
 
   function hook(){ensureEditUi();ensureButtons();patchPasteModeTracking();patchTabText();var o=ui("computerInventoryOverlayV38");if(o&&!o.dataset.v47hooks){o.dataset.v47hooks="1";o.addEventListener("click",function(ev){if(ev.target.closest("[data-tab], [data-mode]")){setTimeout(function(){ensureButtons();renderRental()},0)}});var q=ui("computerSearchV38");if(q)q.addEventListener("input",function(){setTimeout(renderRental,0)});var content=ui("computerContentV38");if(content){var mo=new MutationObserver(function(){if(renderLockV47||currentMode()!=="sewaan")return;var t=content.querySelector("table");if(t&&t.dataset.v47==="1")return;renderLockV47=true;setTimeout(function(){try{renderRental()}finally{renderLockV47=false}},0)});mo.observe(content,{childList:true,subtree:false})}var pb=ui("computerPrintBtnV38");if(pb)pb.addEventListener("click",function(ev){if(currentMode()==="sewaan"){ev.preventDefault();ev.stopImmediatePropagation();printRental()}},true)}var paste=ui("pasteExcelOverlayV46");if(paste&&!paste.dataset.v47hooks){paste.dataset.v47hooks="1";paste.addEventListener("click",function(ev){var tab=ev.target.closest("[data-mode]");if(tab)window.__activePasteModeV47=tab.dataset.mode});ensureButtons()}}
   var baseOpen=window.openComputerInventoryV38;if(typeof baseOpen==="function"&&!baseOpen.__v47){var wrap=function(){var out=baseOpen.apply(this,arguments);setTimeout(function(){hook();if(currentMode()==="sewaan")renderRental()},20);return out};wrap.__v47=true;window.openComputerInventoryV38=wrap}
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(hook,80)});else setTimeout(hook,80);setInterval(function(){hook();ensureButtons();patchTabText()},1200);
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(hook,80)});else setTimeout(hook,80);
 })();
 </script>
 
@@ -13173,7 +13172,6 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
     decorateIctTable();cleanRentalActionButtons();
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(hook,120);});else setTimeout(hook,120);
-  setInterval(hook,900);
 })();
 </script>
 
@@ -13328,7 +13326,6 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
     decorateOwnedTable();
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(hook,120);});else setTimeout(hook,120);
-  setInterval(hook,1000);
 })();
 </script>
 
@@ -13489,8 +13486,7 @@ body.inventory-entry-v39-open,body.inventory-import-v39-open{overflow:hidden!imp
     var b=document.createElement("button");b.type="button";b.id="duplicateCheckBtnV50";b.className="v50-duplicate-btn";b.innerHTML='<i class="fa-solid fa-clone"></i> Semak Double <span class="v50-count">...</span>';b.onclick=cleanupDuplicates;actions.appendChild(b);refreshDuplicateBadge();
   }
 
-  var mo=new MutationObserver(function(){setTimeout(function(){ensureComputerAdd();ensureDuplicateButton();fixHubCounts();},0);});
-  mo.observe(document.body,{childList:true,subtree:true});
+  /* V53 LITE: pemerhati seluruh body dibuang untuk elak lag. */
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){ensureComputerAdd();ensureDuplicateButton();fixHubCounts();},150);});else setTimeout(function(){ensureComputerAdd();ensureDuplicateButton();fixHubCounts();},150);
 
   var baseRender=window.renderMasterInventory;
@@ -13665,7 +13661,7 @@ body{color:var(--v51-text)!important;}
   /* Hook selepas pilih jenis supaya wizard sentiasa muncul. */
   ["selectInventoryType","selectComputerSet"].forEach(function(name){var old=window[name];if(typeof old==="function"&&!old.__v51){var w=function(){var r=old.apply(this,arguments);currentStep=1;setTimeout(activateIfNeeded,80);return r};w.__v51=true;window[name]=w}});
   var oldClear=window.clearForm||((typeof clearForm==="function")?clearForm:null);if(typeof oldClear==="function"&&!oldClear.__v51){var cw=function(){var r=oldClear.apply(this,arguments);currentStep=1;setTimeout(activateIfNeeded,40);return r};cw.__v51=true;window.clearForm=cw;try{clearForm=cw}catch(e){}}
-  var mo=new MutationObserver(function(){setTimeout(function(){activateIfNeeded();decorateBulkList();normalizeKnownGroups()},0)});mo.observe(document.body,{childList:true,subtree:true});
+  /* V53 LITE: observer body V51 dibuang. Fungsi utama sudah di-hook pada pemilihan jenis, clear form dan render inventori. */
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(function(){decorateTypeCards();activateIfNeeded();decorateBulkList();normalizeKnownGroups()},150)});else setTimeout(function(){decorateTypeCards();activateIfNeeded();decorateBulkList();normalizeKnownGroups()},150);
 })();
 </script>
@@ -13848,11 +13844,51 @@ body{color:var(--v51-text)!important;}
   document.addEventListener("focusin",function(ev){if(ev.target&&ev.target.id==="namaStaffSearch"&&txt(ev.target.value))renderStaffNames()});
   document.addEventListener("click",function(ev){if(!(ev.target&&ev.target.closest&&ev.target.closest(".inventory-primary-name"))){var l=q("staffSuggestionList");if(l)l.classList.remove("show")}});
 
-  var mo=new MutationObserver(function(){window.setTimeout(function(){markSections();ensureEntryMode();cleanupOutsidePaste()},0)});
-  mo.observe(document.body,{childList:true,subtree:true});
+  /* V53 LITE: observer body V52 dibuang. */
+  document.addEventListener("click",function(ev){
+    if(ev.target&&ev.target.closest&&ev.target.closest(".inventory-type-card")){setTimeout(applyFixes,40);}
+  },true);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(applyFixes,180)});else setTimeout(applyFixes,180);
 })();
 </script>
 
+
+
+<!-- ===== V53: LITE MODE - INPUT RESPONSIVE + WIZARD TANPA OBSERVER BERAT ===== -->
+<style id="pkpjV53LiteStyle">
+#formPage.v51-wizard-active input,
+#formPage.v51-wizard-active select,
+#formPage.v51-wizard-active textarea,
+#formPage.v51-wizard-active button{pointer-events:auto!important;touch-action:manipulation!important;}
+#formPage.v51-wizard-active .form-grid,
+#formPage.v51-wizard-active .device-card,
+#formPage.v51-wizard-active .device-card-grid,
+#formPage.v51-wizard-active .field{pointer-events:auto!important;}
+#formPage.v51-wizard-active .v51-wizard-head{position:relative!important;top:auto!important;z-index:2!important;}
+#formPage.v51-wizard-active .v52-entry-mode{position:relative!important;z-index:2!important;}
+#formPage.v51-wizard-active input:focus,
+#formPage.v51-wizard-active select:focus,
+#formPage.v51-wizard-active textarea:focus{outline:2px solid #d2e3fc!important;outline-offset:1px!important;border-color:#1a73e8!important;}
+</style>
+<script id="pkpjV53LiteLogic">
+(function(){
+  "use strict";
+  function refreshFormLite(){
+    var f=document.getElementById("formPage");
+    if(!f||!f.classList.contains("active"))return;
+    try{if(typeof window.filterStaffOptions==="function"){var n=document.getElementById("namaStaffSearch");if(n&&n.value)window.filterStaffOptions();}}catch(e){}
+  }
+  document.addEventListener("click",function(ev){
+    var t=ev.target;
+    if(t&&t.closest&&t.closest(".inventory-type-card"))setTimeout(refreshFormLite,60);
+  },true);
+  document.addEventListener("focusin",function(ev){
+    var t=ev.target;
+    if(t&&t.closest&&t.closest("#formPage")&&/^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)){
+      t.style.pointerEvents="auto";
+    }
+  },true);
+})();
+</script>
 </body>
 </html>
