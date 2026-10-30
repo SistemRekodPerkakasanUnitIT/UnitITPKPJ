@@ -14003,5 +14003,184 @@ body{color:var(--v51-text)!important;}
 })();
 </script>
 
+
+<!-- ===== V56: PECAH LAPTOP SEWAAN HYNIK / STARZA + KIRAAN TEPAT + UI 3D RINGAN ===== -->
+<style id="pkpjV56RentalSplit3DStyle">
+/* Tajuk sahaja - buang teks penjelasan yang memenuhi ruang. */
+#computerInventoryOverlayV38 .computer-v38-title small,
+#computerInventoryOverlayV38 .computer-v38-mode small,
+#computerInventoryOverlayV38 .computer-v38-tab small,
+#computerInventoryOverlayV38 .computer-v38-import-note{display:none!important}
+#computerInventoryOverlayV38 .computer-v38-mode span,
+#computerInventoryOverlayV38 .computer-v38-tab span{display:flex!important;align-items:center!important;min-width:0!important}
+#computerInventoryOverlayV38 .computer-v38-mode b,
+#computerInventoryOverlayV38 .computer-v38-tab b{font-size:12px!important;font-weight:700!important;line-height:1.25!important}
+#rentalTabsV38{grid-template-columns:repeat(3,minmax(175px,1fr))!important;gap:10px!important}
+#rentalTabsV38.v56-has-unset{grid-template-columns:repeat(4,minmax(160px,1fr))!important}
+.computer-v56-count{margin-left:auto;min-width:25px;height:22px;padding:0 7px;border-radius:999px;background:#eef4ff;color:#174ea6;border:1px solid #c9dafc;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex:0 0 auto}
+.computer-v38-tab.active .computer-v56-count{background:#fff;color:#174ea6;border-color:#b9d0ff}
+
+/* 3D ringan: CSS sahaja, tiada animation loop / script tambahan. */
+#assetCategoryHubV32 .asset-category-card-v32,
+#computerInventoryOverlayV38 .computer-v38-mode,
+#computerInventoryOverlayV38 .computer-v38-tab{
+  position:relative!important;
+  transform:translateZ(0);
+  box-shadow:0 8px 18px rgba(15,23,42,.10),0 2px 4px rgba(15,23,42,.06)!important;
+  border-width:1px!important;
+  transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease!important;
+}
+#assetCategoryHubV32 .asset-category-card-v32:before,
+#computerInventoryOverlayV38 .computer-v38-mode:before,
+#computerInventoryOverlayV38 .computer-v38-tab:before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.52),rgba(255,255,255,0) 42%);
+}
+#assetCategoryHubV32 .asset-category-card-v32:hover,
+#computerInventoryOverlayV38 .computer-v38-mode:hover,
+#computerInventoryOverlayV38 .computer-v38-tab:hover{
+  transform:translateY(-2px) translateZ(0);
+  box-shadow:0 12px 24px rgba(15,23,42,.13),0 3px 7px rgba(15,23,42,.07)!important;
+}
+#computerInventoryOverlayV38 .computer-v38-mode.active,
+#computerInventoryOverlayV38 .computer-v38-tab.active{
+  box-shadow:0 9px 20px rgba(37,99,235,.16),0 0 0 1px rgba(37,99,235,.12)!important;
+}
+
+/* Tampal Excel Hynik/Starza: provider dipilih melalui tab, kolum provider tidak perlu ditaip. */
+#pasteExcelOverlayV46.v56-provider-preset #pasteHeadV46 th:nth-child(7),
+#pasteExcelOverlayV46.v56-provider-preset #pasteBodyV46 td:nth-child(7){display:none!important}
+#pasteTabsV46{grid-template-columns:repeat(5,minmax(125px,1fr))!important}
+#pasteTabsV46 .v56-original-laptop-tab{display:none!important}
+.paste-v56-provider-tab{background:#fff;color:#334155;border:1px solid #dbe3ef;border-radius:11px;padding:10px;text-align:left;display:flex;gap:9px;align-items:center}
+.paste-v56-provider-tab.active{border-color:#2563eb;background:#eff6ff;color:#174ea6;box-shadow:0 0 0 2px rgba(37,99,235,.08)}
+.paste-v56-provider-tab b{display:block;font-size:12px}.paste-v56-provider-tab i{font-size:16px}
+.v56-provider-pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+
+/* Manual Laptop Sewaan: pilihan provider jelas. */
+.v56-provider-select{width:100%!important;min-height:42px!important;border:1px solid #c7d2e3!important;border-radius:8px!important;background:#fff!important;padding:8px 10px!important;font-size:13px!important}
+
+@media(max-width:1000px){#rentalTabsV38,#rentalTabsV38.v56-has-unset{grid-template-columns:1fr 1fr!important}#pasteTabsV46{grid-template-columns:1fr 1fr!important}}
+@media(max-width:650px){#rentalTabsV38,#rentalTabsV38.v56-has-unset{grid-template-columns:1fr!important}}
+</style>
+<script id="pkpjV56RentalSplit3DLogic">
+(function(){
+  "use strict";
+  var displayedV56=[];
+  function q(id){return document.getElementById(id)}
+  function s(v){return String(v==null?"":v).trim()}
+  function low(v){return s(v).toLowerCase()}
+  function esc(v){return String(v==null?"":v).replace(/[&<>\"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"}[c]})}
+  function meaningful(v){var x=s(v);return x&&!/^(tiada|tidak berkaitan|-)$/i.test(x)?x:""}
+  function serialKey(v){return low(v).replace(/[^a-z0-9]/g,"")}
+  function rows(){try{return Array.isArray(window.allData)?window.allData:(typeof allData!=="undefined"&&Array.isArray(allData)?allData:[])}catch(e){return []}}
+  function active(x){return !/selesai|pelupusan/i.test(low(x&&x.status))}
+  function currentMode(){var b=document.querySelector('#computerInventoryOverlayV38 [data-mode].active');return b?b.dataset.mode:"sewaan"}
+  function searchText(){var e=q("computerSearchV38");return low(e&&e.value)}
+  function providerValue(v){var p=low(v);return p.indexOf("hynik")>-1?"hynik":p.indexOf("starza")>-1?"starza":"unset"}
+  function providerLabel(v){var p=providerValue(v);return p==="hynik"?"Hynik":p==="starza"?"Starza":"Belum Ditetapkan"}
+  function mainProvider(set){var c=set.comp||{},main=c.laptop||null;if(main&&main.pembekal)return providerValue(main.pembekal);for(var i=0;i<(set.items||[]).length;i++){var p=providerValue(set.items[i].pembekal);if(p!=="unset")return p}return "unset"}
+  function modelOf(x){return meaningful(x&&x.model)||"-"}
+  function serialOf(x){return meaningful(x&&x.noSiri)||"-"}
+  function rowNums(set){return (set.items||[]).map(function(x){return Number(x.row||0)}).filter(Boolean)}
+  function staffKey(v){return low(v).replace(/\s+/g," ")}
+
+  function rentalSets(){
+    var list=rows().filter(function(x){var j=low(x&&x.jenisPerkakasan);return active(x)&&low(x&&x.kategori)==="sewaan"&&["cpu","monitor","keyboard","mouse","laptop"].indexOf(j)>-1});
+    var map={};
+    list.forEach(function(item){
+      var j=low(item.jenisPerkakasan),type=j==="laptop"?"laptop":((j==="cpu"||j==="monitor"||j==="keyboard")?"pc":"");
+      if(j==="mouse"&&!type)type=low(item.kumpulanSewaan).indexOf("lap")>-1?"laptop":"pc";
+      var holder=s(item.namaStaff||item.namaPemegang||item.nama)||"Tanpa Nama";
+      var key=s(item.kumpulanSewaan)||("legacy:"+type+":"+staffKey(holder));
+      if(!map[key])map[key]={key:key,type:type||"pc",name:holder,email:s(item.emailStaff),items:[]};
+      map[key].items.push(item);if(!map[key].email&&item.emailStaff)map[key].email=s(item.emailStaff);
+    });
+    var sets=Object.keys(map).map(function(k){var z=map[k],c={};z.items.forEach(function(i){c[low(i.jenisPerkakasan)]=i});z.comp=c;return z});
+    var unique={};
+    sets.forEach(function(set){
+      var c=set.comp||{},main=set.type==="laptop"?c.laptop:c.cpu;
+      var identity=serialKey(main&&main.noSiri);
+      if(!identity)identity=serialKey(c.monitor&&c.monitor.noSiri)||serialKey(c.keyboard&&c.keyboard.noSiri)||serialKey(c.mouse&&c.mouse.noSiri);
+      var fp=identity?(set.type+"|"+identity):(set.type+"|"+staffKey(set.name)+"|"+low(main&&main.model)+"|"+low(c.monitor&&c.monitor.model));
+      var rank=Math.max.apply(null,(set.items||[]).map(function(x){return Number(x.row||0)}).concat([0]));
+      var old=unique[fp],oldRank=old?Math.max.apply(null,(old.items||[]).map(function(x){return Number(x.row||0)}).concat([0])):-1;
+      if(!old||rank>=oldRank)unique[fp]=set;
+    });
+    return Object.keys(unique).map(function(k){return unique[k]}).sort(function(a,b){return a.name.localeCompare(b.name,"ms",{sensitivity:"base"})});
+  }
+
+  function counts(){var a=rentalSets();return {pc:a.filter(function(x){return x.type==="pc"}).length,hynik:a.filter(function(x){return x.type==="laptop"&&mainProvider(x)==="hynik"}).length,starza:a.filter(function(x){return x.type==="laptop"&&mainProvider(x)==="starza"}).length,unset:a.filter(function(x){return x.type==="laptop"&&mainProvider(x)==="unset"}).length}}
+  function activeChoice(){var b=document.querySelector('#rentalTabsV38 .computer-v38-tab.active');if(!b)return {tab:"pc",provider:""};return {tab:b.dataset.tab||"pc",provider:b.dataset.provider||""}}
+  function tabButton(title,icon,tab,provider,count,activeState){var b=document.createElement("button");b.type="button";b.className="computer-v38-tab"+(activeState?" active":"");b.dataset.tab=tab;if(provider)b.dataset.provider=provider;b.innerHTML='<i class="fa-solid '+icon+'"></i><span><b>'+esc(title)+'</b></span><em class="computer-v56-count">'+Number(count||0)+'</em>';b.addEventListener("click",function(){var wrap=q("rentalTabsV38");if(wrap)wrap.querySelectorAll(".computer-v38-tab").forEach(function(x){x.classList.toggle("active",x===b)});window.__v56RentalProviderPreset=provider||"";setTimeout(renderRental,8)});return b}
+  function ensureTabs(){
+    var wrap=q("rentalTabsV38");if(!wrap)return;
+    var c=counts(),prev=activeChoice(),want=prev.provider||(prev.tab==="pc"?"pc":"hynik");
+    if(!wrap.dataset.v56){wrap.dataset.v56="1";wrap.innerHTML=""}
+    else wrap.innerHTML="";
+    wrap.appendChild(tabButton("PC Sewaan","fa-desktop","pc","",c.pc,want==="pc"));
+    wrap.appendChild(tabButton("Laptop Sewaan Hynik","fa-laptop","laptop","Hynik",c.hynik,want==="Hynik"||want==="hynik"));
+    wrap.appendChild(tabButton("Laptop Sewaan Starza","fa-laptop","laptop","Starza",c.starza,want==="Starza"||want==="starza"));
+    if(c.unset>0){wrap.classList.add("v56-has-unset");wrap.appendChild(tabButton("Laptop Sewaan Belum Ditetapkan","fa-circle-question","laptop","unset",c.unset,want==="unset"))}else wrap.classList.remove("v56-has-unset");
+    if(!wrap.querySelector(".computer-v38-tab.active")){var first=wrap.querySelector(".computer-v38-tab");if(first)first.classList.add("active")}
+  }
+
+  function filtered(){var ch=activeChoice(),needle=searchText();return rentalSets().filter(function(set){
+    if(ch.tab==="pc"&&set.type!=="pc")return false;
+    if(ch.tab==="laptop"){if(set.type!=="laptop")return false;var p=mainProvider(set);if(ch.provider==="Hynik"&&p!=="hynik")return false;if(ch.provider==="Starza"&&p!=="starza")return false;if(ch.provider==="unset"&&p!=="unset")return false;}
+    if(!needle)return true;var c=set.comp||{};return [set.name,set.email,c.cpu&&c.cpu.model,c.cpu&&c.cpu.noSiri,c.monitor&&c.monitor.model,c.monitor&&c.monitor.noSiri,c.keyboard&&c.keyboard.noSiri,c.mouse&&c.mouse.noSiri,c.laptop&&c.laptop.model,c.laptop&&c.laptop.noSiri,c.laptop&&c.laptop.pembekal].join(" ").toLowerCase().indexOf(needle)>-1;
+  })}
+  function actions(i){return '<div class="rental-v47-actions rental-v49-actions"><button class="rental-v47-edit" type="button" onclick="editRentalSetV56('+i+')"><i class="fa-solid fa-pen"></i> Edit</button><button class="rental-v47-delete" type="button" onclick="deleteRentalSetV56('+i+')"><i class="fa-solid fa-trash"></i> Delete</button></div>'}
+  function renderRental(){
+    if(currentMode()!=="sewaan")return;
+    ensureTabs();var content=q("computerContentV38");if(!content)return;var sets=filtered();displayedV56=sets;var c=counts(),ch=activeChoice();
+    var summary=q("computerSummaryV38");if(summary)summary.innerHTML='<span class="computer-v38-chip">PC Sewaan: <strong>'+c.pc+'</strong></span><span class="computer-v38-chip">Laptop Hynik: <strong>'+c.hynik+'</strong></span><span class="computer-v38-chip">Laptop Starza: <strong>'+c.starza+'</strong></span>'+(c.unset?'<span class="computer-v38-chip">Belum Ditetapkan: <strong>'+c.unset+'</strong></span>':'')+'<span class="computer-v38-chip">Dipaparkan: <strong>'+sets.length+'</strong></span>';
+    if(!sets.length){var label=ch.tab==="pc"?"PC Sewaan":("Laptop Sewaan "+(ch.provider==="unset"?"Belum Ditetapkan":ch.provider));content.innerHTML='<div class="computer-v38-empty">Tiada rekod '+esc(label)+'.</div>';return}
+    if(ch.tab==="pc")content.innerHTML='<table class="computer-v38-table rental-exact-v40 rental-v47-table" data-v47="1" data-v56="1"><thead><tr><th>BIL</th><th>NAMA</th><th>EMEL</th><th>MODEL PC</th><th>SERIAL NO PC</th><th>MODEL MONITOR</th><th>SERIAL NO MONITOR</th><th>SERIAL NO KEYBOARD</th><th>SERIAL NO MOUSE</th><th>TINDAKAN</th></tr></thead><tbody>'+sets.map(function(x,i){var d=x.comp||{};return '<tr><td class="c">'+(i+1)+'</td><td><b>'+esc(x.name||"-")+'</b></td><td>'+esc(x.email||"-")+'</td><td>'+esc(modelOf(d.cpu))+'</td><td>'+esc(serialOf(d.cpu))+'</td><td>'+esc(modelOf(d.monitor))+'</td><td>'+esc(serialOf(d.monitor))+'</td><td>'+esc(serialOf(d.keyboard))+'</td><td>'+esc(serialOf(d.mouse))+'</td><td>'+actions(i)+'</td></tr>'}).join("")+'</tbody></table>';
+    else content.innerHTML='<table class="computer-v38-table rental-exact-v40 rental-v47-table" data-v47="1" data-v56="1"><thead><tr><th>BIL</th><th>NAMA</th><th>EMEL</th><th>MODEL LAPTOP</th><th>SERIAL NO LAPTOP</th><th>SERIAL NO MOUSE</th><th>TINDAKAN</th></tr></thead><tbody>'+sets.map(function(x,i){var d=x.comp||{};return '<tr><td class="c">'+(i+1)+'</td><td><b>'+esc(x.name||"-")+'</b></td><td>'+esc(x.email||"-")+'</td><td>'+esc(modelOf(d.laptop))+'</td><td>'+esc(serialOf(d.laptop))+'</td><td>'+esc(serialOf(d.mouse))+'</td><td>'+actions(i)+'</td></tr>'}).join("")+'</tbody></table>';
+  }
+  window.renderRentalV56=renderRental;
+
+  function common(set){var c=set.comp||{},main=set.type==="laptop"?c.laptop:c.cpu;return {tahun:s(main&&main.tahun)||String(new Date().getFullYear()),lokasi:s(main&&main.lokasi)||"Pejabat PKPJ",status:s(main&&main.status)||"Baik",tarikh:s(main&&main.tarikh)||new Date().toISOString().slice(0,10),source:s(main&&main.sumberImport)||"Manual V56"}}
+  function makeRecords(set,form){var fd=Object.fromEntries(new FormData(form)),c=common(set),gid=set.key.indexOf("legacy:")===0?("EDIT-"+set.type.toUpperCase()+"-"+Date.now()):set.key,out=[],provider=set.type==="laptop"?(s(fd.provider)||providerLabel((set.comp.laptop||{}).pembekal)):"Sewaan";if(provider==="Belum Ditetapkan")provider="Sewaan";function add(jenis,serial,model){serial=meaningful(serial);if(!serial)return;out.push({tahun:c.tahun,namaStaff:s(fd.nama),namaPemegang:s(fd.nama),nama:s(fd.nama),emailStaff:s(fd.email),jenisPerkakasan:jenis,kategori:"Sewaan",jenama:"TIADA",model:meaningful(model)||"TIADA",noSiri:serial,tagAset:"TIADA",lokasi:c.lokasi,status:c.status,tarikh:c.tarikh,pembekal:provider,noInventori:"",kuantiti:"1",gambar:"",catatan:"Kemaskini Set Sewaan V56",kumpulanSewaan:gid,sumberImport:c.source,sumberFailTerkini:c.source})}if(set.type==="pc"){add("CPU",fd.serialPc,fd.modelPc);add("Monitor",fd.serialMonitor,fd.modelMonitor);add("Keyboard",fd.serialKeyboard,"");add("Mouse",fd.serialMouse,"")}else{add("Laptop",fd.serialLaptop,fd.modelLaptop);add("Mouse",fd.serialMouse,"")}return out}
+  async function post(action,payload,msg){var id="v56_"+Date.now()+"_"+Math.floor(Math.random()*99999);try{if(typeof showSaveMotionV29==="function")showSaveMotionV29("Kemaskini Sewaan","Sedang memproses...");submitHiddenForm(Object.assign({action:action,requestId:id},payload||{}));var r=await waitSaveResultFast(id);if(!r||r.status!=="OK")throw new Error((r&&r.message)||"Proses gagal");if(typeof fastBootstrapLoad==="function")await fastBootstrapLoad({silent:true,fresh:true});else if(typeof refreshAll==="function")await refreshAll({clearForm:false,silent:true});if(typeof finishSaveMotionV29==="function")await finishSaveMotionV29(msg||"Berjaya");if(typeof showToast==="function")showToast(msg||"Berjaya");setTimeout(function(){ensureTabs();renderRental();fixHubCounts()},30);return r}catch(e){if(typeof failSaveMotionV29==="function")failSaveMotionV29(e.message||String(e));alert("Proses gagal: "+(e.message||e));throw e}}
+  function ensureEditOverlay(){if(q("rentalEditOverlayV47"))return;var o=document.createElement("div");o.id="rentalEditOverlayV47";o.className="rental-v47-overlay";o.innerHTML='<div class="rental-v47-modal"><div class="rental-v47-head"><h3 id="rentalEditTitleV47">Edit Sewaan</h3><button type="button" class="rental-v47-close" id="rentalEditCloseV47">Tutup</button></div><div class="rental-v47-body" id="rentalEditBodyV47"></div></div>';document.body.appendChild(o);q("rentalEditCloseV47").onclick=function(){o.classList.remove("show")}}
+  window.editRentalSetV56=function(index){var set=displayedV56[index];if(!set)return;ensureEditOverlay();var d=set.comp||{},pc=set.type==="pc",provider=mainProvider(set);q("rentalEditTitleV47").textContent="Edit "+(pc?"PC Sewaan":"Laptop Sewaan "+(provider==="hynik"?"Hynik":provider==="starza"?"Starza":""));q("rentalEditBodyV47").innerHTML='<form id="rentalEditFormV56"><div class="rental-v47-grid"><div class="rental-v47-field full"><label>NAMA</label><input name="nama" required value="'+esc(set.name||"")+'"></div><div class="rental-v47-field full"><label>EMEL</label><input name="email" value="'+esc(set.email||"")+'"></div>'+(pc?'<div class="rental-v47-field"><label>MODEL PC</label><input name="modelPc" value="'+esc(meaningful(d.cpu&&d.cpu.model))+'"></div><div class="rental-v47-field"><label>SERIAL NO PC</label><input name="serialPc" required value="'+esc(meaningful(d.cpu&&d.cpu.noSiri))+'"></div><div class="rental-v47-field"><label>MODEL MONITOR</label><input name="modelMonitor" value="'+esc(meaningful(d.monitor&&d.monitor.model))+'"></div><div class="rental-v47-field"><label>SERIAL NO MONITOR</label><input name="serialMonitor" value="'+esc(meaningful(d.monitor&&d.monitor.noSiri))+'"></div><div class="rental-v47-field"><label>SERIAL NO KEYBOARD</label><input name="serialKeyboard" value="'+esc(meaningful(d.keyboard&&d.keyboard.noSiri))+'"></div><div class="rental-v47-field"><label>SERIAL NO MOUSE</label><input name="serialMouse" value="'+esc(meaningful(d.mouse&&d.mouse.noSiri))+'"></div>':'<div class="rental-v47-field full"><label>PENYEDIA SEWAAN</label><select name="provider" required><option value="Hynik" '+(provider==="hynik"?'selected':'')+'>Hynik</option><option value="Starza" '+(provider==="starza"?'selected':'')+'>Starza</option></select></div><div class="rental-v47-field"><label>MODEL LAPTOP</label><input name="modelLaptop" value="'+esc(meaningful(d.laptop&&d.laptop.model))+'"></div><div class="rental-v47-field"><label>SERIAL NO LAPTOP</label><input name="serialLaptop" required value="'+esc(meaningful(d.laptop&&d.laptop.noSiri))+'"></div><div class="rental-v47-field"><label>SERIAL NO MOUSE</label><input name="serialMouse" value="'+esc(meaningful(d.mouse&&d.mouse.noSiri))+'"></div>')+'</div><div class="v48-category-box"><div class="v48-category-box-title"><i class="fa-solid fa-arrow-right-arrow-left"></i> Tukar Kategori</div><div class="v48-category-actions"><button type="button" class="v48-to-pkpj" id="v56ToPkpj"><i class="fa-solid fa-landmark"></i> Tukar ke PKPJ</button><button type="button" class="v48-to-ict" id="v56ToIct"><i class="fa-solid fa-screwdriver-wrench"></i> Tukar ke ICT</button></div></div><div class="rental-v47-form-actions"><button type="button" class="rental-v47-cancel" id="v56EditCancel">Batal</button><button type="submit" class="rental-v47-save">Simpan</button></div></form>';q("rentalEditOverlayV47").classList.add("show");q("v56EditCancel").onclick=function(){q("rentalEditOverlayV47").classList.remove("show")};q("v56ToPkpj").onclick=function(){moveRental(index,"PKPJ")};q("v56ToIct").onclick=function(){moveRental(index,"ICT")};q("rentalEditFormV56").onsubmit=async function(ev){ev.preventDefault();var rec=makeRecords(set,ev.currentTarget);if(!rec.length)return alert("No. Siri utama diperlukan.");await post("replaceRentalSetV47",{rowsJson:JSON.stringify(rowNums(set)),recordsJson:JSON.stringify(rec)},"Set sewaan berjaya dikemaskini");q("rentalEditOverlayV47").classList.remove("show")}}
+  async function moveRental(index,target){var set=displayedV56[index];if(!set)return;var label=target==="PKPJ"?"Aset Pembelian PKPJ":"ICT";if(!confirm("Tukar set ini ke "+label+"?\n\nNama: "+set.name))return;await post("moveRentalSetV47",{rowsJson:JSON.stringify(rowNums(set)),targetCategory:target},"Set berjaya ditukar ke "+label);var o=q("rentalEditOverlayV47");if(o)o.classList.remove("show")}
+  window.deleteRentalSetV56=async function(index){var set=displayedV56[index];if(!set)return;if(!confirm("Delete set Sewaan ini?\n\nNama: "+set.name+"\nSemua komponen dalam set akan dipadam."))return;await post("deleteRentalSetV47",{rowsJson:JSON.stringify(rowNums(set))},"Set Sewaan dipadam")}
+
+  /* Split pilihan di modul Tampal Excel. Provider dipreset dan tidak perlu menjadi kolum Excel. */
+  function installPasteProviderTabs(){var tabs=q("pasteTabsV46");if(!tabs)return;var original=tabs.querySelector('[data-mode="laptop"]');if(original)original.classList.add("v56-original-laptop-tab");if(!q("pasteHynikV56")){var h=document.createElement("button");h.type="button";h.id="pasteHynikV56";h.className="paste-v56-provider-tab";h.innerHTML='<i class="fa-solid fa-laptop"></i><span><b>Laptop Sewaan Hynik</b></span>';h.onclick=function(){window.__v56PasteProvider="Hynik";if(original)original.click();setTimeout(function(){preparePaste("Hynik")},0)};tabs.insertBefore(h,original?original.nextSibling:tabs.children[1]||null);var z=document.createElement("button");z.type="button";z.id="pasteStarzaV56";z.className="paste-v56-provider-tab";z.innerHTML='<i class="fa-solid fa-laptop"></i><span><b>Laptop Sewaan Starza</b></span>';z.onclick=function(){window.__v56PasteProvider="Starza";if(original)original.click();setTimeout(function(){preparePaste("Starza")},0)};h.after(z)}
+  }
+  function fillProviderCells(provider){var body=q("pasteBodyV46");if(!body||!provider)return;body.querySelectorAll("tr").forEach(function(tr){var cells=tr.querySelectorAll(".paste-v46-cell");if(cells[6])cells[6].textContent=provider});try{var ev=new Event("input",{bubbles:true});body.dispatchEvent(ev)}catch(e){}}
+  function preparePaste(provider){var o=q("pasteExcelOverlayV46");if(!o)return;installPasteProviderTabs();var h=q("pasteHynikV56"),z=q("pasteStarzaV56");if(provider){o.classList.add("v56-provider-preset");window.__v56PasteProvider=provider;fillProviderCells(provider);if(h)h.classList.toggle("active",provider==="Hynik");if(z)z.classList.toggle("active",provider==="Starza");var title=o.querySelector(".paste-v46-head h3");if(title)title.innerHTML='<i class="fa-solid fa-table-cells"></i> Tampal Data Laptop Sewaan '+esc(provider)}else{o.classList.remove("v56-provider-preset");if(h)h.classList.remove("active");if(z)z.classList.remove("active");var t=o.querySelector(".paste-v46-head h3");if(t)t.innerHTML='<i class="fa-solid fa-table-cells"></i> Tampal Data Dari Excel'}}
+  function selectedProvider(){var b=document.querySelector('#rentalTabsV38 .computer-v38-tab.active');return b&&/^(Hynik|Starza)$/.test(s(b.dataset.provider))?s(b.dataset.provider):""}
+  function wrapPasteOpen(){var base=window.openPasteExcelV46;if(typeof base!=="function"||base.__v56)return;var w=function(mode){var out=base.apply(this,arguments);setTimeout(function(){installPasteProviderTabs();var p=(mode==="laptop")?(selectedProvider()||window.__v56PasteProvider||"Hynik"):"";preparePaste(p)},10);return out};w.__v56=true;window.openPasteExcelV46=w}
+
+  /* Manual tambah Laptop Sewaan: Pembekal menjadi pilihan Hynik / Starza. */
+  function syncManualProvider(){document.querySelectorAll('.device-card[data-jenis="Laptop"]').forEach(function(card){var id=s(card.dataset.id),cat=q("kategori_"+id),el=q("pembekal_"+id);if(!cat||!el)return;var field=el.closest(".field"),label=field&&field.querySelector("label");if(cat.value==="Sewaan"){
+      if(el.tagName!=="SELECT"||!el.classList.contains("v56-provider-select")){var sel=document.createElement("select");sel.id=el.id;sel.className="v56-provider-select";sel.innerHTML='<option value="">Pilih penyedia sewaan</option><option value="Hynik">Hynik</option><option value="Starza">Starza</option>';var old=meaningful(el.value),preset=selectedProvider()||window.__v56RentalProviderPreset||"";sel.value=/hynik/i.test(old)?"Hynik":/starza/i.test(old)?"Starza":preset;el.replaceWith(sel);el=sel}if(label)label.textContent="Penyedia Sewaan";
+    }else if(el.tagName==="SELECT"&&el.classList.contains("v56-provider-select")){var inp=document.createElement("input");inp.id=el.id;inp.setAttribute("list","pilihanTidakBerkaitan");inp.placeholder="Contoh: HP Malaysia / Syarikat ABC atau Tidak Berkaitan";inp.value=el.value;el.replaceWith(inp);if(label)label.textContent="Pembekal";}
+    })}
+
+  /* Kiraan hub: komponen PC/Laptop Sewaan tidak dikira lagi sebagai Monitor/Aksesori berasingan. */
+  function classify(x){var j=low(x&&x.jenisPerkakasan);if(j==="laptop")return "Laptop";if(j==="cpu")return "CPU / Desktop";if(j==="monitor")return "Monitor";if(j==="printer")return "Printer";if(j==="telefon voip")return "Telefon VOIP";if(j==="keyboard"||j==="mouse")return "Aksesori";var raw=[x&&x.jenisPerkakasan,x&&x.jenisPerkakasanLain,x&&x.model,x&&x.catatan].map(low).join(" ");if(/wifi[\s-]*pole|tiang.*wifi/.test(raw))return "WiFi Pole";if(/aksesori.*wifi|access point/.test(raw))return "Aksesori WiFi";if(/wifi|wi-fi|rangkaian|router|switch/.test(raw))return "Rangkaian / WiFi";if(!j||j==="tiada")return "Belum Dikelaskan";return "Lain-lain"}
+  function fixHubCounts(){var hub=q("assetCategoryHubV32");if(!hub)return;var count={},seen={};rows().forEach(function(x){if(!active(x))return;var j=low(x.jenisPerkakasan),cat=low(x.kategori);if(cat==="sewaan"&&["cpu","laptop","monitor","keyboard","mouse"].indexOf(j)>-1)return;var g=classify(x),id=serialKey(x.noSiri)||serialKey(x.tagAset)||serialKey(x.noInventori),fp=id?(g+"|"+id):(g+"|"+staffKey(x.namaStaff||x.namaPemegang||x.nama)+"|"+j+"|"+low(x.model)+"|"+low(x.lokasi));if(seen[fp])return;seen[fp]=1;count[g]=(count[g]||0)+1});hub.querySelectorAll(".asset-category-card-v32").forEach(function(card){var name=card.querySelector(".asset-category-name-v32"),label=s(name&&name.textContent),group=s(card.dataset.group),c=card.querySelector(".asset-category-count-v32");if(label==="PC / Laptop"){var rental=rentalSets().length,owned={},ownedCount=0;rows().forEach(function(x){var j=low(x.jenisPerkakasan),cat=low(x.kategori);if(!active(x)||cat==="sewaan"||(j!=="cpu"&&j!=="laptop"))return;var k=serialKey(x.noSiri)||serialKey(x.tagAset)||serialKey(x.noInventori)||("row"+Number(x.row||0));k=cat+"|"+j+"|"+k;if(!owned[k]){owned[k]=1;ownedCount++}});if(c)c.textContent=(rental+ownedCount)+" set / aset";return}if(c)c.textContent=String(count[group]||0)+" aset"})}
+
+  function syncModeUi(){var o=q("computerInventoryOverlayV38");if(!o)return;var sewaan=currentMode()==="sewaan";if(sewaan){ensureTabs();setTimeout(renderRental,8)}var reset=q("computerResetPasteBtnV47");if(reset&&sewaan){var ch=activeChoice();reset.title=ch.tab==="pc"?"Reset tampalan PC Sewaan":"Reset semua tampalan Laptop Sewaan"}}
+  function hook(){wrapPasteOpen();if(q("computerInventoryOverlayV38")){ensureTabs();syncModeUi()}syncManualProvider();fixHubCounts()}
+
+  document.addEventListener("click",function(ev){var tab=ev.target.closest&&ev.target.closest('#rentalTabsV38 .computer-v38-tab');if(tab)setTimeout(renderRental,12);var mode=ev.target.closest&&ev.target.closest('#computerInventoryOverlayV38 [data-mode]');if(mode)setTimeout(syncModeUi,12);if(ev.target.closest&&ev.target.closest('#pasteAddRowsV46,#pasteClearV46'))setTimeout(function(){if(window.__v56PasteProvider)fillProviderCells(window.__v56PasteProvider)},15);if(ev.target.closest&&ev.target.closest('.inventory-type-card'))setTimeout(syncManualProvider,60)},true);
+  document.addEventListener("change",function(ev){if(ev.target&&/^kategori_/.test(ev.target.id||""))setTimeout(syncManualProvider,0)},true);
+  document.addEventListener("paste",function(ev){if(ev.target&&ev.target.closest&&ev.target.closest('#pasteBodyV46'))setTimeout(function(){if(window.__v56PasteProvider)fillProviderCells(window.__v56PasteProvider)},20)},true);
+  document.addEventListener("input",function(ev){if(ev.target&&ev.target.id==="computerSearchV38"&&currentMode()==="sewaan")setTimeout(renderRental,5)},true);
+  document.addEventListener("click",function(ev){var orig=ev.target.closest&&ev.target.closest('#pasteTabsV46 [data-mode]');if(orig&&orig.dataset.mode!=="laptop"){window.__v56PasteProvider="";setTimeout(function(){preparePaste("")},0)}},true);
+
+  var baseOpen=window.openComputerInventoryV38;if(typeof baseOpen==="function"&&!baseOpen.__v56){var ow=function(){var out=baseOpen.apply(this,arguments);setTimeout(function(){hook();syncModeUi()},35);return out};ow.__v56=true;window.openComputerInventoryV38=ow}
+  var baseMaster=window.renderMasterInventory;if(typeof baseMaster==="function"&&!baseMaster.__v56){var rm=function(){var out=baseMaster.apply(this,arguments);setTimeout(fixHubCounts,25);return out};rm.__v56=true;window.renderMasterInventory=rm}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(hook,180)});else setTimeout(hook,180);
+})();
+</script>
+
 </body>
 </html>
